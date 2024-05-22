@@ -3,6 +3,7 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 library(lubridate)
+library(fs)  # For directory creation
 
 log_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/jetsonlog"
 files <- list.files(log_directory, full.names = TRUE)
@@ -34,7 +35,7 @@ for (file in file_list) {
   imager_hits_misses <- rbind(imager_hits_misses, temp_data)
 }
 
-imager_hits_misses$Time <- sprintf("%04d", imager_hits_misses$Tenbin + imager_hits_misses$Minute)
+imager_hits_misses$Time <- sprintf("%04d", imager_hits_misses$Tenbin + 100 + imager_hits_misses$Minute) # The + 100 corrects the data from UTC to BST, which the jetson data are in
 imager_hits_misses$Datetime <- ymd_hm(paste(imager_hits_misses$Date, imager_hits_misses$Time))
 imager_hits_misses$rounded_datetime <- round_date(imager_hits_misses$Datetime, unit = "minute")
 imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
@@ -54,12 +55,12 @@ agg_imager <- imager_hits_misses %>%
 # Merge the aggregated dataframes on rounded_datetime
 merged_data <- left_join(agg_jetson, agg_imager, by = "rounded_datetime_5")
 
+# Directory creation
+figures_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures"
+dir_create(figures_directory)
 
-
-
-# First look at data
-
-ggplot(imager_hits_misses, aes(x = Datetime)) +
+# First look at data and save figure
+plot1 <- ggplot(imager_hits_misses, aes(x = Datetime)) +
   geom_line(aes(y = Hits, color = "Hits")) +
   geom_line(aes(y = Misses, color = "Misses")) +
   labs(title = "Raw Data: Time Series of Hits and Misses",
@@ -68,10 +69,10 @@ ggplot(imager_hits_misses, aes(x = Datetime)) +
   scale_color_manual(values = c("Hits" = "blue", "Misses" = "red")) +
   theme_minimal()
 
+ggsave(file.path(figures_directory, "hits_misses_raw_data.png"), plot1, width = 10, height = 8, dpi = 500,bg = "white")
 
-# It seems log scale is needed
-
-ggplot() +
+# It seems log scale is needed and save figure
+plot2 <- ggplot() +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = Hits, color = "Hits")) +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = total_particles_imager, color = "Total particles imager")) +
   geom_line(data = jetson_data_sent, aes(x = Datetime, y = total_particles_jetson, color = "Total particles jetson")) +
@@ -83,32 +84,26 @@ ggplot() +
   scale_color_manual(values = c("Hits" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) +
   theme_minimal()
 
+ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 8, dpi = 500,bg = "white")
 
-# Plot scatter graph of Hits against total_particles_jetson
-ggplot(merged_data, aes(x = total_particles_jetson, y = Hits)) +
+# Plot scatter graph of Hits against total_particles_jetson and save figure
+plot3 <- ggplot(merged_data, aes(x= Hits , y = total_particles_jetson)) +
   geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +  # Adding 1:1 line
   labs(title = "Scatter Plot of Hits vs Total Particles (Jetson)",
-       x = "Total Particles (Jetson)",
-       y = "Hits") +
-  xlim(0, 30000) +  
-  ylim(0, 30000)   
+       x =  "Photographed Particles (Imager)",
+       y ="Classified Particles (Jetson)")
 
+ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 10, height = 8, dpi = 500,bg = "white")
 
-ggplot(merged_data, aes(x = total_particles_imager, y = Hits)) +
+# Plot scatter graph of Hits against total_particles_imager and save figure
+plot4 <- ggplot(merged_data, aes(x = total_particles_imager, y = Hits)) +
   geom_point() +
   scale_y_log10() +
   scale_x_log10() +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +  # Adding 1:1 line
   labs(title = "Scatter Plot of Hits (imager) vs Total Particles (imager)",
-       x = "total_particles_imager",
-       y = "Hits")  
+       x = "Total Particles (Imager)",
+       y = "Photographed Particles (Imager)")
 
-
-
-# There is a clear time difference and binning is not working.
-library(signal)  # For cross-correlation
-x <- jetson_data_sent$Datetime
-y <- jetson_data_sent$total_particles_jetson
-z <- imager_hits_misses$Datetime
-w <- imager_hits_misses$Hits
-cross_corr <- ccf(y, w)
-lag <- which.max(cross_corr$acf)
+ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 10, height = 8, dpi = 500,bg = "white")
