@@ -101,3 +101,14 @@ ggplot(merged_data, aes(x = total_particles_imager, y = Hits)) +
   labs(title = "Scatter Plot of Hits (imager) vs Total Particles (imager)",
        x = "total_particles_imager",
        y = "Hits")  
+
+
+
+# There is a clear time difference and binning is not working.
+library(signal)  # For cross-correlation
+x <- jetson_data_sent$Datetime
+y <- jetson_data_sent$total_particles_jetson
+z <- imager_hits_misses$Datetime
+w <- imager_hits_misses$Hits
+cross_corr <- ccf(y, w)
+lag <- which.max(cross_corr$acf)
