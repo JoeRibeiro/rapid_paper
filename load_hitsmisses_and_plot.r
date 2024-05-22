@@ -1,32 +1,40 @@
-# Load necessary libraries
+library(jsonlite)
 library(dplyr)
+library(stringr)
 library(ggplot2)
 library(lubridate)
 
-# Define the directory containing the files
-data_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/hitsmisses"
+log_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/jetsonlog"
+files <- list.files(log_directory, full.names = TRUE)
+df_list <- list()
 
-# Get the list of all CSV files in the directory
-file_list <- list.files(path = data_directory, pattern = "*.csv", full.names = TRUE)
-
-# Initialize an empty dataframe
-combined_data <- data.frame()
-
-# Loop through each file and append the data
-for (file in file_list) {
-  temp_data <- read.csv(file)
-  combined_data <- rbind(combined_data, temp_data)
+for (file in files) {
+  content <- readLines(file, warn = FALSE)
+  content <- paste(content, collapse = "\n")
+  json_strings <- str_extract_all(content, "\\{[^\\}]*\\}")[[1]]
+  json_list <- lapply(json_strings, fromJSON)
+  if (length(json_list) > 0) {
+    df <- bind_rows(json_list)
+    df_list <- append(df_list, list(df))
+  }
 }
 
-# Combine 'Tenbin' and 'Minute' to create a time in the 24-hour format
-combined_data$Time <- sprintf("%04d", combined_data$Tenbin + combined_data$Minute)
-
-# Convert the combined 'Date' and 'Time' columns to a proper datetime format
-combined_data$Datetime <- ymd_hm(paste(combined_data$Date, combined_data$Time))
+jetson_data_sent <- bind_rows(df_list)
 
 
-# Plot the raw data for Hits and Misses without a log scale on the y-axis
-ggplot(combined_data, aes(x = Datetime)) +
+hits_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/hitsmisses"
+file_list <- list.files(path = hits_directory, pattern = "*.csv", full.names = TRUE)
+imager_hits_misses <- data.frame()
+
+for (file in file_list) {
+  temp_data <- read.csv(file)
+  imager_hits_misses <- rbind(imager_hits_misses, temp_data)
+}
+
+imager_hits_misses$Time <- sprintf("%04d", imager_hits_misses$Tenbin + imager_hits_misses$Minute)
+imager_hits_misses$Datetime <- ymd_hm(paste(imager_hits_misses$Date, imager_hits_misses$Time))
+
+ggplot(imager_hits_misses, aes(x = Datetime)) +
   geom_line(aes(y = Hits, color = "Hits")) +
   geom_line(aes(y = Misses, color = "Misses")) +
   labs(title = "Raw Data: Time Series of Hits and Misses",
@@ -36,8 +44,7 @@ ggplot(combined_data, aes(x = Datetime)) +
   theme_minimal()
 
 
-# Plot the raw data for Hits and Misses with a log scale on the y-axis
-ggplot(combined_data, aes(x = Datetime)) +
+ggplot(imager_hits_misses, aes(x = Datetime)) +
   geom_line(aes(y = Hits, color = "Hits")) +
   geom_line(aes(y = Misses, color = "Misses")) +
   scale_y_log10() +
@@ -46,7 +53,3 @@ ggplot(combined_data, aes(x = Datetime)) +
        y = "Count (Log Scale)") +
   scale_color_manual(values = c("Hits" = "blue", "Misses" = "red")) +
   theme_minimal()
-
-
-
-
