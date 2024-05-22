@@ -20,11 +20,10 @@ for (file in files) {
 }
 
 jetson_data_sent <- bind_rows(df_list)
-jetson_data_sent$Datetime = lubridate::as_datetime(jetson_data_sent$timestamp)
+jetson_data_sent$Datetime <- lubridate::as_datetime(jetson_data_sent$timestamp)
 jetson_data_sent$rounded_datetime <- round_date(jetson_data_sent$Datetime, unit = "minute")
-jetson_data_sent$total_particles_jetson = jetson_data_sent$copepodCount + jetson_data_sent$nonCopepodCount + jetson_data_sent$detritusCount
-
-
+jetson_data_sent$rounded_datetime_5 <- floor_date(jetson_data_sent$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
+jetson_data_sent$total_particles_jetson <- jetson_data_sent$copepodCount + jetson_data_sent$nonCopepodCount + jetson_data_sent$detritusCount
 
 hits_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/hitsmisses"
 file_list <- list.files(path = hits_directory, pattern = "*.csv", full.names = TRUE)
@@ -37,7 +36,13 @@ for (file in file_list) {
 
 imager_hits_misses$Time <- sprintf("%04d", imager_hits_misses$Tenbin + imager_hits_misses$Minute)
 imager_hits_misses$Datetime <- ymd_hm(paste(imager_hits_misses$Date, imager_hits_misses$Time))
-imager_hits_misses$total_particles_imager = imager_hits_misses$Hits + imager_hits_misses$Misses
+imager_hits_misses$rounded_datetime <- round_date(imager_hits_misses$Datetime, unit = "minute")
+imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
+imager_hits_misses$total_particles_imager <- imager_hits_misses$Hits + imager_hits_misses$Misses
+
+# Merge the two dataframes on rounded_datetime
+merged_data <- left_join(jetson_data_sent, imager_hits_misses, by = "rounded_datetime_5")
+
 
 # First look at data
 
@@ -64,3 +69,21 @@ ggplot() +
        color = "Legend") +
   scale_color_manual(values = c("Hits" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) +
   theme_minimal()
+
+
+# Why do these look so weird?
+ggplot(merged_data, aes(x = total_particles_jetson, y = Hits)) +
+  geom_point() +
+  scale_y_log10() +
+  scale_x_log10() +
+  labs(title = "Scatter Plot of Hits vs Total Particles (Jetson)",
+       x = "Total Particles (Jetson)",
+       y = "Hits")
+
+ggplot(merged_data, aes(x = total_particles_imager, y = Hits)) +
+  geom_point() +
+  scale_y_log10() +
+  scale_x_log10() +
+  labs(title = "Scatter Plot of Hits vs Total Particles (Jetson)",
+       x = "total_particles_imager",
+       y = "Hits")
