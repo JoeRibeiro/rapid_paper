@@ -40,8 +40,21 @@ imager_hits_misses$rounded_datetime <- round_date(imager_hits_misses$Datetime, u
 imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
 imager_hits_misses$total_particles_imager <- imager_hits_misses$Hits + imager_hits_misses$Misses
 
-# Merge the two dataframes on rounded_datetime
-merged_data <- left_join(jetson_data_sent, imager_hits_misses, by = "rounded_datetime_5")
+
+# Aggregate jetson_data_sent and imager_hits_misses by rounded_datetime
+agg_jetson <- jetson_data_sent %>%
+  group_by(rounded_datetime_5) %>%
+  summarise(total_particles_jetson = sum(total_particles_jetson))
+
+agg_imager <- imager_hits_misses %>%
+  group_by(rounded_datetime_5) %>%
+  summarise(total_particles_imager = sum(total_particles_imager),
+            Hits = sum(Hits))
+
+# Merge the aggregated dataframes on rounded_datetime
+merged_data <- left_join(agg_jetson, agg_imager, by = "rounded_datetime_5")
+
+
 
 
 # First look at data
@@ -71,19 +84,20 @@ ggplot() +
   theme_minimal()
 
 
-# Why do these look so weird?
+# Plot scatter graph of Hits against total_particles_jetson
 ggplot(merged_data, aes(x = total_particles_jetson, y = Hits)) +
   geom_point() +
-  scale_y_log10() +
-  scale_x_log10() +
   labs(title = "Scatter Plot of Hits vs Total Particles (Jetson)",
        x = "Total Particles (Jetson)",
-       y = "Hits")
+       y = "Hits") +
+  xlim(0, 30000) +  
+  ylim(0, 30000)   
+
 
 ggplot(merged_data, aes(x = total_particles_imager, y = Hits)) +
   geom_point() +
   scale_y_log10() +
   scale_x_log10() +
-  labs(title = "Scatter Plot of Hits vs Total Particles (Jetson)",
+  labs(title = "Scatter Plot of Hits (imager) vs Total Particles (imager)",
        x = "total_particles_imager",
-       y = "Hits")
+       y = "Hits")  
