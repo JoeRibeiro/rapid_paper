@@ -3,8 +3,9 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 library(lubridate)
-library(fs)  # For directory creation
+library(fs)  
 
+# Jetson sent
 log_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/jetsonlog"
 files <- list.files(log_directory, full.names = TRUE)
 df_list <- list()
@@ -26,6 +27,68 @@ jetson_data_sent$rounded_datetime <- round_date(jetson_data_sent$Datetime, unit 
 jetson_data_sent$rounded_datetime_5 <- floor_date(jetson_data_sent$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
 jetson_data_sent$total_particles_jetson <- jetson_data_sent$copepodCount + jetson_data_sent$nonCopepodCount + jetson_data_sent$detritusCount
 
+
+
+# Jetson seen
+df <- data.frame(
+  datetime = as.POSIXct(character()),
+  Copepod = numeric(),
+  Noncopepod = numeric(),
+  Detritus = numeric(),
+  objectlength = numeric(),
+  thresholdArea_otsu = numeric(),
+  thresholdArea_standard = numeric(),
+  equispherdiameter_otsu = numeric(),
+  equispherdiameter_standard = numeric()
+)
+
+log_files <- list.files(path = log_directory, pattern = "*.log", full.names = TRUE)
+
+# Process each log file
+for (file in log_files) {
+  # Read lines from the log file
+  lines <- readLines(file)
+  
+  # Extract relevant information from each line
+  for (line in lines) {
+    if (grepl("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} - INFO - (Copepod|objectlength)", line)) {
+      # Extract datetime
+      datetime <- as.POSIXct(strptime(substr(line, 1, 23), "%Y-%m-%d %H:%M:%S,%OS"))
+      
+      # Extract variables
+      copepod <- as.numeric(sub('.*Copepod : ([0-9]+).*', '\\1', line))
+      noncopepod <- as.numeric(sub('.*Noncopepod : ([0-9]+).*', '\\1', line))
+      detritus <- as.numeric(sub('.*Detritus : ([0-9]+).*', '\\1', line))
+      objectlength <- as.numeric(sub('.*objectlength : ([0-9]+).*', '\\1', line))
+      thresholdArea_otsu <- as.numeric(sub('.*thresholdArea_otsu : ([0-9.]+).*', '\\1', line))
+      thresholdArea_standard <- as.numeric(sub('.*thresholdArea_standard : ([0-9.]+).*', '\\1', line))
+      equispherdiameter_otsu <- as.numeric(sub('.*equispherdiameter_otsu : ([0-9.]+).*', '\\1', line))
+      equispherdiameter_standard <- as.numeric(sub('.*equispherdiameter_standard : ([0-9.]+).*', '\\1', line))
+      
+      # Add extracted information to the data frame
+      df <- df %>%
+        bind_rows(data.frame(
+          datetime = datetime,
+          Copepod = copepod,
+          Noncopepod = noncopepod,
+          Detritus = detritus,
+          objectlength = objectlength,
+          thresholdArea_otsu = thresholdArea_otsu,
+          thresholdArea_standard = thresholdArea_standard,
+          equispherdiameter_otsu = equispherdiameter_otsu,
+          equispherdiameter_standard = equispherdiameter_standard
+        ))
+    }
+  }
+}
+
+
+jetson_data_seen <- df %>%
+  group_by(datetime) %>%
+  summarise_all(funs(max(., na.rm = TRUE))) %>%
+  ungroup()
+
+# Imager
 hits_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/hitsmisses"
 file_list <- list.files(path = hits_directory, pattern = "*.csv", full.names = TRUE)
 imager_hits_misses <- data.frame()
