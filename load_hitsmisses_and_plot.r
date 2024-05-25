@@ -82,6 +82,7 @@ for (file in log_files) {
   }
 }
 
+jetson_data_seen[is.na(jetson_data_seen)] = 0
 
 jetson_data_seen$Datetime <- jetson_data_seen$datetime + lubridate::hours(1)
 jetson_data_seen$datetime <- NULL
