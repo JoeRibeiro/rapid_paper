@@ -30,7 +30,7 @@ jetson_data_sent$total_particles_jetson_sent <- jetson_data_sent$copepodCount + 
 
 
 # Jetson seen
-df <- data.frame(
+jetson_data_seen <- data.frame(
   datetime = as.POSIXct(character()),
   Copepod = numeric(),
   Noncopepod = numeric(),
@@ -66,7 +66,7 @@ for (file in log_files) {
       equispherdiameter_standard <- as.numeric(sub('.*equispherdiameter_standard : ([0-9.]+).*', '\\1', line))
       
       # Add extracted information to the data frame
-      df <- df %>%
+      jetson_data_seen <- jetson_data_seen %>%
         bind_rows(data.frame(
           datetime = datetime,
           Copepod = copepod,
@@ -82,10 +82,6 @@ for (file in log_files) {
   }
 }
 
-jetson_data_seen <- df %>%
-  group_by(datetime) %>%
-  summarise_all(funs(max(., na.rm = TRUE))) %>%
-  ungroup()
 
 jetson_data_seen$Datetime <- jetson_data_seen$datetime + lubridate::hours(1)
 jetson_data_seen$datetime <- NULL
@@ -114,15 +110,15 @@ imager_hits_misses$total_particles_imager <- imager_hits_misses$Hits + imager_hi
 # Aggregate jetson_data_sent and imager_hits_misses by rounded_datetime
 agg_jetson_seen <- jetson_data_seen %>%
   group_by(rounded_datetime_5) %>%
-  summarise(total_particles_jetson = sum(total_particles_jetson))
+  summarise(total_particles_jetson = sum(total_particles_jetson, na.rm = TRUE))
 
 agg_jetson_sent <- jetson_data_sent %>%
   group_by(rounded_datetime_5) %>%
-  summarise(total_particles_jetson_sent = sum(total_particles_jetson_sent))
+  summarise(total_particles_jetson_sent = sum(total_particles_jetson_sent, na.rm = TRUE))
 
 agg_imager <- imager_hits_misses %>%
   group_by(rounded_datetime_5) %>%
-  summarise(total_particles_imager = sum(total_particles_imager),
+  summarise(total_particles_imager = sum(total_particles_imager, na.rm = TRUE),
             Hits = sum(Hits))
 
 # Merge the aggregated dataframes on rounded_datetime
