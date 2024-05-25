@@ -53,7 +53,7 @@ for (file in log_files) {
   for (line in lines) {
     if (grepl("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} - INFO - (Copepod|objectlength)", line)) {
       # Extract datetime
-      datetime <- as.POSIXct(strptime(substr(line, 1, 23), "%Y-%m-%d %H:%M:%S,%OS"))
+      datetime <- as.POSIXct(strptime(substr(line, 1, 19), "%Y-%m-%d %H:%M:%S"))
       
       # Extract variables
       copepod <- as.numeric(sub('.*Copepod : ([0-9]+).*', '\\1', line))
@@ -82,7 +82,14 @@ for (file in log_files) {
   }
 }
 
-jetson_data_seen[is.na(jetson_data_seen)] = 0
+jetson_data_seen=jetson_data_seen[!is.na(jetson_data_seen$datetime),]
+#jetson_data_seen[is.na(jetson_data_seen)] = -99999
+
+jetson_data_seen <- jetson_data_seen %>%
+ group_by(datetime) %>%
+ summarise_all(funs(max(., na.rm = TRUE))) %>%
+ ungroup()
+
 
 jetson_data_seen$Datetime <- jetson_data_seen$datetime + lubridate::hours(1)
 jetson_data_seen$datetime <- NULL
