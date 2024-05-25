@@ -83,13 +83,15 @@ for (file in log_files) {
 }
 
 jetson_data_seen=jetson_data_seen[!is.na(jetson_data_seen$datetime),]
-#jetson_data_seen[is.na(jetson_data_seen)] = -99999
 
 jetson_data_seen <- jetson_data_seen %>%
  group_by(datetime) %>%
  summarise_all(funs(max(., na.rm = TRUE))) %>%
  ungroup()
 
+#return nas from -inf back to na
+#jetson_data_seen[] <- lapply(jetson_data_seen, function(x) ifelse(is.infinite(x) & x == -Inf, NA, x))
+jetson_data_seen <- jetson_data_seen %>%  mutate(across(where(is.numeric), ~ ifelse(is.infinite(.) & . == -Inf, NA, .)))
 
 jetson_data_seen$Datetime <- jetson_data_seen$datetime + lubridate::hours(1)
 jetson_data_seen$datetime <- NULL
