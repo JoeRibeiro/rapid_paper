@@ -25,7 +25,7 @@ jetson_data_sent <- bind_rows(df_list)
 jetson_data_sent$Datetime <- lubridate::as_datetime(jetson_data_sent$timestamp)
 jetson_data_sent$rounded_datetime <- round_date(jetson_data_sent$Datetime, unit = "minute")
 jetson_data_sent$rounded_datetime_5 <- floor_date(jetson_data_sent$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
-jetson_data_sent$total_particles_jetson <- jetson_data_sent$copepodCount + jetson_data_sent$nonCopepodCount + jetson_data_sent$detritusCount
+jetson_data_sent$total_particles_jetson_sent <- jetson_data_sent$copepodCount + jetson_data_sent$nonCopepodCount + jetson_data_sent$detritusCount
 
 
 
@@ -82,11 +82,17 @@ for (file in log_files) {
   }
 }
 
-
 jetson_data_seen <- df %>%
   group_by(datetime) %>%
   summarise_all(funs(max(., na.rm = TRUE))) %>%
   ungroup()
+
+jetson_data_seen$Datetime <- jetson_data_seen$datetime + lubridate::hours(1)
+jetson_data_seen$datetime <- NULL
+jetson_data_seen$rounded_datetime <- round_date(jetson_data_seen$Datetime, unit = "minute")
+jetson_data_seen$rounded_datetime_5 <- floor_date(jetson_data_seen$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
+jetson_data_seen$total_particles_jetson <- jetson_data_seen$Copepod + jetson_data_seen$Noncopepod + jetson_data_seen$Detritus
+
 
 # Imager
 hits_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/hitsmisses"
@@ -106,9 +112,13 @@ imager_hits_misses$total_particles_imager <- imager_hits_misses$Hits + imager_hi
 
 
 # Aggregate jetson_data_sent and imager_hits_misses by rounded_datetime
-agg_jetson <- jetson_data_sent %>%
+agg_jetson_seen <- jetson_data_seen %>%
   group_by(rounded_datetime_5) %>%
   summarise(total_particles_jetson = sum(total_particles_jetson))
+
+agg_jetson_sent <- jetson_data_sent %>%
+  group_by(rounded_datetime_5) %>%
+  summarise(total_particles_jetson_sent = sum(total_particles_jetson_sent))
 
 agg_imager <- imager_hits_misses %>%
   group_by(rounded_datetime_5) %>%
@@ -116,7 +126,8 @@ agg_imager <- imager_hits_misses %>%
             Hits = sum(Hits))
 
 # Merge the aggregated dataframes on rounded_datetime
-merged_data <- left_join(agg_jetson, agg_imager, by = "rounded_datetime_5")
+merged_data <- left_join(agg_jetson_sent, agg_imager, by = "rounded_datetime_5")
+merged_data <- left_join(merged_data, agg_jetson_seen, by = "rounded_datetime_5")
 
 # Directory creation
 figures_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures"
@@ -138,7 +149,7 @@ ggsave(file.path(figures_directory, "hits_misses_raw_data.png"), plot1, width = 
 plot2 <- ggplot() +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = Hits, color = "Hits")) +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = total_particles_imager, color = "Total particles imager")) +
-  geom_line(data = jetson_data_sent, aes(x = Datetime, y = total_particles_jetson, color = "Total particles jetson")) +
+  geom_line(data = jetson_data_seen, aes(x = Datetime, y = total_particles_jetson, color = "Total particles jetson")) +
   scale_y_log10() +
   labs(title = "Combined Time Series",
        x = "Datetime",
