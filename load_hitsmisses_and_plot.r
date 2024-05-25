@@ -3,7 +3,9 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 library(lubridate)
-library(fs)  
+library(fs) 
+library(tidyverse)
+
 
 # Jetson sent
 log_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/jetsonlog"
@@ -28,6 +30,16 @@ jetson_data_sent$rounded_datetime_5 <- floor_date(jetson_data_sent$Datetime, uni
 jetson_data_sent$total_particles_jetson_sent <- jetson_data_sent$copepodCount + jetson_data_sent$nonCopepodCount + jetson_data_sent$detritusCount
 
 
+# Dashboard received:
+data <- read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/dashboard/latest_survey.csv")
+dashboard <- data %>%  pivot_wider(names_from = AttributeName, values_from = Value)
+dashboard$Datetime <- lubridate::as_datetime(dashboard$Timestamp)
+dashboard$rounded_datetime <- round_date(dashboard$Datetime, unit = "minute")
+dashboard$rounded_datetime_5 <- floor_date(dashboard$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
+dashboard$total_particles_jetson_sent <- dashboard$copepodCount + dashboard$nonCopepodCount + dashboard$detritusCount
+merged_sent_and_received=left_join(jetson_data_sent,dashboard, by = "rounded_datetime")
+# Verify that the dashboard contains the data marked as sent in the logfile... yes (difference = 0)
+stopifnot(max(merged_sent_and_received$total_particles_jetson_sent.x-merged_sent_and_received$total_particles_jetson_sent.y)==0)
 
 # Jetson seen
 jetson_data_seen <- data.frame(
@@ -205,6 +217,17 @@ for (limit in y_limits_imager) {
     ylim(c(0.0000001, limit))
   ggsave(file.path(figures_directory, file_name_imager), plot_imager, width = 10, height = 8, dpi = 500, bg = "white")
 }
+
+
+
+plotfig <- ggplot(merged_data, aes(x= total_particles_jetson , y = total_particles_jetson_sent)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(title = "Scatter Plot of (Jetson) transmission losses",
+       x =  "Total particles processed by jetson",
+       y ="Total particles succesfully sent by jetson")
+
+ggsave(file.path(figures_directory, "scatter_jetson_jetson.png"), plotfig, width = 10, height = 8, dpi = 500,bg = "white")
 
 
 
