@@ -6,6 +6,9 @@ library(lubridate)
 library(fs) 
 library(tidyverse)
 
+# Stations
+ship_log <- read_csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/stations/CEND0824_start_end_times_and_positions.csv")
+ship_log <- ship_log %>%  mutate(TimeStart = dmy_hm(TimeStart), TimeEnd = dmy_hm(TimeEnd))
 
 # Jetson sent
 log_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/jetsonlog"
@@ -151,20 +154,46 @@ merged_data <- left_join(merged_data, agg_jetson_seen, by = "rounded_datetime_5"
 figures_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures"
 dir_create(figures_directory)
 
+# A look at the misses during times of sampling versus travel: Function to check if a datetime is within any of the grey bands
+is_within_a_sampling_period <- function(datetime, periods) {  any(sapply(1:nrow(periods), function(i) datetime >= periods$TimeStart[i] & datetime <= periods$TimeEnd[i])) } 
+imager_hits_misses <- imager_hits_misses %>%  mutate( within_a_sampling_period = sapply(Datetime, is_within_a_sampling_period, periods = ship_log)  )
+misses_comparison_dataframe <- imager_hits_misses %>%  mutate(period = ifelse(within_a_sampling_period, "Within Sampling Period", "Outside Sampling Period")) %>%  select(Datetime, Misses, period)
+
+# Plot the boxplots or similar
+library(ggridges)
+ridgeline_plot <- ggplot(misses_comparison_dataframe, aes(x = Misses, y = period, fill = period)) +
+  geom_density_ridges(alpha = 0.5) +
+  labs(    title = "Ridgeline Plot of Misses within versus outside sampling period",
+    x = "Misses",
+    y = "Period"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("Within" = "grey", "Outside" = "white"))
+
+# Save the ridgeline plot
+ggsave(file.path(figures_directory, "misses_ridgeline_plot.png"), ridgeline_plot, width = 10, height = 8, dpi = 500, bg = "white")
+
+
+
+
 # First look at data
-plot1 <- ggplot(imager_hits_misses, aes(x = Datetime)) +
-  geom_line(aes(y = Hits, color = "Hits")) +
-  geom_line(aes(y = Misses, color = "Misses")) +
-  labs(title = "Raw Data: Time Series of Hits and Misses",
+plot1 <- ggplot() +
+  geom_rect(data= ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$Misses,na.rm=T)), fill = "grey")+
+  geom_line(data=imager_hits_misses, aes(x = Datetime, y = Hits, color = "Hits")) +
+  geom_line(data=imager_hits_misses, aes(x = Datetime, y = Misses, color = "Misses")) +
+  labs(title = "Raw Data: Time Series of Hits and Misses. Grey shading indicates duration of sampling station.",
        x = "Datetime",
        y = "Count") +
   scale_color_manual(values = c("Hits" = "blue", "Misses" = "red")) +
-  theme_minimal()
+  theme_minimal()+
+  xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
+
 
 ggsave(file.path(figures_directory, "hits_misses_raw_data.png"), plot1, width = 10, height = 8, dpi = 500,bg = "white")
 
 # It seems log scale is needed
 plot2 <- ggplot() +
+  geom_rect(data= ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$Misses,na.rm=T)), fill = "grey")+
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = Hits, color = "Hits")) +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = total_particles_imager, color = "Total particles imager")) +
   geom_line(data = jetson_data_seen, aes(x = Datetime, y = total_particles_jetson, color = "Total particles jetson")) +
@@ -174,7 +203,9 @@ plot2 <- ggplot() +
        y = "Count (Log Scale)",
        color = "Legend") +
   scale_color_manual(values = c("Hits" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) +
-  theme_minimal()
+  theme_minimal()+
+  xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
+
 ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 8, dpi = 500,bg = "white")
 
 # Plot scatter graph of Hits against total_particles_jetson 
@@ -223,7 +254,7 @@ for (limit in y_limits_imager) {
 plotfig <- ggplot(merged_data, aes(x= total_particles_jetson , y = total_particles_jetson_sent)) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(title = "Scatter Plot of (Jetson) transmission losses",
+  labs(title = "Scatter Plot of transmission losses",
        x =  "Total particles processed by jetson",
        y ="Total particles succesfully sent by jetson")
 
@@ -247,11 +278,10 @@ ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 10, he
 plot4 <- ggplot(imager_hits_misses, aes(x= log10(total_particles_imager) , y = log10(Hits))) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(title = "Scatter Plot of Hits (imager) vs Total Particles (imager)",
+  labs(title = "Log-log scatter Plot of Hits (imager) vs Total Particles (imager)",
        x = "Total Particles (Imager)",
        y = "Photographed Particles (Imager)")+
   xlim(2,max(log10(imager_hits_misses$total_particles_imager)+1,na.rm = T))+
   ylim(2,max(log10(imager_hits_misses$total_particles_imager)+1,na.rm = T))
 
 ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 10, height = 8, dpi = 500,bg = "white")
-
