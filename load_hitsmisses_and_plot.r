@@ -292,14 +292,20 @@ plot4 <- ggplot(imager_hits_misses, aes(x = log10(total_particles_imager), y = l
   labs(title = "Log-log scatter Plot of Hits (imager) vs Total Particles (imager)",
        x = "Total Particles (Imager)",
        y = "Photographed Particles (Imager)") +
-  coord_cartesian(xlim = c(2, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)), ylim= c(2, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
+  coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
                   clip = 'off') +
   geom_text(x = 1.6, y = log10(100), label = "100") +
   geom_text(x = 1.8, y = log10(10000), label = "10000") +
   geom_text(x = 1.9, y = log10(1000000), label = "1000000") +
   geom_text(y = 1.5, x = log10(100), label = "100") +
   geom_text(y = 1.5, x = log10(10000), label = "10000") +
-  geom_text(y = 1.5, x = log10(1000000), label = "1000000") 
+  geom_text(y = 1.5, x = log10(1000000), label = "1000000") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
 ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 10, height = 8, dpi = 500,bg = "white")
 
 
