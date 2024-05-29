@@ -209,7 +209,7 @@ plot2 <- ggplot() +
        x = "Datetime",
        y = " Count (Per minute)",
        color = "Legend") +
-  scale_color_manual(values = c("Particles photographed" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) + # "Total particles" = "red", "Particles photographed" = "blue", "Particles classified"
+  scale_color_manual(values = c("`Particles photographed`" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) + # "Total particles" = "red", "Particles photographed" = "blue", "Particles classified"
   theme_minimal()+
   xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
 
