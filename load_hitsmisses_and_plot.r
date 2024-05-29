@@ -308,7 +308,6 @@ ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 10, he
 # Next we must take these data where continuousuniterrupted=T, and set the measurementstarttime to be that of the last available measurement taken in the timeseries, which we know was in the last 60-100 seconds.
 # Then set a column called measurementendtime to be 60 seconds after that measurementstarttime.
 # We then iterate through the minutes within our data time period. For any record where the span of measurementendtime to measurementstarttime falls in a minute, the fraction of the counts is split within a given minute based on the fraction of time that overlaps with that minute. These are summed to get the count estimate for that minute.
-
 jetson_data_seen <- jetson_data_seen %>%  arrange(Datetime) %>%  mutate(Datetime = as.POSIXct(Datetime),         diff_time = c(NA, diff(Datetime)), continuous_uninterrupted = diff_time >= 60 & diff_time <= 100)
 
 # Set measurementstarttime and measurementendtime
@@ -344,12 +343,12 @@ for (j in seq_along(minute_intervals)) {
 }
 
 # Create a data frame with the minute intervals and corresponding estimated counts
-jetson_data_seen_resampled <- data.frame(  minute_interval = minute_intervals,  estimated_counts = minute_counts )
-
+jetson_data_seen_resampled <- data.frame(  Datetime = minute_intervals,  estimated_counts = minute_counts )
+jetson_data_seen_resampled=jetson_data_seen_resampled[jetson_data_seen_resampled$estimated_counts>0,] # The only situation where the jetson is counting zero particles in a minute, we can assume it is not operating (switched off)
 
 ggplot() +
   geom_line(data = jetson_data_seen, aes(x = Datetime, y = total_particles_jetson), color = "blue", alpha = 0.5) +
-  geom_line(data = jetson_data_seen_resampled, aes(x = minute_interval, y = estimated_counts), color = "red") +
+  geom_line(data = jetson_data_seen_resampled, aes(x = Datetime, y = estimated_counts), color = "red") +
   labs(title = "Original vs Resampled Data",
        x = "Datetime",
        y = "Particle Counts",
@@ -361,8 +360,21 @@ ggplot() +
 
 
 # Calculate the lost counts percentage
-print(paste("Lost counts:", (sum(jetson_data_seen$total_particles_jetson, na.rm = TRUE)-sum(resampled_data$estimated_counts, na.rm = TRUE))/sum(resampled_data$estimated_counts, na.rm = TRUE) * 100,"%"))
+print(paste("Lost counts:", (sum(jetson_data_seen$total_particles_jetson, na.rm = TRUE)-sum(jetson_data_seen_resampled$estimated_counts, na.rm = TRUE))/sum(jetson_data_seen_resampled$estimated_counts, na.rm = TRUE) * 100,"%"))
 continuous_counts <- sum(jetson_data_seen$total_particles_jetson[jetson_data_seen$continuous_uninterrupted], na.rm = TRUE)
 total_counts <- sum(jetson_data_seen$total_particles_jetson, na.rm = TRUE)
 print(paste("Percentage of continuous uninterrupted data by counts:", continuous_counts / total_counts * 100, "%"))
 
+# Merge on datetime
+merged_seen_and_PI=left_join(jetson_data_seen_resampled,imager_hits_misses, by = "Datetime")
+merged_seen_and_PI$jetson_sampling_percent = merged_seen_and_PI$estimated_counts / merged_seen_and_PI$Hits * 100
+merged_seen_and_PI$overall_sampling_percent = merged_seen_and_PI$estimated_counts / merged_seen_and_PI$total_particles_imager * 100
+
+ggplot(merged_seen_and_PI, aes(x = Hits, y = jetson_sampling_percent)) +
+  geom_point() +
+  labs(x = "Hits", y = "Jetson sampling Percent")
+
+# Overall sampling percent seems fairly meaningless
+ggplot()+
+#geom_line(data = merged_seen_and_PI, aes(x = Datetime, y = overall_sampling_percent), color = "red", alpha = 0.5)+
+geom_point(data = merged_seen_and_PI, aes(x = Datetime, y = jetson_sampling_percent), color = "blue", alpha = 0.2)
