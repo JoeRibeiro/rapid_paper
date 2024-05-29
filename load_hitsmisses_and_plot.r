@@ -202,7 +202,7 @@ plot1 <- ggplot() +
 
 ggsave(file.path(figures_directory, "hits_misses_raw_data.png"), plot1, width = 10, height = 8, dpi = 500,bg = "white")
 
-# It seems log scale is needed
+# It seems log scale is needed. 
 plot2 <- ggplot() +
   geom_rect(data= ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$Misses,na.rm=T)), fill = "grey")+
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = Hits, color = "Hits")) +
@@ -296,3 +296,73 @@ plot4 <- ggplot(imager_hits_misses, aes(x= log10(total_particles_imager) , y = l
   ylim(2,max(log10(imager_hits_misses$total_particles_imager)+1,na.rm = T))
 
 ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 10, height = 8, dpi = 500,bg = "white")
+
+
+
+
+
+
+# Determining a scaling factor: A correction must be made because the jetson does not log 'on the minute'.
+# Measurements are on an inconsistent frequency of approximately 70 seconds. I need to resample the data so that the time between amount of data within any given minute is the best available estimate in that minute.
+# The first step is that where diff(jetson_data_seen$Datetime) is between 60 and 100 (calculate what % of the data this is), we can flag these as continuous uninterrupted data.
+# Next we must take these data where continuousuniterrupted=T, and set the measurementstarttime to be that of the last available measurement taken in the timeseries, which we know was in the last 60-100 seconds.
+# Then set a column called measurementendtime to be 60 seconds after that measurementstarttime.
+# We then iterate through the minutes within our data time period. For any record where the span of measurementendtime to measurementstarttime falls in a minute, the fraction of the counts is split within a given minute based on the fraction of time that overlaps with that minute. These are summed to get the count estimate for that minute.
+
+jetson_data_seen <- jetson_data_seen %>%  arrange(Datetime) %>%  mutate(Datetime = as.POSIXct(Datetime),         diff_time = c(NA, diff(Datetime)), continuous_uninterrupted = diff_time >= 60 & diff_time <= 100)
+
+# Set measurementstarttime and measurementendtime
+jetson_data_seen <- jetson_data_seen %>%  mutate(measurementstarttime = if_else(continuous_uninterrupted, lag(Datetime), NA_POSIXct_), measurementendtime = if_else(continuous_uninterrupted, lag(Datetime) + 60, NA_POSIXct_))
+
+start_time <- floor_date(min(jetson_data_seen$Datetime, na.rm = TRUE), unit = "minute")
+end_time <- ceiling_date(max(jetson_data_seen$Datetime, na.rm = TRUE), unit = "minute")
+minute_intervals <- seq(start_time, end_time, by = 60)
+minute_counts <- numeric(length(minute_intervals))
+
+for (j in seq_along(minute_intervals)) {
+  minute <- minute_intervals[j]
+  
+  overlapping_records <- jetson_data_seen %>%
+    filter(!is.na(measurementstarttime) & 
+             measurementstarttime <= minute + minutes(1) & 
+                                                  measurementendtime >= minute)
+  
+  
+  count_sum <- 0  # Initialize count sum for the current minute interval
+  if(nrow(overlapping_records) > 0) {
+    for (i in 1:nrow(overlapping_records)) {
+      record <- overlapping_records[i, ]
+      overlap_start <- max(minute, record$measurementstarttime)
+      overlap_end <- min(minute + minutes(1), record$measurementendtime)
+      overlap_duration <- as.numeric(difftime(overlap_end, overlap_start, units = "secs"))
+      overlap_fraction <- overlap_duration / 60
+      count_sum <- count_sum + record$total_particles_jetson * overlap_fraction
+    }
+  }
+  
+  minute_counts[j] <- count_sum
+}
+
+# Create a data frame with the minute intervals and corresponding estimated counts
+jetson_data_seen_resampled <- data.frame(  minute_interval = minute_intervals,  estimated_counts = minute_counts )
+
+
+ggplot() +
+  geom_line(data = jetson_data_seen, aes(x = Datetime, y = total_particles_jetson), color = "blue", alpha = 0.5) +
+  geom_line(data = jetson_data_seen_resampled, aes(x = minute_interval, y = estimated_counts), color = "red") +
+  labs(title = "Original vs Resampled Data",
+       x = "Datetime",
+       y = "Particle Counts",
+       color = "Data Type") +
+  scale_color_manual(values = c("Original Data" = "blue", "Resampled Data" = "red")) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  guides(color = guide_legend(title = "Data Type", override.aes = list(alpha = 1)))
+
+
+# Calculate the lost counts percentage
+print(paste("Lost counts:", (sum(jetson_data_seen$total_particles_jetson, na.rm = TRUE)-sum(resampled_data$estimated_counts, na.rm = TRUE))/sum(resampled_data$estimated_counts, na.rm = TRUE) * 100,"%"))
+continuous_counts <- sum(jetson_data_seen$total_particles_jetson[jetson_data_seen$continuous_uninterrupted], na.rm = TRUE)
+total_counts <- sum(jetson_data_seen$total_particles_jetson, na.rm = TRUE)
+print(paste("Percentage of continuous uninterrupted data by counts:", continuous_counts / total_counts * 100, "%"))
+
