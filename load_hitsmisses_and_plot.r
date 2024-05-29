@@ -160,16 +160,16 @@ imager_hits_misses <- imager_hits_misses %>%  mutate( within_a_sampling_period =
 misses_comparison_dataframe <- imager_hits_misses %>%  mutate(period = ifelse(within_a_sampling_period, "Within Sampling Period", "Outside Sampling Period")) %>%  select(Datetime, Misses, period)
 
 # Plot boxplots or similar
-library(ggridges)
-ridgeline_plot <- ggplot(misses_comparison_dataframe, aes(x = Misses, y = period, fill = period)) +
-  geom_density_ridges(alpha = 0.5, scale = 0.99, bandwidth = 10) +
-  labs(    title = "Ridgeline Plot of Misses within versus outside sampling period",
-    x = "Misses",
-    y = "Period"
-  ) +
-  theme_minimal() +
-  scale_fill_manual(values = c("Within" = "grey", "Outside" = "white"))
-ggsave(file.path(figures_directory, "misses_ridgeline_plot.png"), ridgeline_plot, width = 10, height = 8, dpi = 500, bg = "white")
+# library(ggridges)
+# ridgeline_plot <- ggplot(misses_comparison_dataframe, aes(x = Misses, y = period, fill = period)) +
+#   geom_density_ridges(alpha = 0.5, scale = 0.99, bandwidth = 10) +
+#   labs(    title = "Ridgeline Plot of Misses within versus outside sampling period",
+#     x = "Misses",
+#     y = "Period"
+#   ) +
+#   theme_minimal() +
+#   scale_fill_manual(values = c("Within" = "grey", "Outside" = "white"))
+# ggsave(file.path(figures_directory, "misses_ridgeline_plot.png"), ridgeline_plot, width = 10, height = 8, dpi = 500, bg = "white")
 
 # Violin plot
 violin_plot <- ggplot(misses_comparison_dataframe, aes(x = period, y = Misses, fill = period)) +
