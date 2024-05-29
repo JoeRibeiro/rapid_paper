@@ -285,20 +285,22 @@ plot3 <- ggplot(merged_data, aes(x= log10(Hits) , y = log10(total_particles_jets
 
 ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 10, height = 8, dpi = 500,bg = "white")
 
-# Plot scatter graph of Hits against total_particles_imager
-plot4 <- ggplot(imager_hits_misses, aes(x= log10(total_particles_imager) , y = log10(Hits))) +
+
+plot4 <- ggplot(imager_hits_misses, aes(x = log10(total_particles_imager), y = log10(Hits))) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
   labs(title = "Log-log scatter Plot of Hits (imager) vs Total Particles (imager)",
        x = "Total Particles (Imager)",
-       y = "Photographed Particles (Imager)")+
-  xlim(2,max(log10(imager_hits_misses$total_particles_imager)+1,na.rm = T))+
-  ylim(2,max(log10(imager_hits_misses$total_particles_imager)+1,na.rm = T))
-
+       y = "Photographed Particles (Imager)") +
+  coord_cartesian(xlim = c(2, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)), ylim= c(2, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
+                  clip = 'off') +
+  geom_text(x = 1.6, y = log10(100), label = "100") +
+  geom_text(x = 1.8, y = log10(10000), label = "10000") +
+  geom_text(x = 1.9, y = log10(1000000), label = "1000000") +
+  geom_text(y = 1.5, x = log10(100), label = "100") +
+  geom_text(y = 1.5, x = log10(10000), label = "10000") +
+  geom_text(y = 1.5, x = log10(1000000), label = "1000000") 
 ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 10, height = 8, dpi = 500,bg = "white")
-
-
-
 
 
 
@@ -370,11 +372,29 @@ merged_seen_and_PI=left_join(jetson_data_seen_resampled,imager_hits_misses, by =
 merged_seen_and_PI$jetson_sampling_percent = merged_seen_and_PI$estimated_counts / merged_seen_and_PI$Hits * 100
 merged_seen_and_PI$overall_sampling_percent = merged_seen_and_PI$estimated_counts / merged_seen_and_PI$total_particles_imager * 100
 
-ggplot(merged_seen_and_PI, aes(x = Hits, y = jetson_sampling_percent)) +
+ss_plt <- ggplot(merged_seen_and_PI, aes(x = Hits, y = jetson_sampling_percent)) +
   geom_point() +
   labs(x = "Hits", y = "Jetson sampling Percent")
+ggsave(file.path(figures_directory, "jetson_subsampling_plot1.png"), ss_plt, width = 10, height = 8, dpi = 500, bg = "white")
 
 # Overall sampling percent seems fairly meaningless
-ggplot()+
+ss_plt <- ggplot()+
 #geom_line(data = merged_seen_and_PI, aes(x = Datetime, y = overall_sampling_percent), color = "red", alpha = 0.5)+
 geom_point(data = merged_seen_and_PI, aes(x = Datetime, y = jetson_sampling_percent), color = "blue", alpha = 0.2)
+ggsave(file.path(figures_directory, "jetson_subsampling_plot2.png"), ss_plt, width = 10, height = 8, dpi = 500, bg = "white")
+
+
+
+violin_plot <- ggplot(merged_seen_and_PI, aes(x = NA, y = jetson_sampling_percent)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.3) +
+  labs(
+    title = "Jetson percentage of received particles sampled",
+    x = NA,
+    y = "% sampled"
+  ) +
+  theme_minimal() 
+ggsave(file.path(figures_directory, "jetson_subsampling_violin_plot.png"), violin_plot, width = 10, height = 8, dpi = 500, bg = "white")
+
+
+
