@@ -112,7 +112,7 @@ jetson_data_seen$Datetime <- jetson_data_seen$datetime + lubridate::hours(1)
 jetson_data_seen$datetime <- NULL
 jetson_data_seen$rounded_datetime <- round_date(jetson_data_seen$Datetime, unit = "minute")
 jetson_data_seen$rounded_datetime_5 <- floor_date(jetson_data_seen$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
-jetson_data_seen$total_particles_jetson <- jetson_data_seen$Copepod + jetson_data_seen$Noncopepod + jetson_data_seen$Detritus
+jetson_data_seen$`Particles classified` <- jetson_data_seen$Copepod + jetson_data_seen$Noncopepod + jetson_data_seen$Detritus
 
 
 # Imager
@@ -124,18 +124,21 @@ for (file in file_list) {
   temp_data <- read.csv(file)
   imager_hits_misses <- rbind(imager_hits_misses, temp_data)
 }
-
+imager_hits_misses$`Particles photographed` = imager_hits_misses$Hits
+imager_hits_misses$Hits = NULL
+imager_hits_misses$`Particles not photographed (missed)` = imager_hits_misses$Misses
+imager_hits_misses$Misses = NULL
 imager_hits_misses$Time <- sprintf("%04d", imager_hits_misses$Tenbin + 100 + imager_hits_misses$Minute) # The + 100 corrects the data from UTC to BST, which the jetson data are in
 imager_hits_misses$Datetime <- ymd_hm(paste(imager_hits_misses$Date, imager_hits_misses$Time))
 imager_hits_misses$rounded_datetime <- round_date(imager_hits_misses$Datetime, unit = "minute")
 imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
-imager_hits_misses$total_particles_imager <- imager_hits_misses$Hits + imager_hits_misses$Misses
+imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photographed` + imager_hits_misses$`Particles not photographed (missed)`
 
 
 # Aggregate jetson_data_sent and imager_hits_misses by rounded_datetime
 agg_jetson_seen <- jetson_data_seen %>%
   group_by(rounded_datetime_5) %>%
-  summarise(total_particles_jetson = sum(total_particles_jetson, na.rm = TRUE))
+  summarise(`Particles classified` = sum(`Particles classified`, na.rm = TRUE))
 
 agg_jetson_sent <- jetson_data_sent %>%
   group_by(rounded_datetime_5) %>%
@@ -143,33 +146,33 @@ agg_jetson_sent <- jetson_data_sent %>%
 
 agg_imager <- imager_hits_misses %>%
   group_by(rounded_datetime_5) %>%
-  summarise(total_particles_imager = sum(total_particles_imager, na.rm = TRUE),
-            Hits = sum(Hits))
+  summarise(`Particles total` = sum(`Particles total`, na.rm = TRUE),
+            `Particles photographed` = sum(`Particles photographed`))
 
 # Merge the aggregated dataframes on rounded_datetime
 merged_data <- left_join(agg_jetson_sent, agg_imager, by = "rounded_datetime_5")
 merged_data <- left_join(merged_data, agg_jetson_seen, by = "rounded_datetime_5")
 # 5 minutes rate to 1 minute
 merged_data$total_particles_jetson_sent = merged_data$total_particles_jetson_sent/5
-merged_data$total_particles_imager = merged_data$total_particles_imager/5
-merged_data$Hits = merged_data$Hits/5
-merged_data$total_particles_jetson = merged_data$total_particles_jetson/5
+merged_data$`Particles total` = merged_data$`Particles total`/5
+merged_data$`Particles photographed` = merged_data$`Particles photographed`/5
+merged_data$`Particles classified` = merged_data$`Particles classified`/5
 
 # Directory creation
 figures_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures"
 dir_create(figures_directory)
 
-# A look at the misses during times of sampling versus travel: Function to check if a datetime is within any of the grey bands
+# A look at the `Particles not photographed (missed)` during times of sampling versus travel: Function to check if a datetime is within any of the grey bands
 is_within_a_sampling_period <- function(datetime, periods) {  any(sapply(1:nrow(periods), function(i) datetime >= periods$TimeStart[i] & datetime <= periods$TimeEnd[i])) } 
 imager_hits_misses <- imager_hits_misses %>%  mutate( within_a_sampling_period = sapply(Datetime, is_within_a_sampling_period, periods = ship_log)  )
-misses_comparison_dataframe <- imager_hits_misses %>%  mutate(period = ifelse(within_a_sampling_period, "Within Sampling Period", "Outside Sampling Period")) %>%  select(Datetime, Misses, period)
+misses_comparison_dataframe <- imager_hits_misses %>%  mutate(period = ifelse(within_a_sampling_period, "Within Sampling Period", "Outside Sampling Period")) %>%  select(Datetime, `Particles not photographed (missed)`, period)
 
 # Violin plot
-violin_plot <- ggplot(misses_comparison_dataframe, aes(x = period, y = Misses, fill = period)) +
+violin_plot <- ggplot(misses_comparison_dataframe, aes(x = period, y = `Particles not photographed (missed)`, fill = period)) +
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.2, height = 0, alpha = 0.3) +
   labs(
-    title = "Misses During and Outside Grey Bands",
+    title = "`Particles not photographed (missed)` During and Outside Grey Bands",
     x = "Period",
     y = "Rate missed per minute"
   ) +
@@ -182,13 +185,13 @@ ggsave(file.path(figures_directory, "misses_violin_plot.png"), violin_plot, widt
 
 # First look at data
 plot1 <- ggplot() +
-  geom_rect(data= ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$Misses,na.rm=T)), fill = "grey")+
-  geom_line(data=imager_hits_misses, aes(x = Datetime, y = Hits, color = "Hits")) +
-  geom_line(data=imager_hits_misses, aes(x = Datetime, y = Misses, color = "Misses")) +
-  labs(title = "Raw Data: Time Series of Hits and Misses. Grey shading indicates duration of sampling station.",
+  geom_rect(data= ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$`Particles not photographed (missed)`,na.rm=T)), fill = "grey")+
+  geom_line(data=imager_hits_misses, aes(x = Datetime, y = `Particles photographed`, color = "`Particles photographed`")) +
+  geom_line(data=imager_hits_misses, aes(x = Datetime, y = `Particles not photographed (missed)`, color = "`Particles not photographed (missed)`")) +
+  labs(title = "Raw Data: Time Series of `Particles photographed` and `Particles not photographed (missed)`. Grey shading indicates duration of sampling station.",
        x = "Datetime",
        y = "Count (per minute)") +
-  scale_color_manual(values = c("Hits" = "blue", "Misses" = "red")) +
+  scale_color_manual(values = c("`Particles photographed`" = "blue", "`Particles not photographed (missed)`" = "red")) +
   theme_minimal()+
   xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
 
@@ -197,25 +200,25 @@ ggsave(file.path(figures_directory, "hits_misses_raw_data.png"), plot1, width = 
 
 # It seems log scale is needed. 
 plot2 <- ggplot() +
-  geom_rect(data= ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$Misses,na.rm=T)), fill = "grey")+
-  geom_line(data = imager_hits_misses, aes(x = Datetime, y = Hits, color = "Hits")) +
-  geom_line(data = imager_hits_misses, aes(x = Datetime, y = total_particles_imager, color = "Total particles imager")) +
-  geom_line(data = jetson_data_seen, aes(x = Datetime, y = total_particles_jetson, color = "Total particles jetson")) +
+  geom_rect(data= ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$`Particles not photographed (missed)`,na.rm=T)), fill = "grey")+
+  geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles photographed`, color = "`Particles photographed`")) +
+  geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles total`, color = "Total particles imager")) +
+  geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified`, color = "Total particles jetson")) +
   scale_y_log10() +
   labs(title = "Combined Time Series",
        x = "Datetime",
        y = " Count (Per minute)",
        color = "Legend") +
-  scale_color_manual(values = c("Hits" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) + # "Total particles" = "red", "Particles photographed" = "blue", "Particles classified"
+  scale_color_manual(values = c("Particles photographed" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) + # "Total particles" = "red", "Particles photographed" = "blue", "Particles classified"
   theme_minimal()+
   xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
 
 ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 8, dpi = 500,bg = "white")
 
 
-limit = max(merged_data$Hits, na.rm = TRUE)
+limit = max(merged_data$`Particles photographed`, na.rm = TRUE)
   file_name <- paste0("scatter_jetson.png")
-  plot <- ggplot(merged_data, aes(x = Hits , y = total_particles_jetson)) +
+  plot <- ggplot(merged_data, aes(x = `Particles photographed` , y = `Particles classified`)) +
     geom_point() +
     geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
     labs(title = "Scatter Plot of photographed particles vs number particles classified (per minute)",
@@ -229,37 +232,37 @@ limit = max(merged_data$Hits, na.rm = TRUE)
 
 
 
-plotfig <- ggplot(merged_data, aes(x= total_particles_jetson , y = total_particles_jetson_sent)) +
+plotfig <- ggplot(merged_data, aes(x= `Particles classified` , y = total_particles_jetson_sent)) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
   labs(title = "Scatter Plot of transmission losses",
-       x =  "Total particles processed by jetson (per minute)",
-       y ="Total particles succesfully sent by jetson (per minute)")
+       x =  "Total particles classified (per minute)",
+       y ="Total particles transmitted to dashboard database (per minute)")
 
 ggsave(file.path(figures_directory, "scatter_jetson_dashboard.png"), plotfig, width = 10, height = 8, dpi = 500,bg = "white")
 
 
 
 
-plot3 <- ggplot(merged_data, aes(x= log10(Hits) , y = log10(total_particles_jetson))) +
+plot3 <- ggplot(merged_data, aes(x= log10(`Particles photographed`) , y = log10(`Particles classified`))) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
   labs(title = "Scatter Plot of particles photographed vs particles classified (per minute)",
        x =  "log(Photographed Particles (per minute))",
        y ="log(Classified Particles (per minute))")+
-  xlim(2,max(log10(merged_data$Hits)+1,na.rm = T))+
-  ylim(2,max(log10(merged_data$Hits)+1,na.rm = T))
+  xlim(2,max(log10(merged_data$`Particles photographed`)+1,na.rm = T))+
+  ylim(2,max(log10(merged_data$`Particles photographed`)+1,na.rm = T))
 
 ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 10, height = 8, dpi = 500,bg = "white")
 
 
-plot4 <- ggplot(imager_hits_misses, aes(x = log10(total_particles_imager), y = log10(Hits))) +
+plot4 <- ggplot(imager_hits_misses, aes(x = log10(`Particles total`), y = log10(`Particles photographed`))) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
   labs(title = "Log-log scatter Plot of particles photographed vs total particles (per minute)",
        x = "Total Particles (Imager)",
        y = "Photographed Particles (Imager)") +
-  coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
+  coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$`Particles total`) + 1, na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$`Particles total`) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
                   clip = 'off') +
   geom_text(x = 1.6, y = log10(100), label = "100") +
   geom_text(x = 1.8, y = log10(10000), label = "10000") +
@@ -310,7 +313,7 @@ for (j in seq_along(minute_intervals)) {
       overlap_end <- min(minute + minutes(1), record$measurementendtime)
       overlap_duration <- as.numeric(difftime(overlap_end, overlap_start, units = "secs"))
       overlap_fraction <- overlap_duration / 60
-      count_sum <- count_sum + record$total_particles_jetson * overlap_fraction
+      count_sum <- count_sum + record$`Particles classified` * overlap_fraction
     }
   }
   
@@ -322,7 +325,7 @@ jetson_data_seen_resampled <- data.frame(  Datetime = minute_intervals,  estimat
 jetson_data_seen_resampled=jetson_data_seen_resampled[jetson_data_seen_resampled$estimated_counts>0,] # The only situation where the jetson is counting zero particles in a minute, we can assume it is not operating (switched off)
 
 ggplot() +
-  geom_line(data = jetson_data_seen, aes(x = Datetime, y = total_particles_jetson), color = "blue", alpha = 0.5) +
+  geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified`), color = "blue", alpha = 0.5) +
   geom_line(data = jetson_data_seen_resampled, aes(x = Datetime, y = estimated_counts), color = "red") +
   labs(title = "Original vs Resampled Data",
        x = "Datetime",
@@ -335,25 +338,25 @@ ggplot() +
 
 
 # Calculate the lost counts percentage
-print(paste("Lost counts:", (sum(jetson_data_seen$total_particles_jetson, na.rm = TRUE)-sum(jetson_data_seen_resampled$estimated_counts, na.rm = TRUE))/sum(jetson_data_seen_resampled$estimated_counts, na.rm = TRUE) * 100,"%"))
-continuous_counts <- sum(jetson_data_seen$total_particles_jetson[jetson_data_seen$continuous_uninterrupted], na.rm = TRUE)
-total_counts <- sum(jetson_data_seen$total_particles_jetson, na.rm = TRUE)
+print(paste("Lost counts:", (sum(jetson_data_seen$`Particles classified`, na.rm = TRUE)-sum(jetson_data_seen_resampled$estimated_counts, na.rm = TRUE))/sum(jetson_data_seen_resampled$estimated_counts, na.rm = TRUE) * 100,"%"))
+continuous_counts <- sum(jetson_data_seen$`Particles classified`[jetson_data_seen$continuous_uninterrupted], na.rm = TRUE)
+total_counts <- sum(jetson_data_seen$`Particles classified`, na.rm = TRUE)
 print(paste("Percentage of continuous uninterrupted data by counts:", continuous_counts / total_counts * 100, "%"))
 
 # Merge on datetime
 merged_seen_and_PI=left_join(jetson_data_seen_resampled,imager_hits_misses, by = "Datetime")
-merged_seen_and_PI$jetson_sampling_percent = merged_seen_and_PI$estimated_counts / merged_seen_and_PI$Hits * 100
-merged_seen_and_PI$overall_sampling_percent = merged_seen_and_PI$estimated_counts / merged_seen_and_PI$total_particles_imager * 100
+merged_seen_and_PI$jetson_sampling_percent = merged_seen_and_PI$estimated_counts / merged_seen_and_PI$`Particles photographed` * 100
+merged_seen_and_PI$overall_sampling_percent = merged_seen_and_PI$estimated_counts / merged_seen_and_PI$`Particles total` * 100
 
-ss_plt <- ggplot(merged_seen_and_PI, aes(x = Hits, y = jetson_sampling_percent)) +
+ss_plt <- ggplot(merged_seen_and_PI, aes(x = `Particles photographed`, y = jetson_sampling_percent)) +
   geom_point() +
-  labs(x = "Hits", y = "Jetson sampling Percent within 1 minute window")
+  labs(x = "`Particles photographed`", y = "Percent of photos classified within 1 minute window")
 ggsave(file.path(figures_directory, "jetson_subsampling_plot1.png"), ss_plt, width = 10, height = 8, dpi = 500, bg = "white")
 
 # Overall sampling percent seems fairly meaningless
 ss_plt <- ggplot()+
 geom_point(data = merged_seen_and_PI, aes(x = Datetime, y = jetson_sampling_percent), color = "blue", alpha = 0.2)+
-  labs(x = "Hits", y = "Jetson sampling Percent within 1 minute window")
+  labs(x = "`Particles photographed`", y = "Percent of photos classified  within 1 minute window")
 ggsave(file.path(figures_directory, "jetson_subsampling_plot2.png"), ss_plt, width = 10, height = 8, dpi = 500, bg = "white")
 
 
@@ -362,7 +365,7 @@ violin_plot <- ggplot(merged_seen_and_PI, aes(x = NA, y = jetson_sampling_percen
   geom_violin(trim = FALSE) +
   geom_jitter(width = 0.2, height = 0, alpha = 0.3) +
   labs(
-    title = "Jetson percentage of received particles sampled",
+    title = "Percent of photos classified",
     x = NA,
     y = "% sampled"
   ) +
