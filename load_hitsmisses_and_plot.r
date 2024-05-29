@@ -149,6 +149,11 @@ agg_imager <- imager_hits_misses %>%
 # Merge the aggregated dataframes on rounded_datetime
 merged_data <- left_join(agg_jetson_sent, agg_imager, by = "rounded_datetime_5")
 merged_data <- left_join(merged_data, agg_jetson_seen, by = "rounded_datetime_5")
+# 5 minutes rate to 1 minute
+merged_data$total_particles_jetson_sent = merged_data$total_particles_jetson_sent/5
+merged_data$total_particles_imager = merged_data$total_particles_imager/5
+merged_data$Hits = merged_data$Hits/5
+merged_data$total_particles_jetson = merged_data$total_particles_jetson/5
 
 # Directory creation
 figures_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures"
@@ -159,18 +164,6 @@ is_within_a_sampling_period <- function(datetime, periods) {  any(sapply(1:nrow(
 imager_hits_misses <- imager_hits_misses %>%  mutate( within_a_sampling_period = sapply(Datetime, is_within_a_sampling_period, periods = ship_log)  )
 misses_comparison_dataframe <- imager_hits_misses %>%  mutate(period = ifelse(within_a_sampling_period, "Within Sampling Period", "Outside Sampling Period")) %>%  select(Datetime, Misses, period)
 
-# Plot boxplots or similar
-# library(ggridges)
-# ridgeline_plot <- ggplot(misses_comparison_dataframe, aes(x = Misses, y = period, fill = period)) +
-#   geom_density_ridges(alpha = 0.5, scale = 0.99, bandwidth = 10) +
-#   labs(    title = "Ridgeline Plot of Misses within versus outside sampling period",
-#     x = "Misses",
-#     y = "Period"
-#   ) +
-#   theme_minimal() +
-#   scale_fill_manual(values = c("Within" = "grey", "Outside" = "white"))
-# ggsave(file.path(figures_directory, "misses_ridgeline_plot.png"), ridgeline_plot, width = 10, height = 8, dpi = 500, bg = "white")
-
 # Violin plot
 violin_plot <- ggplot(misses_comparison_dataframe, aes(x = period, y = Misses, fill = period)) +
   geom_violin(trim = FALSE) +
@@ -178,7 +171,7 @@ violin_plot <- ggplot(misses_comparison_dataframe, aes(x = period, y = Misses, f
   labs(
     title = "Misses During and Outside Grey Bands",
     x = "Period",
-    y = "Misses"
+    y = "Rate missed per minute"
   ) +
   theme_minimal() +
   scale_fill_manual(values = c("Within Grey Band" = "grey", "Outside Grey Band" = "white"))
@@ -194,7 +187,7 @@ plot1 <- ggplot() +
   geom_line(data=imager_hits_misses, aes(x = Datetime, y = Misses, color = "Misses")) +
   labs(title = "Raw Data: Time Series of Hits and Misses. Grey shading indicates duration of sampling station.",
        x = "Datetime",
-       y = "Count") +
+       y = "Count (per minute)") +
   scale_color_manual(values = c("Hits" = "blue", "Misses" = "red")) +
   theme_minimal()+
   xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
@@ -211,54 +204,28 @@ plot2 <- ggplot() +
   scale_y_log10() +
   labs(title = "Combined Time Series",
        x = "Datetime",
-       y = "Count (Log Scale)",
+       y = " Count (Per minute)",
        color = "Legend") +
-  scale_color_manual(values = c("Hits" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) +
+  scale_color_manual(values = c("Hits" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) + # "Total particles" = "red", "Particles photographed" = "blue", "Particles classified"
   theme_minimal()+
   xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
 
 ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 8, dpi = 500,bg = "white")
 
-# Plot scatter graph of Hits against total_particles_jetson 
-# Iterate over y-axis limits
-xylimits <- c(max(merged_data$Hits, na.rm = TRUE), 
-              max(merged_data$Hits, na.rm = TRUE)/2, 
-              max(merged_data$Hits, na.rm = TRUE)/4,
-              max(merged_data$Hits, na.rm = TRUE)/10)
-for (limit in xylimits) {
-  file_name <- paste0("scatter_jetson_", format(limit, scientific = FALSE), ".png")
+
+limit = max(merged_data$Hits, na.rm = TRUE)
+  file_name <- paste0("scatter_jetson.png")
   plot <- ggplot(merged_data, aes(x = Hits , y = total_particles_jetson)) +
     geom_point() +
     geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-    labs(title = "Scatter Plot of Hits vs Total Particles (Jetson)",
+    labs(title = "Scatter Plot of photographed particles vs number particles classified (per minute)",
          x = "Photographed Particles (Imager)",
          y = "Classified Particles (Jetson)") +
     xlim(0.0000001, limit) +
     ylim(0.0000001, limit)
   ggsave(file.path(figures_directory, file_name), plot, width = 10, height = 8, dpi = 500, bg = "white")
-}
 
 
-
-y_limits_imager <- c(max(imager_hits_misses$total_particles_imager, na.rm = TRUE),
-                     max(imager_hits_misses$total_particles_imager, na.rm = TRUE) / 2,
-                     max(imager_hits_misses$total_particles_imager, na.rm = TRUE) / 4,
-                     max(imager_hits_misses$total_particles_imager, na.rm = TRUE) / 10,
-                     max(imager_hits_misses$total_particles_imager, na.rm = TRUE) / 20)
-for (limit in y_limits_imager) {
-  # Reflect the y-axis option in the file name saved
-  file_name_imager <- paste0("scatter_imager_", format(limit, scientific = FALSE), ".png")
-  # Plot scatter graph of Hits against total_particles_imager
-  plot_imager <- ggplot(imager_hits_misses, aes(x = total_particles_imager, y = Hits)) +
-    geom_point() +
-    geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-    labs(title = "Scatter Plot of Hits (Imager) vs Total Particles (Imager)",
-         x = "Total Particles (Imager)",
-         y = "Photographed Particles (Imager)") +
-    xlim(c(0.0000001, limit)) +
-    ylim(c(0.0000001, limit))
-  ggsave(file.path(figures_directory, file_name_imager), plot_imager, width = 10, height = 8, dpi = 500, bg = "white")
-}
 
 
 
@@ -266,10 +233,10 @@ plotfig <- ggplot(merged_data, aes(x= total_particles_jetson , y = total_particl
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
   labs(title = "Scatter Plot of transmission losses",
-       x =  "Total particles processed by jetson",
-       y ="Total particles succesfully sent by jetson")
+       x =  "Total particles processed by jetson (per minute)",
+       y ="Total particles succesfully sent by jetson (per minute)")
 
-ggsave(file.path(figures_directory, "scatter_jetson_jetson.png"), plotfig, width = 10, height = 8, dpi = 500,bg = "white")
+ggsave(file.path(figures_directory, "scatter_jetson_dashboard.png"), plotfig, width = 10, height = 8, dpi = 500,bg = "white")
 
 
 
@@ -277,9 +244,9 @@ ggsave(file.path(figures_directory, "scatter_jetson_jetson.png"), plotfig, width
 plot3 <- ggplot(merged_data, aes(x= log10(Hits) , y = log10(total_particles_jetson))) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(title = "Scatter Plot of Hits vs Total Particles (Jetson)",
-       x =  "log(Photographed Particles (Imager))",
-       y ="log(Classified Particles (Jetson))")+
+  labs(title = "Scatter Plot of particles photographed vs particles classified (per minute)",
+       x =  "log(Photographed Particles (per minute))",
+       y ="log(Classified Particles (per minute))")+
   xlim(2,max(log10(merged_data$Hits)+1,na.rm = T))+
   ylim(2,max(log10(merged_data$Hits)+1,na.rm = T))
 
@@ -289,7 +256,7 @@ ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 10, he
 plot4 <- ggplot(imager_hits_misses, aes(x = log10(total_particles_imager), y = log10(Hits))) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(title = "Log-log scatter Plot of Hits (imager) vs Total Particles (imager)",
+  labs(title = "Log-log scatter Plot of particles photographed vs total particles (per minute)",
        x = "Total Particles (Imager)",
        y = "Photographed Particles (Imager)") +
   coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$total_particles_imager) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
@@ -359,7 +326,7 @@ ggplot() +
   geom_line(data = jetson_data_seen_resampled, aes(x = Datetime, y = estimated_counts), color = "red") +
   labs(title = "Original vs Resampled Data",
        x = "Datetime",
-       y = "Particle Counts",
+       y = "Particle Counts (per minute)",
        color = "Data Type") +
   scale_color_manual(values = c("Original Data" = "blue", "Resampled Data" = "red")) +
   theme_minimal() +
@@ -380,13 +347,13 @@ merged_seen_and_PI$overall_sampling_percent = merged_seen_and_PI$estimated_count
 
 ss_plt <- ggplot(merged_seen_and_PI, aes(x = Hits, y = jetson_sampling_percent)) +
   geom_point() +
-  labs(x = "Hits", y = "Jetson sampling Percent")
+  labs(x = "Hits", y = "Jetson sampling Percent within 1 minute window")
 ggsave(file.path(figures_directory, "jetson_subsampling_plot1.png"), ss_plt, width = 10, height = 8, dpi = 500, bg = "white")
 
 # Overall sampling percent seems fairly meaningless
 ss_plt <- ggplot()+
-#geom_line(data = merged_seen_and_PI, aes(x = Datetime, y = overall_sampling_percent), color = "red", alpha = 0.5)+
-geom_point(data = merged_seen_and_PI, aes(x = Datetime, y = jetson_sampling_percent), color = "blue", alpha = 0.2)
+geom_point(data = merged_seen_and_PI, aes(x = Datetime, y = jetson_sampling_percent), color = "blue", alpha = 0.2)+
+  labs(x = "Hits", y = "Jetson sampling Percent within 1 minute window")
 ggsave(file.path(figures_directory, "jetson_subsampling_plot2.png"), ss_plt, width = 10, height = 8, dpi = 500, bg = "white")
 
 
