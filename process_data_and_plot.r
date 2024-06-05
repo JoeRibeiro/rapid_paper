@@ -431,11 +431,16 @@ write.csv(c(statement1,statement2,statement3),file.path(statements_directory, "n
 
 
 # Map
-dashboard_filtered <- dashboard %>% drop_na(Longitude, Latitude, copepodCount)
+get_dominant_class <- function(row) {counts <- row[c("copepodCount", "nonCopepodCount", "detritusCount")]
+  class_names <- c("copepod", "nonCopepod", "detritus")
+  dominant_class <- class_names[which.max(counts)]
+  return(dominant_class)}
+dashboard$`Dominant class` <- apply(dashboard, 1, get_dominant_class)
+
 vmin <- quantile(dashboard_filtered$copepodCount, 0.05)
 vmax <- quantile(dashboard_filtered$copepodCount, 0.95)
 
-dashboard_filtered <- dashboard_filtered %>%
+dashboard_filtered <- dashboard %>%
   arrange(Datetime) %>%
   mutate(day = as.numeric(format(Datetime, "%d")),
          day_change = day != lag(day, default = first(day)))
@@ -447,7 +452,7 @@ world <- map_data('world')
 map <- ggplot(world, aes(long, lat)) +  
   geom_map(map = world, aes(map_id = region), fill = 'darkgreen', color = "black") +
   coord_quickmap() +
-  geom_point(data=dashboard_filtered, aes(x = Longitude, y = Latitude, color = copepodCount), size = 1, alpha = 0.7, stroke = 1, shape = 21, fill = 'black') +
+  geom_point(data=dashboard_filtered, aes(x = Longitude, y = Latitude, color = copepodCount), size = 2, alpha = 0.7, stroke = 1, shape = 21, fill = 'black') +
   scale_color_viridis_c(option = 'viridis', limits = c(vmin, vmax)) +
   labs(color = 'Copepod count', x = 'Longitude', y = 'Latitude') +
   theme_minimal() +
@@ -459,9 +464,31 @@ map <- ggplot(world, aes(long, lat)) +
 
 ggsave(file.path(figures_directory, "mapplotcopepod.png"), map, width = 10, height = 8, dpi = 500, bg = "white")
 
-map2 <- map +
-  xlim(-2, 0) +
-  ylim(54, 56)
+map <- map +
+  xlim(-1.5, 0) +
+  ylim(54.2, 55.7)
 
-ggsave(file.path(figures_directory, "mapplotcopepod2.png"), map2, width = 10, height = 8, dpi = 500, bg = "white")
+ggsave(file.path(figures_directory, "mapplotcopepod2.png"), map, width = 10, height = 8, dpi = 500, bg = "white")
+
+
+
+mapclass <- ggplot(world, aes(long, lat)) +  
+  geom_map(map = world, aes(map_id = region), fill = 'darkgreen', color = "black") +
+  coord_quickmap() +
+  geom_point(data=dashboard, aes(x = Longitude, y = Latitude, color = `Dominant class`), size = 2, alpha=0.1) +
+  labs(x = 'Longitude', y = 'Latitude') +
+  theme_minimal()+
+  theme(panel.grid.major = element_line(color = "grey", size = 0.5),
+        panel.grid.minor = element_blank()) +
+  xlim(min(dashboard_filtered$Longitude) - 2, max(dashboard_filtered$Longitude) + 2) +
+  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2) +
+  geom_text(data=day_change_locations, aes(x = Longitude, y = Latitude, label = day), color = "red", size = 5, vjust = -1)
+
+ggsave(file.path(figures_directory, "mapplotclass.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
+
+mapclass <- mapclass +
+  xlim(-1.5, 0) +
+  ylim(54.2, 55.7)
+
+ggsave(file.path(figures_directory, "mapplotclass2.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
 
