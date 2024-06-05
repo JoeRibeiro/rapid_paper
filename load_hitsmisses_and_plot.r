@@ -6,6 +6,12 @@ library(lubridate)
 library(fs) 
 library(tidyverse)
 
+# Directory creation
+figures_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures"
+statements_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/statements"
+dir_create(figures_directory)
+dir_create(statements_directory)
+
 # Stations
 ship_log <- read_csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/stations/CEND0824_start_end_times_and_positions.csv")
 ship_log <- ship_log %>%  mutate(TimeStart = dmy_hm(TimeStart), TimeEnd = dmy_hm(TimeEnd))
@@ -40,9 +46,38 @@ dashboard$Datetime <- lubridate::as_datetime(dashboard$Timestamp)
 dashboard$rounded_datetime <- round_date(dashboard$Datetime, unit = "minute")
 dashboard$rounded_datetime_5 <- floor_date(dashboard$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
 dashboard$total_particles_jetson_sent <- dashboard$copepodCount + dashboard$nonCopepodCount + dashboard$detritusCount
+dashboard <- dashboard %>% filter(Datetime < as.POSIXct("2024-05-15 00:00:00") | Datetime >= as.POSIXct("2024-05-16 00:00:00")) # emulated data in port.
 merged_sent_and_received=left_join(jetson_data_sent,dashboard, by = "rounded_datetime")
 # Verify that the dashboard contains the data marked as sent in the logfile... yes (difference = 0)
 stopifnot(max(merged_sent_and_received$total_particles_jetson_sent.x-merged_sent_and_received$total_particles_jetson_sent.y)==0)
+
+# Create a stacked bar plot of proportions
+dashboard_long <- dashboard %>%  select(Datetime, copepodCount, nonCopepodCount, detritusCount) %>% pivot_longer(cols = c(copepodCount, nonCopepodCount, detritusCount),   names_to = "Category",  values_to = "Count") %>%  group_by(Datetime) %>% mutate(TotalCount = sum(Count),   Proportion = Count / TotalCount)
+dashboard_long$Category <- factor(dashboard_long$Category, levels = c("nonCopepodCount", "detritusCount","copepodCount"))
+dashboarddata=ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Dashboard Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
+  theme_minimal()
+ggsave(file.path(figures_directory, "dashboard_proportion_plot.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
+  theme_minimal()
+ggsave(file.path(figures_directory, "dashboard_data_plot.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
+
+dashboard_long$Category <- factor(dashboard_long$Category, 
+                                  levels = c( "nonCopepodCount", "detritusCount","copepodCount"),
+                                  labels = c( "Non-Copepod Count", "Detritus Count","Copepod Count"))
+
+dashboarddata3=ggplot(dashboard_long, aes(x = Category, y = Proportion, fill = Category)) +
+  geom_boxplot() +
+  labs(title = "Summary Statistics of Proportions by Category",       x = "Category",       y = "Proportion of count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+ggsave(file.path(figures_directory, "dashboard_data_box.png"), dashboarddata3, width = 10, height = 8, dpi = 500, bg = "white")
+
+
 
 # Jetson seen
 jetson_data_seen <- data.frame(
@@ -158,9 +193,6 @@ merged_data$`Particles total` = merged_data$`Particles total`/5
 merged_data$`Particles photographed` = merged_data$`Particles photographed`/5
 merged_data$`Particles classified` = merged_data$`Particles classified`/5
 
-# Directory creation
-figures_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures"
-dir_create(figures_directory)
 
 # A look at the `Particles not photographed (missed)` during times of sampling versus travel: Function to check if a datetime is within any of the grey bands
 is_within_a_sampling_period <- function(datetime, periods) {  any(sapply(1:nrow(periods), function(i) datetime >= periods$TimeStart[i] & datetime <= periods$TimeEnd[i])) } 
@@ -213,7 +245,7 @@ plot2 <- ggplot() +
   theme_minimal()+
   xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
 
-ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 8, dpi = 500,bg = "white")
+ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 4, dpi = 500,bg = "white")
 
 
 limit = max(merged_data$`Particles photographed`, na.rm = TRUE)
@@ -372,5 +404,43 @@ violin_plot <- ggplot(merged_seen_and_PI, aes(x = NA, y = jetson_sampling_percen
   theme_minimal() 
 ggsave(file.path(figures_directory, "jetson_subsampling_violin_plot.png"), violin_plot, width = 10, height = 8, dpi = 500, bg = "white")
 
+totclass = sum(jetson_data_seen$`Particles classified`,na.rm=T)
+totsent = sum(jetson_data_sent$total_particles_jetson_sent,na.rm=T)
+statement1=paste0(totclass," particles were classified and statistics for ", totsent," of these were successfully sent to the dashboard, a transmission success rate of ",round(totsent/totclass*100,2)," %")
 
+pclassasdetritus = round(sum(dashboard$detritusCount)/sum(dashboard$total_particles_jetson_sent)*100,1)
+pclassascopepod = round(sum(dashboard$copepodCount)/sum(dashboard$total_particles_jetson_sent)*100,1)
+pclassasnoncopepod = round(sum(dashboard$nonCopepodCount)/sum(dashboard$total_particles_jetson_sent)*100,1)
+
+statement2=paste0("The majority of particles were classified as detritus (", pclassasdetritus, "%)  followed by copepods (",pclassascopepod,"%) and non-copepods (",pclassasnoncopepod,"%), in line with expectations")
+write.csv(c(statement1,statement2),file.path(statements_directory, "numbers_transmitted.csv"))
+
+
+# Map. filter out rows with NA values in required columns
+dashboard_filtered <- dashboard %>%  drop_na(Longitude, Latitude, copepodCount)
+
+vmin <- quantile(dashboard_filtered$copepodCount, 0.05)
+vmax <- quantile(dashboard_filtered$copepodCount, 0.95)
+
+world <- map_data('world')
+map <- ggplot(world, aes(long, lat)) +  
+  geom_map(map = world, aes(map_id = region), fill = 'darkgreen', color = "black") +
+  coord_quickmap() +
+  geom_point(data=dashboard_filtered, aes(x = Longitude, y = Latitude, color = copepodCount), size = 1, alpha = 0.7, stroke = 1, shape = 21, fill = 'black') +
+  scale_color_viridis_c(option = 'viridis', limits = c(vmin, vmax)) +
+  labs(color = 'Mean copepod size (pixels)', x = 'Longitude', y = 'Latitude') +
+  theme_minimal() +
+  theme(panel.grid.major = element_line(color = "grey", size = 0.5),
+        panel.grid.minor = element_blank())+
+  xlim(min(dashboard_filtered$Longitude) - 2, max(dashboard_filtered$Longitude) + 2) +
+  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2)
+
+ggsave(file.path(figures_directory, "mapplotcopepod.png"), map, width = 10, height = 8, dpi = 500, bg = "white")
+
+
+map2 <- map +
+  xlim(-2, 0) +
+  ylim(54, 56)
+
+ggsave(file.path(figures_directory, "mapplotcopepod2.png"), map2, width = 10, height = 8, dpi = 500, bg = "white")
 
