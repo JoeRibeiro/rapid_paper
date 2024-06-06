@@ -231,19 +231,23 @@ plot1 <- ggplot() +
 ggsave(file.path(figures_directory, "hits_misses_raw_data.png"), plot1, width = 10, height = 8, dpi = 500,bg = "white")
 
 # It seems log scale is needed. 
+jetson_data_seen <- jetson_data_seen %>%
+  arrange(Datetime) %>%
+  mutate(Gap = c(NA, diff(Datetime))) %>%
+  mutate(`Particles classified gap` = ifelse(Gap > minutes(5), NA, `Particles classified`))
 plot2 <- ggplot() +
-  geom_rect(data= ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$`Particles not photographed (missed)`,na.rm=T)), fill = "grey")+
-  geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles photographed`, color = "`Particles photographed`")) +
+  geom_rect(data = ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$`Particles not photographed (missed)`, na.rm = TRUE)), fill = "grey") +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles total`, color = "Total particles imager")) +
-  geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified`, color = "Total particles jetson")) +
+  geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles photographed`, color = "`Particles photographed`")) +
+  geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified gap`, color = "Total particles jetson")) +
   scale_y_log10() +
-  labs(title = "Combined Time Series",
-       x = "Datetime",
-       y = " Count (Per minute)",
+  labs(x = NULL,
+       y = "Particle count (Per minute)",
        color = "Legend") +
-  scale_color_manual(values = c("`Particles photographed`" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) + # "Total particles" = "red", "Particles photographed" = "blue", "Particles classified"
-  theme_minimal()+
-  xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
+  scale_color_manual(values = c("`Particles photographed`" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) +
+  theme_minimal() +
+#  xlim(min(imager_hits_misses$Datetime, na.rm = TRUE), max(imager_hits_misses$Datetime, na.rm = TRUE))
+  xlim(min(imager_hits_misses$Datetime,na.rm=T),"2024-05-18 16:00:00 UTC")
 
 ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 4, dpi = 500,bg = "white")
 
