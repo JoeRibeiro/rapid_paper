@@ -441,13 +441,13 @@ get_dominant_class <- function(row) {counts <- row[c("copepodCount", "nonCopepod
   return(dominant_class)}
 dashboard$`Dominant class` <- apply(dashboard, 1, get_dominant_class)
 
-vmin <- quantile(dashboard_filtered$copepodCount, 0.05)
-vmax <- quantile(dashboard_filtered$copepodCount, 0.95)
-
 dashboard_filtered <- dashboard %>%
   arrange(Datetime) %>%
   mutate(day = as.numeric(format(Datetime, "%d")),
          day_change = day != lag(day, default = first(day)))
+
+vmin <- quantile(dashboard_filtered$copepodCount, 0.05)
+vmax <- quantile(dashboard_filtered$copepodCount, 0.95)
 
 # Extract locations where the day changes
 day_change_locations <- dashboard_filtered %>% filter(day_change)
