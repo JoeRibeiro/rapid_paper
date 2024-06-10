@@ -277,7 +277,7 @@ plotfig <- ggplot(merged_data, aes(x= `Particles classified` , y = total_particl
        y ="Total particles transmitted to dashboard database (per minute)")
 
 ggsave(file.path(figures_directory, "scatter_jetson_dashboard.png"), plotfig, width = 10, height = 8, dpi = 500,bg = "white")
-
+# There is one instance where the summary packet is computed within the second 2024-05-22 10:49:59 yet the attempted data transmission occurs in the second 10:50:00. This causes the data point to fall to the left of the line for this summary packet.
 
 
 
@@ -362,8 +362,10 @@ jetson_data_seen_resampled <- data.frame(  Datetime = minute_intervals,  estimat
 jetson_data_seen_resampled=jetson_data_seen_resampled[jetson_data_seen_resampled$estimated_counts>0,] # The only situation where the jetson is counting zero particles in a minute, we can assume it is not operating (switched off)
 
 ggplot() +
-  geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified`), color = "blue", alpha = 0.5) +
-  geom_line(data = jetson_data_seen_resampled, aes(x = Datetime, y = estimated_counts), color = "red") +
+  geom_point(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified`), color = "blue", alpha = 0.1, size=0.05) +
+  geom_point(data = jetson_data_seen_resampled, aes(x = Datetime, y = estimated_counts), color = "red", alpha = 0.1, size=0.05) +
+  geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified`), color = "blue", alpha = 0.1, size=0.05) +
+  geom_line(data = jetson_data_seen_resampled, aes(x = Datetime, y = estimated_counts), color = "red", alpha = 0.1, size=0.05) +
   labs(title = "Original vs Resampled Data",
        x = "Datetime",
        y = "Particle Counts (per minute)",
