@@ -49,7 +49,7 @@ dashboard$total_particles_jetson_sent <- dashboard$copepodCount + dashboard$nonC
 dashboard <- dashboard %>% filter(Datetime < as.POSIXct("2024-05-15 00:00:00") | Datetime >= as.POSIXct("2024-05-16 00:00:00")) # emulated data in port.
 merged_sent_and_received=left_join(jetson_data_sent,dashboard, by = "rounded_datetime")
 # Verify that the dashboard contains the data marked as sent in the logfile... yes (difference = 0)
-stopifnot(max(merged_sent_and_received$total_particles_jetson_sent.x-merged_sent_and_received$total_particles_jetson_sent.y)==0)
+stopifnot(max(merged_sent_and_received$total_particles_jetson_sent.x-merged_sent_and_received$total_particles_jetson_sent.y,na.rm=T)==0)
 
 # Create a stacked bar plot of proportions
 dashboard_long <- dashboard %>%  select(Datetime, copepodCount, nonCopepodCount, detritusCount) %>% pivot_longer(cols = c(copepodCount, nonCopepodCount, detritusCount),   names_to = "Category",  values_to = "Count") %>%  group_by(Datetime) %>% mutate(TotalCount = sum(Count),   Proportion = Count / TotalCount)
@@ -236,18 +236,19 @@ jetson_data_seen <- jetson_data_seen %>%
   mutate(Gap = c(NA, diff(Datetime))) %>%
   mutate(`Particles classified gap` = ifelse(Gap > minutes(5), NA, `Particles classified`))
 plot2 <- ggplot() +
-  geom_rect(data = ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = 0, ymax = max(imager_hits_misses$`Particles not photographed (missed)`, na.rm = TRUE)), fill = "grey") +
+  geom_rect(data = ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = min(imager_hits_misses$`Particles not photographed (missed)`, na.rm = TRUE), ymax = max(imager_hits_misses$`Particles not photographed (missed)`, na.rm = TRUE)), fill = "grey") +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles total`, color = "Total particles imager")) +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles photographed`, color = "`Particles photographed`")) +
   geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified gap`, color = "Total particles jetson")) +
-  scale_y_log10() +
   labs(x = NULL,
        y = "Particle count (Per minute)",
        color = "Legend") +
   scale_color_manual(values = c("`Particles photographed`" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) +
   theme_minimal() +
 #  xlim(min(imager_hits_misses$Datetime, na.rm = TRUE), max(imager_hits_misses$Datetime, na.rm = TRUE))
-  xlim(min(imager_hits_misses$Datetime,na.rm=T),"2024-05-18 16:00:00 UTC")
+  xlim(min(imager_hits_misses$Datetime,na.rm=T),"2024-05-18 16:00:00 UTC")+
+ # ylim+
+  scale_y_log10(limit = c(100,10000000)) 
 
 ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 4, dpi = 500,bg = "white")
 
