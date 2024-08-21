@@ -174,11 +174,11 @@ imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photograph
 # Imager seen
 classified_blob_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums"
 file_list <- list.files(path = classified_blob_directory, pattern = "*.csv", full.names = TRUE)
-imager_hits_misses <- data.frame()
+imager_seen <- data.frame()
 
 for (file in file_list) {
   temp_data <- read.csv(file)
-  imager_seen <- rbind(imager_hits_misses, temp_data)
+  imager_seen <- rbind(imager_seen, temp_data)
 }
 
 imager_seen$Date = "2024-05-19"
