@@ -66,6 +66,7 @@ dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Catego
   theme_minimal()
 ggsave(file.path(figures_directory, "dashboard_data_plot.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
 
+
 dashboard_long$Category <- factor(dashboard_long$Category, 
                                   levels = c( "nonCopepodCount", "detritusCount","copepodCount"),
                                   labels = c( "Non-Copepod Count", "Detritus Count","Copepod Count"))
@@ -150,7 +151,7 @@ jetson_data_seen$rounded_datetime_5 <- floor_date(jetson_data_seen$Datetime, uni
 jetson_data_seen$`Particles classified` <- jetson_data_seen$Copepod + jetson_data_seen$Noncopepod + jetson_data_seen$Detritus
 
 
-# Imager
+# Imager hits misses rate
 hits_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/hitsmisses"
 file_list <- list.files(path = hits_directory, pattern = "*.csv", full.names = TRUE)
 imager_hits_misses <- data.frame()
@@ -168,6 +169,42 @@ imager_hits_misses$Datetime <- ymd_hm(paste(imager_hits_misses$Date, imager_hits
 imager_hits_misses$rounded_datetime <- round_date(imager_hits_misses$Datetime, unit = "minute")
 imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
 imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photographed` + imager_hits_misses$`Particles not photographed (missed)`
+
+
+# Imager seen
+classified_blob_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums"
+file_list <- list.files(path = classified_blob_directory, pattern = "*.csv", full.names = TRUE)
+imager_hits_misses <- data.frame()
+
+for (file in file_list) {
+  temp_data <- read.csv(file)
+  imager_seen <- rbind(imager_hits_misses, temp_data)
+}
+
+imager_seen$Date = "2024-05-19"
+imager_seen$Time <- sprintf("%04d", imager_seen$Bin.Name+ 100)
+imager_seen$Datetime <- ymd_hm(paste(imager_seen$Date, imager_seen$Time))
+imager_seen=dplyr::rename(imager_seen,`Copepod Count`=copepod)
+imager_seen=dplyr::rename(imager_seen,`Non-Copepod Count`=noncopepod)
+imager_seen=dplyr::rename(imager_seen,`Detritus Count`=detritus)
+imager_seen$`Particles total` <- imager_seen$`Copepod Count` + imager_seen$`Non-Copepod Count` + imager_seen$`Detritus Count`
+
+
+# Imager seen: Create a stacked bar plot of proportions
+imager_seen_long <- imager_seen %>%  select(Datetime, `Copepod Count`, `Non-Copepod Count`, `Detritus Count`) %>% pivot_longer(cols = c(`Copepod Count`, `Non-Copepod Count`, `Detritus Count`),   names_to = "Category",  values_to = "Count") %>%  group_by(Datetime) %>% mutate(TotalCount = sum(Count),   Proportion = Count / TotalCount)
+imager_seen_long$Category <- factor(imager_seen_long$Category, levels = c("Non-Copepod Count", "Detritus Count","Copepod Count"))
+imager_seen_data=ggplot(imager_seen_long, aes(x = Datetime, y = Proportion, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Imager Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "Imager_proportion_plot_19th_may.png"), imager_seen_data, width = 10, height = 4, dpi = 500, bg = "white")
+
+imager_seen_data2=ggplot(imager_seen_long, aes(x = Datetime, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Imager Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "Imager_data_plot_19th_may.png"), imager_seen_data2, width = 10, height = 4, dpi = 500, bg = "white")
+
 
 
 # Aggregate jetson_data_sent and imager_hits_misses by rounded_datetime
@@ -499,3 +536,17 @@ mapclass <- mapclass +
 
 ggsave(file.path(figures_directory, "mapplotclass2.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
 
+
+
+# Create a stacked bar plot of proportions for 19th May only 
+dashboarddata=ggplot(dashboard_long[as.Date(dashboard_long$Datetime) == "2024-05-19", ], aes(x = Datetime, y = Proportion, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Dashboard Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "dashboard_proportion_plot_19th_May.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+dashboarddata2=ggplot(dashboard_long[as.Date(dashboard_long$Datetime) == "2024-05-19", ], aes(x = Datetime, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "dashboard_data_plot_19th_May.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
