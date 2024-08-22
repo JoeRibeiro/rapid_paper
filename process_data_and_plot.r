@@ -36,6 +36,7 @@ jetson_data_sent <- bind_rows(df_list)
 jetson_data_sent$Datetime <- lubridate::as_datetime(jetson_data_sent$timestamp)
 jetson_data_sent$rounded_datetime <- round_date(jetson_data_sent$Datetime, unit = "minute")
 jetson_data_sent$rounded_datetime_5 <- floor_date(jetson_data_sent$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
+jetson_data_sent$rounded_datetime_10 <- floor_date(jetson_data_sent$Datetime, unit = "10 minutes")  # Round to nearest 5 minutes
 jetson_data_sent$total_particles_jetson_sent <- jetson_data_sent$copepodCount + jetson_data_sent$nonCopepodCount + jetson_data_sent$detritusCount
 
 
@@ -174,6 +175,8 @@ imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photograph
 # Imager seen
 classified_blob_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums"
 file_list <- list.files(path = classified_blob_directory, pattern = "*.csv", full.names = TRUE)
+#file_list <- list.files(path = classified_blob_directory, pattern = "*19-tested-count.csv", full.names = TRUE)
+
 imager_seen <- data.frame()
 
 for (file in file_list) {
@@ -181,7 +184,6 @@ for (file in file_list) {
   imager_seen <- rbind(imager_seen, temp_data)
 }
 
-imager_seen$Date = "2024-05-19"
 imager_seen$Time <- sprintf("%04d", imager_seen$Bin.Name+ 100)
 imager_seen$Datetime <- ymd_hm(paste(imager_seen$Date, imager_seen$Time))
 imager_seen=dplyr::rename(imager_seen,`Copepod Count`=copepod)
@@ -470,7 +472,6 @@ cat("Percentage of interrupted time:", total_interrupted_time / total_time_span 
 
 statement3=paste0("Over the 7 days and 5 hours duration, ",round(as.numeric(total_interrupted_time)/60)," hours were identified as 'downtime' where the dashboard did not receive any data for over 2 minutes. This is equal to a downtime of ", round(total_interrupted_time / total_time_span * 100),"%")
 
-write.csv(c(statement1,statement2,statement3),file.path(statements_directory, "numbers_transmitted.csv"))
 
 
 
@@ -539,14 +540,164 @@ ggsave(file.path(figures_directory, "mapplotclass2.png"), mapclass, width = 10, 
 
 
 # Create a stacked bar plot of proportions for 19th May only 
-dashboarddata=ggplot(dashboard_long[as.Date(dashboard_long$Datetime) == "2024-05-19", ], aes(x = Datetime, y = Proportion, fill = Category)) +
+dashboarddata=ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Dashboard Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
   theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
 ggsave(file.path(figures_directory, "dashboard_proportion_plot_19th_May.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
-dashboarddata2=ggplot(dashboard_long[as.Date(dashboard_long$Datetime) == "2024-05-19", ], aes(x = Datetime, y = Count, fill = Category)) +
+dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
   theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
 ggsave(file.path(figures_directory, "dashboard_data_plot_19th_May.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+
+
+# Create a stacked bar plot of proportions for 17th-19th May only 
+dashboarddata=ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Dashboard Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-17 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "dashboard_proportion_plot_17_19th_May.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-17 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "dashboard_data_plot_17_19th_May.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+
+# Create a bin vs bin plot by category (copepod, detritus, noncopepod) of dashboard vs imager seen
+# Imager seen counts provided are already on 10 bin aggregation
+agg_10bin_jetson_sent <- jetson_data_sent %>%
+  group_by(rounded_datetime_10) %>%
+  summarise(jetsoncopepodCount = sum(copepodCount, na.rm = TRUE),jetsondetritusCount = sum(detritusCount, na.rm = TRUE),jetsonnonCopepodCount = sum(nonCopepodCount, na.rm = TRUE))
+
+imager_seen$rounded_datetime_10 = imager_seen$Datetime
+
+# Merge the aggregated dataframes on rounded_datetime
+merged_imager_seen_v_dashboard <- inner_join(agg_10bin_jetson_sent, imager_seen, by = "rounded_datetime_10")
+## 10 minutes rate to 1 minute
+#merged_imager_seen_v_dashboard$`Copepod Count` = merged_imager_seen_v_dashboard$`Copepod Count`/10
+#merged_imager_seen_v_dashboard$`Detritus Count` = merged_imager_seen_v_dashboard$`Detritus Count`/10
+#merged_imager_seen_v_dashboard$`Non-Copepod Count` = merged_imager_seen_v_dashboard$`Non-Copepod Count`/10
+#merged_imager_seen_v_dashboard$`jetsoncopepodCount` = merged_imager_seen_v_dashboard$`jetsoncopepodCount`/10
+#merged_imager_seen_v_dashboard$`jetsondetritusCount` = merged_imager_seen_v_dashboard$`jetsondetritusCount`/10
+#merged_imager_seen_v_dashboard$`jetsonnonCopepodCount` = merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`/10
+
+plotfig <- ggplot() +
+  geom_point(data = merged_imager_seen_v_dashboard, aes(x = `Copepod Count`, y = jetsoncopepodCount, color = "Copepod")) +
+  geom_point(data = merged_imager_seen_v_dashboard, aes(x = `Detritus Count`, y = jetsondetritusCount, color = "Detritus")) +
+  geom_point(data = merged_imager_seen_v_dashboard, aes(x = `Non-Copepod Count`, y = jetsonnonCopepodCount, color = "Non-Copepod")) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  scale_color_manual(values = c("Copepod" = "blue", "Detritus" = "green", "Non-Copepod" = "orange")) +
+  labs(
+    title = "Scatter Plot of Edge-AI Losses",
+    x = "Classified post-survey (Ten minute bin counts)",
+    y = "Jetson edge-ai (Ten minute bin counts)",
+    color = "Category"
+  )
+
+ggsave(file.path(figures_directory, "scatter_jetson_azureblob.png"), plotfig, width = 10, height = 8, dpi = 500,bg = "white")
+# There is one instance where the summary packet is computed within the second 2024-05-22 10:49:59 yet the attempted data transmission occurs in the second 10:50:00. This causes the data point to fall to the left of the line for this summary packet.
+
+plotfig <- ggplot() +
+  geom_point(data = merged_imager_seen_v_dashboard, aes(x = log10(`Copepod Count`), y = log10(jetsoncopepodCount), color = "Copepod")) +
+  geom_point(data = merged_imager_seen_v_dashboard, aes(x = log10(`Detritus Count`), y = log10(jetsondetritusCount), color = "Detritus")) +
+  geom_point(data = merged_imager_seen_v_dashboard, aes(x = log10(`Non-Copepod Count`), y = log10(jetsonnonCopepodCount), color = "Non-Copepod")) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  scale_color_manual(values = c("Copepod" = "blue", "Detritus" = "green", "Non-Copepod" = "orange")) +
+  labs(
+    title = "Scatter Plot of Edge-AI Losses",
+    x = "Classified post-survey (Ten minute bin counts)",
+    y = "Jetson edge-ai (Ten minute bin counts)",
+    color = "Category"
+  )+
+  xlim(2,max(log10(merged_imager_seen_v_dashboard$`Detritus Count`)+0.1,na.rm = T))+
+  ylim(2,max(log10(merged_imager_seen_v_dashboard$`Detritus Count`)+0.1,na.rm = T))
+
+ggsave(file.path(figures_directory, "scatter_jetson_azureblob_log10.png"), plotfig, width = 10, height = 8, dpi = 500,bg = "white")
+# There is one instance where the summary packet is computed within the second 2024-05-22 10:49:59 yet the attempted data transmission occurs in the second 10:50:00. This causes the data point to fall to the left of the line for this summary packet.
+
+
+
+
+total_edge_ai_classfications <- (sum(merged_imager_seen_v_dashboard$`jetsoncopepodCount`,na.rm=T)+sum(merged_imager_seen_v_dashboard$`jetsondetritusCount`,na.rm=T)+sum(merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`,na.rm=T))/1000000
+total_post_processed_classfications <- (sum(merged_imager_seen_v_dashboard$`Detritus Count`,na.rm=T)+sum(merged_imager_seen_v_dashboard$`Copepod Count`,na.rm=T)+sum(merged_imager_seen_v_dashboard$`Non-Copepod Count`,na.rm=T))/1000000
+  
+statement4=paste0("Over the 244 bins that were compared between 17th-19th May, the jetson edge-AI computer classified ",round(as.numeric(total_edge_ai_classfications),1)," million particles, whilst during these same ten minute time bins, post-processing classified ", round(as.numeric(total_post_processed_classfications),1)," million particles. The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsoncopepodCount`,na.rm=T))/1000000,1)," million particles as copepods, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Copepod Count`,na.rm=T)/1000000),1)," million particles as copepods.")
+statement5=paste0("During this same time, the jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsondetritusCount`,na.rm=T))/1000000,1)," million particles as detritus, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Detritus Count`,na.rm=T)/1000000),1)," million particles as detritus.")
+statement6=paste0("The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`,na.rm=T))/1000000,1)," million particles as non-copepod, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Non-Copepod Count`,na.rm=T)/1000000),1)," million particles as non-copepod.")
+
+
+
+write.csv(c(statement1,statement2,statement3,statement4,statement5,statement6),file.path(statements_directory, "numbers_transmitted.csv"))
+
+
+
+
+# Plot comparing just the copepod classifications, for edge-AI vs post-processing 
+merged_imager_seen_v_dashboard$`Missed copepod counts` = merged_imager_seen_v_dashboard$`Copepod Count`-merged_imager_seen_v_dashboard$`jetsoncopepodCount`
+merged_imager_seen_v_dashboard$`Edge-AI copepod count` = merged_imager_seen_v_dashboard$`jetsoncopepodCount` 
+
+merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(Datetime, `Missed copepod counts`, `Edge-AI copepod count`) %>% pivot_longer(cols = c(`Missed copepod counts`, `Edge-AI copepod count`),   names_to = "Category",  values_to = "Count") %>%  group_by(Datetime)
+merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed copepod counts", "Edge-AI copepod count"))
+merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Edge AI vs post-processing counts over time",       x = "Datetime",       y = "Count",       fill = "Category") +
+  theme_minimal()
+ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+# Modify for Sophie
+merged_imager_seen_v_dashboard$`Missed copepod counts` = merged_imager_seen_v_dashboard$`Copepod Count`-merged_imager_seen_v_dashboard$`jetsoncopepodCount`
+merged_imager_seen_v_dashboard$`Edge-AI copepod count` = merged_imager_seen_v_dashboard$`jetsoncopepodCount` 
+merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
+
+merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(rowname, `Missed copepod counts`, `Edge-AI copepod count`) %>% pivot_longer(cols = c(`Missed copepod counts`, `Edge-AI copepod count`),   names_to = "Category",  values_to = "Count") %>%  group_by(rowname)
+merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed copepod counts", "Edge-AI copepod count"))
+merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = rowname, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Edge AI vs post-processing counts over time",       x = "Bin",       y = "Count",       fill = "Category") +
+  theme_minimal()
+ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+# and for detritus
+merged_imager_seen_v_dashboard$`Missed detritus counts` = merged_imager_seen_v_dashboard$`Detritus Count`-merged_imager_seen_v_dashboard$`jetsondetritusCount`
+merged_imager_seen_v_dashboard$`Edge-AI detritus count` = merged_imager_seen_v_dashboard$`jetsondetritusCount` 
+merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
+
+merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(rowname, `Missed detritus counts`, `Edge-AI detritus count`) %>% pivot_longer(cols = c(`Missed detritus counts`, `Edge-AI detritus count`),   names_to = "Category",  values_to = "Count") %>%  group_by(rowname)
+merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed detritus counts", "Edge-AI detritus count"))
+merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = rowname, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Edge AI vs post-processing counts over time",       x = "Bin",       y = "Count",       fill = "Category") +
+  theme_minimal()
+ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_detritus.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+
+# and for non-copepod
+merged_imager_seen_v_dashboard$`Missed non-copepod counts` = merged_imager_seen_v_dashboard$`Non-Copepod Count`-merged_imager_seen_v_dashboard$jetsonnonCopepodCount
+merged_imager_seen_v_dashboard$`Edge-AI non-copepod count` = merged_imager_seen_v_dashboard$`jetsonnonCopepodCount` 
+merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
+
+merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(rowname, `Missed non-copepod counts`, `Edge-AI non-copepod count`) %>% pivot_longer(cols = c(`Missed non-copepod counts`, `Edge-AI non-copepod count`),   names_to = "Category",  values_to = "Count") %>%  group_by(rowname)
+merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed non-copepod counts", "Edge-AI non-copepod count"))
+merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = rowname, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Edge AI vs post-processing counts over time",       x = "Bin",       y = "Count",       fill = "Category") +
+  theme_minimal()
+ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+
+
+
+
+
+
