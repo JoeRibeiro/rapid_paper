@@ -275,7 +275,7 @@ jetson_data_seen <- jetson_data_seen %>%
   mutate(Gap = c(NA, diff(Datetime))) %>%
   mutate(`Particles classified gap` = ifelse(Gap > minutes(5), NA, `Particles classified`))
 plot2 <- ggplot() +
-  geom_rect(data = ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = min(imager_hits_misses$`Particles not photographed (missed)`, na.rm = TRUE), ymax = max(imager_hits_misses$`Particles not photographed (missed)`, na.rm = TRUE)), fill = "grey") +
+  geom_rect(data = ship_log, aes(xmin = TimeStart, xmax = TimeEnd, ymin = min(imager_hits_misses$`Particles not photographed (missed)`, na.rm = TRUE), ymax = 10000000), fill = "grey") +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles total`, color = "Total particles imager")) +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles photographed`, color = "`Particles photographed`")) +
   geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified gap`, color = "Total particles jetson")) +
@@ -285,7 +285,7 @@ plot2 <- ggplot() +
   scale_color_manual(values = c("`Particles photographed`" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) +
   theme_minimal() +
 #  xlim(min(imager_hits_misses$Datetime, na.rm = TRUE), max(imager_hits_misses$Datetime, na.rm = TRUE))
-  xlim(min(imager_hits_misses$Datetime,na.rm=T),"2024-05-18 16:00:00 UTC")+
+  xlim(min(imager_hits_misses$Datetime,na.rm=T),lubridate::as_datetime("2024-05-18 16:00:00 UTC"))+
  # ylim+
   scale_y_log10(limit = c(100,10000000)) 
 
