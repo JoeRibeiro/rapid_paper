@@ -171,25 +171,35 @@ imager_hits_misses$rounded_datetime <- round_date(imager_hits_misses$Datetime, u
 imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime, unit = "5 minutes")  # Round to nearest 5 minutes
 imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photographed` + imager_hits_misses$`Particles not photographed (missed)`
 
-
-# Imager seen
-classified_blob_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums"
-file_list <- list.files(path = classified_blob_directory, pattern = "*.csv", full.names = TRUE)
-#file_list <- list.files(path = classified_blob_directory, pattern = "*19-tested-count.csv", full.names = TRUE)
-
-imager_seen <- data.frame()
-
-for (file in file_list) {
-  temp_data <- read.csv(file)
-  imager_seen <- rbind(imager_seen, temp_data)
-}
-
-imager_seen$Time <- sprintf("%04d", imager_seen$Bin.Name+ 100)
-imager_seen$Datetime <- ymd_hm(paste(imager_seen$Date, imager_seen$Time))
+# Imager seen (replacement for code below):
+imager_seen_new = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/to_be_replaced.csv")
+wide_format <- imager_seen_new %>%  tidyr::pivot_wider(    names_from = Predicted.Class,    values_from = count,    values_fill = list(count = 0)  )
+imager_seen <- aggregate(. ~ Image.DateTime, data = wide_format, sum)
+imager_seen$Datetime <- ymd_hms(imager_seen$Image.DateTime)
 imager_seen=dplyr::rename(imager_seen,`Copepod Count`=copepod)
 imager_seen=dplyr::rename(imager_seen,`Non-Copepod Count`=noncopepod)
 imager_seen=dplyr::rename(imager_seen,`Detritus Count`=detritus)
 imager_seen$`Particles total` <- imager_seen$`Copepod Count` + imager_seen$`Non-Copepod Count` + imager_seen$`Detritus Count`
+
+
+# Imager seen
+# classified_blob_directory <- "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums"
+# file_list <- list.files(path = classified_blob_directory, pattern = "*.csv", full.names = TRUE)
+# #file_list <- list.files(path = classified_blob_directory, pattern = "*19-tested-count.csv", full.names = TRUE)
+# 
+# imager_seen <- data.frame()
+# 
+# for (file in file_list) {
+#   temp_data <- read.csv(file)
+#   imager_seen <- rbind(imager_seen, temp_data)
+# }
+# 
+# imager_seen$Time <- sprintf("%04d", imager_seen$Bin.Name+ 100)
+# imager_seen$Datetime <- ymd_hm(paste(imager_seen$Date, imager_seen$Time))
+# imager_seen=dplyr::rename(imager_seen,`Copepod Count`=copepod)
+# imager_seen=dplyr::rename(imager_seen,`Non-Copepod Count`=noncopepod)
+# imager_seen=dplyr::rename(imager_seen,`Detritus Count`=detritus)
+# imager_seen$`Particles total` <- imager_seen$`Copepod Count` + imager_seen$`Non-Copepod Count` + imager_seen$`Detritus Count`
 
 
 # Imager seen: Create a stacked bar plot of proportions
@@ -250,6 +260,26 @@ violin_plot <- ggplot(misses_comparison_dataframe, aes(x = period, y = `Particle
   theme_minimal() +
   scale_fill_manual(values = c("Within Grey Band" = "grey", "Outside Grey Band" = "white"))
 ggsave(file.path(figures_directory, "misses_violin_plot.png"), violin_plot, width = 10, height = 8, dpi = 500, bg = "white")
+
+
+# Calculate the means for each period
+means <- aggregate(`Particles not photographed (missed)` ~ period, 
+                   data = misses_comparison_dataframe, 
+                   FUN = mean)
+
+test_result <- wilcox.test(`Particles not photographed (missed)` ~ period, 
+                           data = misses_comparison_dataframe, 
+                           exact = FALSE)
+
+summary_sentence <- paste("The mean number of particles not photographed during the", 
+  means$period[1], "was", round(means$`Particles not photographed (missed)`[1], 2), 
+  "and during the", 
+  means$period[2], "was", round(means$`Particles not photographed (missed)`[2], 2), 
+  ". The Wilcoxon rank-sum test yielded a p-value of", round(test_result$p.value, 4),
+  ifelse(test_result$p.value < 0.05, 
+         ", indicating a significant difference between the periods.", 
+         ", indicating no significant difference between the periods.")
+)
 
 
 
@@ -627,15 +657,6 @@ ggsave(file.path(figures_directory, "scatter_jetson_azureblob_log10.png"), plotf
 
 total_edge_ai_classfications <- (sum(merged_imager_seen_v_dashboard$`jetsoncopepodCount`,na.rm=T)+sum(merged_imager_seen_v_dashboard$`jetsondetritusCount`,na.rm=T)+sum(merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`,na.rm=T))/1000000
 total_post_processed_classfications <- (sum(merged_imager_seen_v_dashboard$`Detritus Count`,na.rm=T)+sum(merged_imager_seen_v_dashboard$`Copepod Count`,na.rm=T)+sum(merged_imager_seen_v_dashboard$`Non-Copepod Count`,na.rm=T))/1000000
-  
-statement4=paste0("Over the 244 bins that were compared between 17th-19th May, the jetson edge-AI computer classified ",round(as.numeric(total_edge_ai_classfications),1)," million particles, whilst during these same ten minute time bins, post-processing classified ", round(as.numeric(total_post_processed_classfications),1)," million particles. The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsoncopepodCount`,na.rm=T))/1000000,1)," million particles as copepods, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Copepod Count`,na.rm=T)/1000000),1)," million particles as copepods.")
-statement5=paste0("During this same time, the jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsondetritusCount`,na.rm=T))/1000000,1)," million particles as detritus, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Detritus Count`,na.rm=T)/1000000),1)," million particles as detritus.")
-statement6=paste0("The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`,na.rm=T))/1000000,1)," million particles as non-copepod, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Non-Copepod Count`,na.rm=T)/1000000),1)," million particles as non-copepod.")
-
-
-
-write.csv(c(statement1,statement2,statement3,statement4,statement5,statement6),file.path(statements_directory, "numbers_transmitted.csv"))
-
 
 
 
@@ -696,8 +717,30 @@ ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_n
 
 
 
+# Do a K-S test for the columns merged_imager_seen_v_dashboard$`Copepod Count`  vs merged_imager_seen_v_dashboard$jetsoncopepodCount
+# Perform K-S test
+ks_test_result <- ks.test(merged_imager_seen_v_dashboard$`Copepod Count`, 
+                          merged_imager_seen_v_dashboard$jetsoncopepodCount)
+print(ks_test_result)
 
 
+
+
+statement4=paste0("Over the 244 bins that were compared between 17th-19th May, the jetson edge-AI computer classified ",round(as.numeric(total_edge_ai_classfications),1)," million particles, whilst during these same ten minute time bins, post-processing classified ", round(as.numeric(total_post_processed_classfications),1)," million particles. The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsoncopepodCount`,na.rm=T))/1000000,1)," million particles as copepods, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Copepod Count`,na.rm=T)/1000000),1)," million particles as copepods.")
+statement5=paste0("During this same time, the jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsondetritusCount`,na.rm=T))/1000000,1)," million particles as detritus, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Detritus Count`,na.rm=T)/1000000),1)," million particles as detritus.")
+statement6=paste0("The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`,na.rm=T))/1000000,1)," million particles as non-copepod, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Non-Copepod Count`,na.rm=T)/1000000),1)," million particles as non-copepod.")
+
+statement7=paste0("The instrument worked continuously throughout the 7 days survey (173 hours), capturing a total of ",sum(imager_hits_misses$`Particles photographed`)+sum(imager_hits_misses$`Particles not photographed (missed)`)," particles. ",sum(imager_hits_misses$`Particles photographed`)," of these were saved to disk (hits) and shipped to cloud storage post survey. ",sum(imager_hits_misses$`Particles not photographed (missed)`)," particles could not be imaged and saved (misses).")
+
+surveyduration=as.numeric((max(imager_hits_misses$Datetime)-min(imager_hits_misses$Datetime)))*24*60
+statement8=paste0("average particle and image rates of ",(sum(imager_hits_misses$`Particles photographed`)+sum(imager_hits_misses$`Particles not photographed (missed)`))/surveyduration," per min and ",(sum(imager_hits_misses$`Particles photographed`))/surveyduration," per min, respectively")
+  
+  
+
+
+
+
+write.csv(c(summary_sentence,statement1,statement2,statement3,statement4,statement5,statement6,statement7,statement8),file.path(statements_directory, "numbers_transmitted.csv"))
 
 
 
