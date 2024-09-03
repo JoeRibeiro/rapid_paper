@@ -172,8 +172,9 @@ imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime,
 imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photographed` + imager_hits_misses$`Particles not photographed (missed)`
 
 # Imager seen (replacement for code below):
-imager_seen_new = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/to_be_replaced.csv")
-wide_format <- imager_seen_new %>%  tidyr::pivot_wider(    names_from = Predicted.Class,    values_from = count,    values_fill = list(count = 0)  )
+imager_seen_new = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/classifications_to_nearest_pixel.csv")
+# Pivot wider
+wide_format <- imager_seen_new %>%  tidyr::pivot_wider(    names_from = Predicted.Class,    values_from = count,    values_fn = sum  )
 imager_seen <- aggregate(. ~ Image.DateTime, data = wide_format, sum)
 imager_seen$Datetime <- ymd_hms(imager_seen$Image.DateTime)
 imager_seen=dplyr::rename(imager_seen,`Copepod Count`=copepod)
