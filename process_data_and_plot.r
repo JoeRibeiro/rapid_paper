@@ -227,6 +227,10 @@ imager_seen_data2=ggplot(imager_seen_long, aes(x = Datetime, y = Count, fill = C
 ggsave(file.path(figures_directory, "Imager_data_plot_21th_may.png"), imager_seen_data2, width = 10, height = 4, dpi = 500, bg = "white")
 
 
+#jetson_data_sent=jetson_data_sent[-4204,] # is this the data point falling left of the transmission line? Put it in the right bin
+#jetson_data_sent=jetson_data_sent[-4204,] # is this the data point falling left of the transmission line? Put it in the right bin
+#jetson_data_sent=jetson_data_sent[-4204,] # is this the data point falling left of the transmission line? Put it in the right bin
+#jetson_data_sent=jetson_data_sent[-4204,] # is this the data point falling left of the transmission line? Put it in the right bin
 
 # Aggregate jetson_data_sent and imager_hits_misses by rounded_datetime
 agg_jetson_seen <- jetson_data_seen %>%
@@ -372,26 +376,25 @@ ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 10, he
 
 
 plot4 <- ggplot(imager_hits_misses, aes(x = log10(`Particles total`), y = log10(`Particles photographed`))) +
-  geom_point() +
+  geom_point(size = 0.1) +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(title = "Log-log scatter Plot of particles photographed vs total particles (per minute)",
-       x = "Total Particles (Imager)",
+  labs(x = "Total Particles (Imager)",
        y = "Photographed Particles (Imager)") +
   coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$`Particles total`) + 1, na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$`Particles total`) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
                   clip = 'off') +
-  geom_text(x = 1.6, y = log10(100), label = "100") +
-  geom_text(x = 1.8, y = log10(10000), label = "10000") +
-  geom_text(x = 1.9, y = log10(1000000), label = "1000000") +
-  geom_text(y = 1.5, x = log10(100), label = "100") +
-  geom_text(y = 1.5, x = log10(10000), label = "10000") +
-  geom_text(y = 1.5, x = log10(1000000), label = "1000000") +
+  geom_text(x = 1.6, y = log10(100), label = expression(10^2)) +
+  geom_text(x = 1.8, y = log10(10000), label = expression(10^4)) +
+  geom_text(x = 1.9, y = log10(1000000), label = expression(10^6)) +
+  geom_text(y = 1.5, x = log10(100), label = expression(10^2)) +
+  geom_text(y = 1.5, x = log10(10000), label = expression(10^4)) +
+  geom_text(y = 1.5, x = log10(1000000), label = expression(10^6)) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())+
   theme(axis.title.y=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank())
-ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 10, height = 8, dpi = 500,bg = "white")
+ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 6, height = 5, dpi = 500,bg = "white")
 
 
 

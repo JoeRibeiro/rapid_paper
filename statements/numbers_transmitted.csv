@@ -1,6 +1,6 @@
 "","x"
 "1","The mean number of particles not photographed during the Outside Sampling Period was 299451.7 and during the Within Sampling Period was 206271.83 . The Wilcoxon rank-sum test yielded a p-value of 0 , indicating a significant difference between the periods."
-"2","17062654 particles were classified and statistics for 14848265 of these were successfully sent to the dashboard, a transmission success rate of 87.02 %"
+"2","17062654 particles were classified and statistics for 14846566 of these were successfully sent to the dashboard, a transmission success rate of 87.01 %"
 "3","The majority of particles were classified as detritus (48.3%)  followed by copepods (33.3%) and non-copepods (18.4%), in line with expectations"
 "4","Over the 7 days and 5 hours duration, 73 hours were identified as 'downtime' where the dashboard did not receive any data for over 2 minutes. This is equal to a downtime of 42%"
 "5","Over the 244 bins that were compared between 17th-19th May, the jetson edge-AI computer classified 2.3 million particles, whilst during these same ten minute time bins, post-processing classified 15 million particles. The jetson edge-AI computer classified 0.8 million particles as copepods, whilst post-processing classified 0.6 million particles as copepods."
