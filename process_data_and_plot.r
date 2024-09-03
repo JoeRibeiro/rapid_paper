@@ -172,11 +172,19 @@ imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime,
 imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photographed` + imager_hits_misses$`Particles not photographed (missed)`
 
 # Imager seen (replacement for code below):
-imager_seen_new = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/classifications_to_nearest_pixel.csv")
-# Pivot wider
-wide_format <- imager_seen_new %>%  tidyr::pivot_wider(    names_from = Predicted.Class,    values_from = count,    values_fn = sum  )
-imager_seen <- aggregate(. ~ Image.DateTime, data = wide_format, sum)
+imager_seen = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/classifications_to_nearest_pixel.csv")
+# Downgrade from 1 min to 10-bin to fit in with flow of old code
 imager_seen$Datetime <- ymd_hms(imager_seen$Image.DateTime)
+imager_seen$Datetime <- floor_date(imager_seen$Datetime, unit = "10 minutes")  # Round to nearest 5 minutes
+imager_seen$Datetime <- imager_seen$Datetime + hours(1)
+imager_seen$Image.DateTime <- NULL
+imager_seen$object_length <- NULL
+imager_seen$Latitude <- NULL
+imager_seen$Longitude <- NULL
+imager_seen <- aggregate(. ~ Datetime + Predicted.Class , data = imager_seen, sum)
+# Pivot wider
+imager_seen <- imager_seen %>%  tidyr::pivot_wider(    names_from = Predicted.Class,    values_from = count,    values_fn = sum  )
+imager_seen$Datetime <- ymd_hms(imager_seen$Datetime)
 imager_seen=dplyr::rename(imager_seen,`Copepod Count`=copepod)
 imager_seen=dplyr::rename(imager_seen,`Non-Copepod Count`=noncopepod)
 imager_seen=dplyr::rename(imager_seen,`Detritus Count`=detritus)
@@ -209,14 +217,14 @@ imager_seen_long$Category <- factor(imager_seen_long$Category, levels = c("Non-C
 imager_seen_data=ggplot(imager_seen_long, aes(x = Datetime, y = Proportion, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Imager Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
-  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
-ggsave(file.path(figures_directory, "Imager_proportion_plot_19th_may.png"), imager_seen_data, width = 10, height = 4, dpi = 500, bg = "white")
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "Imager_proportion_plot_21th_may.png"), imager_seen_data, width = 10, height = 4, dpi = 500, bg = "white")
 
 imager_seen_data2=ggplot(imager_seen_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Imager Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
-  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
-ggsave(file.path(figures_directory, "Imager_data_plot_19th_may.png"), imager_seen_data2, width = 10, height = 4, dpi = 500, bg = "white")
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "Imager_data_plot_21th_may.png"), imager_seen_data2, width = 10, height = 4, dpi = 500, bg = "white")
 
 
 
@@ -574,14 +582,14 @@ ggsave(file.path(figures_directory, "mapplotclass2.png"), mapclass, width = 10, 
 dashboarddata=ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Dashboard Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
-  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
-ggsave(file.path(figures_directory, "dashboard_proportion_plot_19th_May.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "dashboard_proportion_plot_21th_May.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
 dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
-  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-19 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
-ggsave(file.path(figures_directory, "dashboard_data_plot_19th_May.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
+  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
+ggsave(file.path(figures_directory, "dashboard_data_plot_21th_May.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
 
 
 
