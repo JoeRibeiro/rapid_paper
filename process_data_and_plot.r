@@ -725,12 +725,51 @@ merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, a
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
 
+# Perform chi square
+counts_azure <- c(  merged_imager_seen_v_dashboard$`Copepod Count`,
+                    merged_imager_seen_v_dashboard$`Non-Copepod Count`,
+                    merged_imager_seen_v_dashboard$`Detritus Count`
+)
+counts_edgeai <- c(  merged_imager_seen_v_dashboard$jetsoncopepodCount,
+                     merged_imager_seen_v_dashboard$jetsonnonCopepodCount,
+                     merged_imager_seen_v_dashboard$jetsondetritusCount
+)
+comparison_df <- data.frame(  Category = rep(c("Copepod", "Non-Copepod", "Detritus"), 2),
+                              Sensor = rep(c("azure", "edgeai"), each = 3),
+                              Count = c(counts_azure, counts_edgeai)
+)
+contingency_table <- xtabs(Count ~ Category + Sensor, data = comparison_df)
+print(chisq.test(contingency_table))
 
-# Do a K-S test for the columns merged_imager_seen_v_dashboard$`Copepod Count`  vs merged_imager_seen_v_dashboard$jetsoncopepodCount
+
 # Perform K-S test
-ks_test_result <- ks.test(merged_imager_seen_v_dashboard$`Copepod Count`, 
-                          merged_imager_seen_v_dashboard$jetsoncopepodCount)
-print(ks_test_result)
+# merged_imager_seen_v_dashboard$`Particles total jetson` <- merged_imager_seen_v_dashboard$jetsoncopepodCount+merged_imager_seen_v_dashboard$jetsondetritusCount+merged_imager_seen_v_dashboard$jetsonnonCopepodCount
+# 
+# merged_imager_seen_v_dashboard$Copepod_Proportion <- 
+#   merged_imager_seen_v_dashboard$`Copepod Count` / merged_imager_seen_v_dashboard$`Particles total`
+# 
+# merged_imager_seen_v_dashboard$Non_Copepod_Proportion <- 
+#   merged_imager_seen_v_dashboard$`Non-Copepod Count` / merged_imager_seen_v_dashboard$`Particles total`
+# 
+# merged_imager_seen_v_dashboard$Detritus_Proportion <- 
+#   merged_imager_seen_v_dashboard$`Detritus Count` / merged_imager_seen_v_dashboard$`Particles total`
+# 
+# merged_imager_seen_v_dashboard$jetsoncopepodproportion <- 
+#   merged_imager_seen_v_dashboard$jetsoncopepodCount / merged_imager_seen_v_dashboard$`Particles total jetson`
+# 
+# merged_imager_seen_v_dashboard$jetsonnoncopepodproportion <- 
+#   merged_imager_seen_v_dashboard$jetsonnonCopepodCount / merged_imager_seen_v_dashboard$`Particles total jetson`
+# 
+# merged_imager_seen_v_dashboard$jetsondetritusproportion <- 
+#   merged_imager_seen_v_dashboard$jetsondetritusCount / merged_imager_seen_v_dashboard$`Particles total jetson`
+# 
+# 
+# print(ks.test(merged_imager_seen_v_dashboard$`Copepod_Proportion`, 
+#                           merged_imager_seen_v_dashboard$jetsoncopepodproportion))
+# print(ks.test(merged_imager_seen_v_dashboard$`Non_Copepod_Proportion`, 
+#                           merged_imager_seen_v_dashboard$jetsoncopepodproportion))
+# print(ks.test(merged_imager_seen_v_dashboard$`Detritus_Proportion`, 
+#                           merged_imager_seen_v_dashboard$jetsondetritusproportion))
 
 
 
