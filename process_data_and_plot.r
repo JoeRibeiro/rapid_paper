@@ -690,9 +690,9 @@ merged_imager_seen_v_dashboard$`Missed copepod counts` = merged_imager_seen_v_da
 merged_imager_seen_v_dashboard$`Edge-AI copepod count` = merged_imager_seen_v_dashboard$`jetsoncopepodCount` 
 merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
 
-merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(rowname, `Missed copepod counts`, `Edge-AI copepod count`) %>% pivot_longer(cols = c(`Missed copepod counts`, `Edge-AI copepod count`),   names_to = "Category",  values_to = "Count") %>%  group_by(rowname)
+merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(Datetime, `Missed copepod counts`, `Edge-AI copepod count`) %>% pivot_longer(cols = c(`Missed copepod counts`, `Edge-AI copepod count`),   names_to = "Category",  values_to = "Count") %>%  group_by(Datetime)
 merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed copepod counts", "Edge-AI copepod count"))
-merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = rowname, y = Count, fill = Category)) +
+merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Edge AI vs post-processing counts over time",       x = "Bin",       y = "Count",       fill = "Category") +
   theme_minimal()
@@ -704,9 +704,9 @@ merged_imager_seen_v_dashboard$`Missed detritus counts` = merged_imager_seen_v_d
 merged_imager_seen_v_dashboard$`Edge-AI detritus count` = merged_imager_seen_v_dashboard$`jetsondetritusCount` 
 merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
 
-merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(rowname, `Missed detritus counts`, `Edge-AI detritus count`) %>% pivot_longer(cols = c(`Missed detritus counts`, `Edge-AI detritus count`),   names_to = "Category",  values_to = "Count") %>%  group_by(rowname)
+merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(Datetime, `Missed detritus counts`, `Edge-AI detritus count`) %>% pivot_longer(cols = c(`Missed detritus counts`, `Edge-AI detritus count`),   names_to = "Category",  values_to = "Count") %>%  group_by(Datetime)
 merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed detritus counts", "Edge-AI detritus count"))
-merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = rowname, y = Count, fill = Category)) +
+merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Edge AI vs post-processing counts over time",       x = "Bin",       y = "Count",       fill = "Category") +
   theme_minimal()
@@ -719,9 +719,9 @@ merged_imager_seen_v_dashboard$`Missed non-copepod counts` = merged_imager_seen_
 merged_imager_seen_v_dashboard$`Edge-AI non-copepod count` = merged_imager_seen_v_dashboard$`jetsonnonCopepodCount` 
 merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
 
-merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(rowname, `Missed non-copepod counts`, `Edge-AI non-copepod count`) %>% pivot_longer(cols = c(`Missed non-copepod counts`, `Edge-AI non-copepod count`),   names_to = "Category",  values_to = "Count") %>%  group_by(rowname)
+merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  select(Datetime, `Missed non-copepod counts`, `Edge-AI non-copepod count`) %>% pivot_longer(cols = c(`Missed non-copepod counts`, `Edge-AI non-copepod count`),   names_to = "Category",  values_to = "Count") %>%  group_by(Datetime)
 merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed non-copepod counts", "Edge-AI non-copepod count"))
-merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = rowname, y = Count, fill = Category)) +
+merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "Edge AI vs post-processing counts over time",       x = "Bin",       y = "Count",       fill = "Category") +
   theme_minimal()
@@ -777,7 +777,7 @@ print(chisq.test(contingency_table))
 
 
 
-statement4=paste0("Over the 244 bins that were compared between 17th-19th May, the jetson edge-AI computer classified ",round(as.numeric(total_edge_ai_classfications),1)," million particles, whilst during these same ten minute time bins, post-processing classified ", round(as.numeric(total_post_processed_classfications),1)," million particles. The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsoncopepodCount`,na.rm=T))/1000000,1)," million particles as copepods, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Copepod Count`,na.rm=T)/1000000),1)," million particles as copepods.")
+statement4=paste0("Over the ",nrow(merged_imager_seen_v_dashboard)," bins that were compared between ",min(merged_imager_seen_v_dashboard$Datetime)," - ", max(merged_imager_seen_v_dashboard$Datetime),", the jetson edge-AI computer classified ",round(as.numeric(total_edge_ai_classfications),1)," million particles, whilst during these same ten minute time bins, post-processing classified ", round(as.numeric(total_post_processed_classfications),1)," million particles. The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsoncopepodCount`,na.rm=T))/1000000,1)," million particles as copepods, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Copepod Count`,na.rm=T)/1000000),1)," million particles as copepods.")
 statement5=paste0("During this same time, the jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsondetritusCount`,na.rm=T))/1000000,1)," million particles as detritus, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Detritus Count`,na.rm=T)/1000000),1)," million particles as detritus.")
 statement6=paste0("The jetson edge-AI computer classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`,na.rm=T))/1000000,1)," million particles as non-copepod, whilst post-processing classified ",round(as.numeric(sum(merged_imager_seen_v_dashboard$`Non-Copepod Count`,na.rm=T)/1000000),1)," million particles as non-copepod.")
 
