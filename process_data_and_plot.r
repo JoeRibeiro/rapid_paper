@@ -359,15 +359,23 @@ ggsave(file.path(figures_directory, "scatter_jetson_dashboard.png"), plotfig, wi
 
 #
 plot3 <- ggplot(merged_data, aes(x= log10(`Particles photographed`) , y = log10(`Particles classified`))) +
-  geom_point() +
+  geom_point(size=0.1) +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(title = "Scatter Plot of particles photographed vs particles classified (per minute)",
-       x =  "log(Photographed Particles (per minute))",
+  labs(x =  "log(Photographed Particles (per minute))",
        y ="log(Classified Particles (per minute))")+
-  xlim(2,max(log10(merged_data$`Particles photographed`)+1,na.rm = T))+
-  ylim(2,max(log10(merged_data$`Particles photographed`)+1,na.rm = T))
+  xlim(2,max(log10(merged_data$`Particles photographed`),na.rm = T))+
+  ylim(2,max(log10(merged_data$`Particles photographed`),na.rm = T))+
+  coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$`Particles photographed`), na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$`Particles photographed`), na.rm = TRUE)),# This focuses the x-axis on the range of interest
+                  clip = 'off')+
+  geom_text(x = 1.6, y = log10(100), label = expression(10^2)) +
+  geom_text(x = 1.8, y = log10(1000), label = expression(10^3)) +
+  geom_text(x = 1.9, y = log10(10000), label = expression(10^4)) +
+  geom_text(y = 1.5, x = log10(100), label = expression(10^2)) +
+  geom_text(y = 1.5, x = log10(1000), label = expression(10^3)) +
+  geom_text(y = 1.5, x = log10(10000), label = expression(10^4)) 
+  
 
-ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 10, height = 8, dpi = 500,bg = "white")
+ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 5, height = 5, dpi = 500,bg = "white")
 
 
 plot4 <- ggplot(imager_hits_misses, aes(x = log10(`Particles total`), y = log10(`Particles photographed`))) +
