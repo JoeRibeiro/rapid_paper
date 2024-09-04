@@ -179,15 +179,30 @@ imager_seen$Datetime <- floor_date(imager_seen$Datetime, unit = "10 minutes")  #
 imager_seen$Datetime <- imager_seen$Datetime + hours(1)
 imager_seen$Image.DateTime <- NULL
 imager_seen$object_length <- NULL
-imager_seen$Latitude <- NULL
-imager_seen$Longitude <- NULL
-imager_seen <- aggregate(. ~ Datetime + Predicted.Class , data = imager_seen, sum)
+#imager_seen$Latitude <- NULL
+#imager_seen$Longitude <- NULL
+#imager_seen <- aggregate(. ~ Datetime + Predicted.Class , data = imager_seen, sum)
 # Pivot wider
-imager_seen <- imager_seen %>%  tidyr::pivot_wider(    names_from = Predicted.Class,    values_from = count,    values_fn = sum  )
+
+
+imager_seen <- imager_seen %>% 
+  tidyr::pivot_wider(
+    names_from = Predicted.Class,
+    values_from = c(count, Latitude, Longitude),
+    values_fn = list(
+      count = sum,
+      Latitude = mean,
+      Longitude = mean
+    )
+  )
+
+
+
+
 imager_seen$Datetime <- ymd_hms(imager_seen$Datetime)
-imager_seen=dplyr::rename(imager_seen,`Copepod Count`=copepod)
-imager_seen=dplyr::rename(imager_seen,`Non-Copepod Count`=noncopepod)
-imager_seen=dplyr::rename(imager_seen,`Detritus Count`=detritus)
+imager_seen=dplyr::rename(imager_seen,`Copepod Count`=count_copepod)
+imager_seen=dplyr::rename(imager_seen,`Non-Copepod Count`=count_noncopepod)
+imager_seen=dplyr::rename(imager_seen,`Detritus Count`=count_detritus)
 imager_seen$`Particles total` <- imager_seen$`Copepod Count` + imager_seen$`Non-Copepod Count` + imager_seen$`Detritus Count`
 
 
@@ -683,7 +698,7 @@ merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  selec
 merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed copepod counts", "Edge-AI copepod count"))
 merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "Edge AI vs post-processing counts over time",       x = "Datetime",       y = "Count",       fill = "Category") +
+  labs(title = "",       x = "Datetime",       y = "Count",       fill = "Category") +
   theme_minimal()
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -712,8 +727,9 @@ merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dash
 
 merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "Edge AI vs post-processing counts over time", x = "Bin", y = "Count", fill = "Category") +
-  theme_minimal() + expand_limits(y=max(y_limits)+50000)
+  labs(title = "", x = "", y = "", fill = "Category") +
+  theme_minimal() + expand_limits(y=275000)+
+  theme(legend.position = "none")
 
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -731,8 +747,9 @@ merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dash
 
 merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "Edge AI vs post-processing counts over time", x = "Bin", y = "Count", fill = "Category") +
-  theme_minimal() + expand_limits(y=max(y_limits)+50000)
+  labs(title = "", x = "", y = "", fill = "Category") +
+  theme_minimal() + expand_limits(y=275000)+
+  theme(legend.position = "none")
 
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_detritus.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -750,8 +767,9 @@ merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dash
 
 merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "Edge AI vs post-processing counts over time", x = "Bin", y = "Count", fill = "Category") +
-  theme_minimal() + expand_limits(y=max(y_limits)+50000)
+  labs(title = "", x = "", y = "", fill = "Category") +
+  theme_minimal() + expand_limits(y=275000)+
+  theme(legend.position = "none")
 
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -817,8 +835,47 @@ statement8=paste0("average particle and image rates of ",(sum(imager_hits_misses
 
 
 
+# Another plot for Sophie
+get_dominant_class <- function(row) {counts <- row[c("Copepod Count", "Non-Copepod Count", "Detritus Count")]
+class_names <- c("copepod", "nonCopepod", "detritus")
+dominant_class <- class_names[which.max(counts)]
+return(dominant_class)}
+imager_seen$`Dominant class` <- apply(imager_seen, 1, get_dominant_class)
+
+
+mapclass <- ggplot(world, aes(long, lat)) +  
+  geom_map(map = world, aes(map_id = region), fill = 'darkgreen', color = "black") +
+  coord_quickmap() +
+  geom_point(data=imager_seen, aes(x = Longitude_copepod, y = Latitude_copepod, color = `Dominant class`), size = 2, alpha=0.1) +
+  labs(x = 'Longitude', y = 'Latitude') +
+  theme_minimal()+
+  theme(panel.grid.major = element_line(color = "grey", size = 0.5),
+        panel.grid.minor = element_blank()) +
+  xlim(min(dashboard_filtered$Longitude) - 2, max(dashboard_filtered$Longitude) + 2) +
+  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2) +
+  geom_text(data=day_change_locations, aes(x = Longitude, y = Latitude, label = day), color = "red", size = 5, vjust = -1)
+
+ggsave(file.path(figures_directory, "mapplotclassazure.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
+
+
+
+
+
 
 write.csv(c(summary_sentence,statement1,statement2,statement3,statement4,statement5,statement6,statement7,statement8),file.path(statements_directory, "numbers_transmitted.csv"))
 
+
+library(magick)
+images <- lapply(c("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/merged_imager_seen_v_dashboard_count_plot_nox_copepod.png",
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/merged_imager_seen_v_dashboard_count_plot_nox_detritus.png",
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png",
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotclassazure.png",
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotcopepod2.png"), image_read)
+
+top_row <- image_append(c(images[[1]], images[[4]]), stack = FALSE)
+middle_row <- image_append(c(images[[2]], images[[5]]), stack = FALSE)
+bottom_row <- image_append(c(images[[3]]), stack = FALSE)
+final_image <- image_append(c(top_row, middle_row, bottom_row), stack = TRUE)
+image_write(final_image, "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/combined_image.png")
 
 
