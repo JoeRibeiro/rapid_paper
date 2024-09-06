@@ -569,9 +569,9 @@ map <- ggplot(world, aes(long, lat)) +
 
 ggsave(file.path(figures_directory, "mapplotcopepod.png"), map, width = 10, height = 8, dpi = 500, bg = "white")
 
-map <- map +
-  xlim(-1.5, 0) +
-  ylim(54.2, 55.7)
+mapclass <- mapclass +
+  xlim(-1.33,-0.6) +
+  ylim(54.7, 55.55)
 
 ggsave(file.path(figures_directory, "mapplotcopepod2.png"), map, width = 10, height = 8, dpi = 500, bg = "white")
 
@@ -580,7 +580,7 @@ ggsave(file.path(figures_directory, "mapplotcopepod2.png"), map, width = 10, hei
 mapclass <- ggplot(world, aes(long, lat)) +  
   geom_map(map = world, aes(map_id = region), fill = 'darkgreen', color = "black") +
   coord_quickmap() +
-  geom_point(data=dashboard, aes(x = Longitude, y = Latitude, color = `Dominant class`), size = 2, alpha=0.1) +
+  geom_point(data=dashboard, aes(x = Longitude, y = Latitude, color = `Dominant class`), size = 2, alpha=0.15) +
   labs(x = 'Longitude', y = 'Latitude') +
   theme_minimal()+
   theme(panel.grid.major = element_line(color = "grey", size = 0.5),
@@ -592,8 +592,8 @@ mapclass <- ggplot(world, aes(long, lat)) +
 ggsave(file.path(figures_directory, "mapplotclass.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
 
 mapclass <- mapclass +
-  xlim(-1.5, 0) +
-  ylim(54.2, 55.7)
+  xlim(-1.33,-0.6) +
+  ylim(54.7, 55.55)
 
 ggsave(file.path(figures_directory, "mapplotclass2.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
 
