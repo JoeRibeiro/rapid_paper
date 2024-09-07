@@ -172,13 +172,14 @@ imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime,
 imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photographed` + imager_hits_misses$`Particles not photographed (missed)`
 
 # Imager seen (replacement for code below):
-imager_seen = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/classifications_to_nearest_pixel.csv")
+imager_seen = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/combined_maybe_final.csv")
 # Downgrade from 1 min to 10-bin to fit in with flow of old code
 imager_seen$Datetime <- ymd_hms(imager_seen$Image.DateTime)
-imager_seen$Datetime <- floor_date(imager_seen$Datetime, unit = "10 minutes")  # Round to nearest 5 minutes
-imager_seen$Datetime <- imager_seen$Datetime + hours(1)
 imager_seen$Image.DateTime <- NULL
 imager_seen$object_length <- NULL
+retain = imager_seen
+imager_seen$Datetime <- floor_date(imager_seen$Datetime, unit = "10 minutes")  # Round to nearest 5 minutes
+imager_seen$Datetime <- imager_seen$Datetime + hours(1)
 #imager_seen$Latitude <- NULL
 #imager_seen$Longitude <- NULL
 #imager_seen <- aggregate(. ~ Datetime + Predicted.Class , data = imager_seen, sum)
@@ -196,6 +197,17 @@ imager_seen <- imager_seen %>%
     )
   )
 
+
+imager_seen_unbinned <- retain %>% 
+  tidyr::pivot_wider(
+    names_from = Predicted.Class,
+    values_from = c(count, Latitude, Longitude),
+    values_fn = list(
+      count = sum,
+      Latitude = mean,
+      Longitude = mean
+    )
+  )
 
 
 
@@ -260,7 +272,7 @@ agg_imager <- imager_hits_misses %>%
 # Merge the aggregated dataframes on rounded_datetime
 merged_data <- left_join(agg_jetson_sent, agg_imager, by = "rounded_datetime_5")
 merged_data <- left_join(merged_data, agg_jetson_seen, by = "rounded_datetime_5")
-# 5 minutes rate to 1 minute
+## 5 minutes rate to 1 minute
 merged_data$total_particles_jetson_sent = merged_data$total_particles_jetson_sent/5
 merged_data$`Particles total` = merged_data$`Particles total`/5
 merged_data$`Particles photographed` = merged_data$`Particles photographed`/5
@@ -346,14 +358,16 @@ plot2 <- ggplot() +
 ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 4, dpi = 500,bg = "white")
 
 
+
+
 limit = max(merged_data$`Particles photographed`, na.rm = TRUE)
   file_name <- paste0("scatter_jetson.png")
   plot <- ggplot(merged_data, aes(x = `Particles photographed` , y = `Particles classified`)) +
     geom_point() +
     geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
     labs(title = "Scatter Plot of photographed particles vs number particles classified (per minute)",
-         x = "Photographed Particles (Imager)",
-         y = "Classified Particles (Jetson)") +
+         x = "Images received by Jetson Edge-AI, min^-1",
+         y = "Images classified by Jetson Edge-AI, min^-1") +
     xlim(0.0000001, limit) +
     ylim(0.0000001, limit)
   ggsave(file.path(figures_directory, file_name), plot, width = 10, height = 8, dpi = 500, bg = "white")
@@ -365,8 +379,9 @@ limit = max(merged_data$`Particles photographed`, na.rm = TRUE)
 plotfig <- ggplot(merged_data, aes(x= `Particles classified` , y = total_particles_jetson_sent)) +
   geom_point(size=0.1) +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(       x =  "Total particles classified (per minute)",
-       y ="Total particles transmitted to dashboard database (per minute)")
+  labs(
+    x = expression(  "Images classified by Edge-AI, min"^{-1}),
+       y =expression(  "Images received by dashboard, min"^{-1}))
 
 ggsave(file.path(figures_directory, "scatter_jetson_dashboard.png"), plotfig, width = 5, height = 5, dpi = 500,bg = "white")
 # There is one instance where the summary packet is computed within the second 2024-05-22 10:49:59 yet the attempted data transmission occurs in the second 10:50:00. This causes the data point to fall to the left of the line for this summary packet.
@@ -376,8 +391,10 @@ ggsave(file.path(figures_directory, "scatter_jetson_dashboard.png"), plotfig, wi
 plot3 <- ggplot(merged_data, aes(x= log10(`Particles photographed`) , y = log10(`Particles classified`))) +
   geom_point(size=0.1) +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(x =  "log(Photographed Particles (per minute))",
-       y ="log(Classified Particles (per minute))")+
+  labs(
+    x = expression("Images received by Jetson Edge-AI, min"^{-1}),
+    y = expression("Images classified by Jetson Edge-AI, min"^{-1})
+  )+
   xlim(2,max(log10(merged_data$`Particles photographed`),na.rm = T))+
   ylim(2,max(log10(merged_data$`Particles photographed`),na.rm = T))+
   coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$`Particles photographed`), na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$`Particles photographed`), na.rm = TRUE)),# This focuses the x-axis on the range of interest
@@ -388,7 +405,6 @@ plot3 <- ggplot(merged_data, aes(x= log10(`Particles photographed`) , y = log10(
   geom_text(y = 1.5, x = log10(100), label = expression(10^2)) +
   geom_text(y = 1.5, x = log10(1000), label = expression(10^3)) +
   geom_text(y = 1.5, x = log10(10000), label = expression(10^4)) 
-  
 
 ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 5, height = 5, dpi = 500,bg = "white")
 
@@ -396,8 +412,10 @@ ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 5, hei
 plot4 <- ggplot(imager_hits_misses, aes(x = log10(`Particles total`), y = log10(`Particles photographed`))) +
   geom_point(size = 0.1) +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  labs(x = "Total Particles (Imager)",
-       y = "Photographed Particles (Imager)") +
+  labs(
+    x = expression("Particles detected, min"^{-1}),
+    y = expression('Particles photographed "Hits", min'^{-1})
+  )+
   coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$`Particles total`) + 1, na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$`Particles total`) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
                   clip = 'off') +
   geom_text(x = 1.6, y = log10(100), label = expression(10^2)) +
@@ -405,13 +423,7 @@ plot4 <- ggplot(imager_hits_misses, aes(x = log10(`Particles total`), y = log10(
   geom_text(x = 1.9, y = log10(1000000), label = expression(10^6)) +
   geom_text(y = 1.5, x = log10(100), label = expression(10^2)) +
   geom_text(y = 1.5, x = log10(10000), label = expression(10^4)) +
-  geom_text(y = 1.5, x = log10(1000000), label = expression(10^6)) +
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())+
-  theme(axis.title.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank())
+  geom_text(y = 1.5, x = log10(1000000), label = expression(10^6))
 ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 6, height = 5, dpi = 500,bg = "white")
 
 
@@ -537,7 +549,7 @@ statement3=paste0("Over the 7 days and 5 hours duration, ",round(as.numeric(tota
 
 # Map
 get_dominant_class <- function(row) {counts <- row[c("copepodCount", "nonCopepodCount", "detritusCount")]
-  class_names <- c("copepod", "nonCopepod", "detritus")
+  class_names <- c("Copepod", "Non-copepod", "Detritus")
   dominant_class <- class_names[which.max(counts)]
   return(dominant_class)}
 dashboard$`Dominant class` <- apply(dashboard, 1, get_dominant_class)
@@ -569,7 +581,7 @@ map <- ggplot(world, aes(long, lat)) +
 
 ggsave(file.path(figures_directory, "mapplotcopepod.png"), map, width = 10, height = 8, dpi = 500, bg = "white")
 
-mapclass <- mapclass +
+map <- map +
   xlim(-1.33,-0.6) +
   ylim(54.7, 55.55)
 
@@ -836,17 +848,18 @@ statement8=paste0("average particle and image rates of ",(sum(imager_hits_misses
 
 
 # Another plot for Sophie
-get_dominant_class <- function(row) {counts <- row[c("Copepod Count", "Non-Copepod Count", "Detritus Count")]
-class_names <- c("copepod", "nonCopepod", "detritus")
+get_dominant_class <- function(row) {counts <- row[c("count_copepod", "count_noncopepod", "count_detritus")]
+class_names <- c("Copepod", "Non copepod", "Detritus")
 dominant_class <- class_names[which.max(counts)]
 return(dominant_class)}
-imager_seen$`Dominant class` <- apply(imager_seen, 1, get_dominant_class)
+#imager_seen$`Dominant class` <- apply(imager_seen, 1, get_dominant_class)
+imager_seen_unbinned$`Dominant class` <- apply(imager_seen_unbinned, 1, get_dominant_class)
 
 
 mapclass <- ggplot(world, aes(long, lat)) +  
   geom_map(map = world, aes(map_id = region), fill = 'darkgreen', color = "black") +
   coord_quickmap() +
-  geom_point(data=imager_seen, aes(x = Longitude_copepod, y = Latitude_copepod, color = `Dominant class`), size = 2, alpha=0.1) +
+  geom_point(data=imager_seen_unbinned, aes(x = Longitude_copepod, y = Latitude_copepod, color = `Dominant class`), size = 2, alpha=0.5) +
   labs(x = 'Longitude', y = 'Latitude') +
   theme_minimal()+
   theme(panel.grid.major = element_line(color = "grey", size = 0.5),
@@ -857,7 +870,11 @@ mapclass <- ggplot(world, aes(long, lat)) +
 
 ggsave(file.path(figures_directory, "mapplotclassazure.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
 
+mapclass <- mapclass +
+  xlim(-1.33,-0.6) +
+  ylim(54.7, 55.55)
 
+ggsave(file.path(figures_directory, "mapplotclassazure2.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
 
 
 
