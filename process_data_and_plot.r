@@ -172,7 +172,7 @@ imager_hits_misses$rounded_datetime_5 <- floor_date(imager_hits_misses$Datetime,
 imager_hits_misses$`Particles total` <- imager_hits_misses$`Particles photographed` + imager_hits_misses$`Particles not photographed (missed)`
 
 # Imager seen (replacement for code below):
-imager_seen = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/combined_maybe_final.csv")
+imager_seen = read.csv("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/data/azureblobsums_by_joe_not_Noushin/combined_classifications_to_nearest_pixel.csv")
 # Downgrade from 1 min to 10-bin to fit in with flow of old code
 imager_seen$Datetime <- ymd_hms(imager_seen$Image.DateTime)
 imager_seen$Image.DateTime <- NULL
@@ -711,7 +711,8 @@ merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dash
 merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "",       x = "Datetime",       y = "Count",       fill = "Category") +
-  theme_minimal()
+  theme_minimal()+
+  scale_y_log10()
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
 # Define the x-axis and y-axis limits based on the entire dataset
@@ -740,8 +741,9 @@ merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dash
 merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "", x = "", y = "", fill = "Category") +
-  theme_minimal() + expand_limits(y=275000)+
-  theme(legend.position = "none")
+  theme_minimal() + 
+  theme(legend.position = "none")+
+  scale_y_log10() + expand_limits(y=2750000)
 
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -760,8 +762,9 @@ merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dash
 merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "", x = "", y = "", fill = "Category") +
-  theme_minimal() + expand_limits(y=275000)+
-  theme(legend.position = "none")
+  theme_minimal() +
+  theme(legend.position = "none")+
+  scale_y_log10()+ expand_limits(y=2750000)
 
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_detritus.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -780,8 +783,9 @@ merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dash
 merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "", x = "", y = "", fill = "Category") +
-  theme_minimal() + expand_limits(y=275000)+
-  theme(legend.position = "none")
+  theme_minimal() +
+  theme(legend.position = "none")+
+  scale_y_log10()+ expand_limits(y=2750000)
 
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -795,7 +799,7 @@ counts_edgeai <- c(  merged_imager_seen_v_dashboard$jetsoncopepodCount,
                      merged_imager_seen_v_dashboard$jetsondetritusCount
 )
 comparison_df <- data.frame(  Category = rep(c("Copepod", "Non-Copepod", "Detritus"), 2),
-                              Sensor = rep(c("azure", "edgeai"), each = 3),
+                              Sensor = rep(c("Azure", "Edge AI"), each = 3),
                               Count = c(counts_azure, counts_edgeai)
 )
 contingency_table <- xtabs(Count ~ Category + Sensor, data = comparison_df)
@@ -886,8 +890,8 @@ library(magick)
 images <- lapply(c("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/merged_imager_seen_v_dashboard_count_plot_nox_copepod.png",
                    "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/merged_imager_seen_v_dashboard_count_plot_nox_detritus.png",
                    "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png",
-                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotclassazure.png",
-                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotcopepod2.png"), image_read)
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotclass2.png",
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotclassazure2.png"), image_read)
 
 top_row <- image_append(c(images[[1]], images[[4]]), stack = FALSE)
 middle_row <- image_append(c(images[[2]], images[[5]]), stack = FALSE)
@@ -895,4 +899,41 @@ bottom_row <- image_append(c(images[[3]]), stack = FALSE)
 final_image <- image_append(c(top_row, middle_row, bottom_row), stack = TRUE)
 image_write(final_image, "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/combined_image.png")
 
+
+
+summary_stats <- comparison_df %>%
+  group_by(Category, Sensor) %>%
+  summarise(
+    Mean = mean(Count),
+    Median = median(Count),
+    SD = sd(Count),
+    Min = min(Count),
+    Max = max(Count)
+  )
+library(tidyr)
+
+summary_stats_wide <- summary_stats %>%
+  pivot_wider(names_from = Sensor, values_from = c(Mean, Median, SD, Min, Max))
+
+
+
+# Create boxplots for counts grouped by Category and Sensor
+plotbp <- ggplot(comparison_df, aes(x = Category, y = Count, fill = Sensor)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Counts between Azure and EdgeAI Sensors",
+       x = "Category",
+       y = "Count") +
+  theme_minimal() +
+  ylim(0, 30000) +
+  theme(
+    plot.title = element_text(size = 20),
+    axis.title.x = element_text(size = 16),
+    axis.title.y = element_text(size = 16),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(size = 14),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16)
+  )
+
+ggsave(file.path(figures_directory, "boxlotazurejetson.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
 
