@@ -1015,3 +1015,83 @@ plotbp <- ggplot(comparison_df, aes(x = Category, y = Count, fill = Sensor)) +
 
 ggsave(file.path(figures_directory, "boxlotazurejetson.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
 
+
+# Redo this figure for Sophie so that it is for periods when moving and stationary
+merged_imager_seen_v_dashboard <- merged_imager_seen_v_dashboard %>%  mutate(within_a_sampling_period = sapply(Datetime, is_within_a_sampling_period, periods = ship_log))
+
+merged_imager_seen_v_dashboard_stations = merged_imager_seen_v_dashboard[merged_imager_seen_v_dashboard$within_a_sampling_period,]
+merged_imager_seen_v_dashboard_travelling = merged_imager_seen_v_dashboard[!merged_imager_seen_v_dashboard$within_a_sampling_period,]
+
+counts_azure_stn <- c(  merged_imager_seen_v_dashboard_stations$`Copepod Count`,
+                    merged_imager_seen_v_dashboard_stations$`Non-Copepod Count`,
+                    merged_imager_seen_v_dashboard_stations$`Detritus Count`
+)
+counts_edgeai_stn <- c(  merged_imager_seen_v_dashboard_stations$jetsoncopepodCount,
+                     merged_imager_seen_v_dashboard_stations$jetsonnonCopepodCount,
+                     merged_imager_seen_v_dashboard_stations$jetsondetritusCount
+)
+
+counts_azure_trav <- c(  merged_imager_seen_v_dashboard_travelling$`Copepod Count`,
+                    merged_imager_seen_v_dashboard_travelling$`Non-Copepod Count`,
+                    merged_imager_seen_v_dashboard_travelling$`Detritus Count`
+)
+counts_edgeai_trav <- c(  merged_imager_seen_v_dashboard_travelling$jetsoncopepodCount,
+                     merged_imager_seen_v_dashboard_travelling$jetsonnonCopepodCount,
+                     merged_imager_seen_v_dashboard_travelling$jetsondetritusCount
+)
+
+
+comparison_df_trav <- data.frame(  Category = rep(c("Copepod", "Non-Copepod", "Detritus"), 2),
+                                   Sensor = rep(c("Azure", "Edge AI"), each = 3),
+                                   Count = c(counts_azure_trav, counts_edgeai_trav)
+)
+
+comparison_df_stn <- data.frame(  Category = rep(c("Copepod", "Non-Copepod", "Detritus"), 2),
+                                   Sensor = rep(c("Azure", "Edge AI"), each = 3),
+                                   Count = c(counts_azure_stn, counts_edgeai_stn)
+)
+
+
+
+
+plotbp <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = Sensor)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Counts between Azure and EdgeAI Sensors",
+       x = "Category",
+       y = "Count") +
+  theme_minimal() +
+  ylim(0, 30000) +
+  theme(
+    plot.title = element_text(size = 20),
+    axis.title.x = element_text(size = 16),
+    axis.title.y = element_text(size = 16),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(size = 14),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16)
+  )
+
+ggsave(file.path(figures_directory, "boxlotazurejetson_stn.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
+
+
+
+plotbp <- ggplot(comparison_df_trav, aes(x = Category, y = Count, fill = Sensor)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Counts between Azure and EdgeAI Sensors",
+       x = "Category",
+       y = "Count") +
+  theme_minimal() +
+  ylim(0, 30000) +
+  theme(
+    plot.title = element_text(size = 20),
+    axis.title.x = element_text(size = 16),
+    axis.title.y = element_text(size = 16),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(size = 14),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16)
+  )
+
+ggsave(file.path(figures_directory, "boxlotazurejetson_trav.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
+
+# These do not look sufficiently different and there is lots of high values on-station in merged_imager_seen_v_dashboard, which seems wrong. I need to plot the grey bands to check the datetime is in the right time zone
