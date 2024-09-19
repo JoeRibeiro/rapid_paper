@@ -781,49 +781,12 @@ y_limits <- range(
   merged_imager_seen_v_dashboard$`Edge-AI non-copepod count`
 )
 
-# For copepod
-merged_imager_seen_v_dashboard$`Missed copepod counts` = merged_imager_seen_v_dashboard$`Copepod Count` - merged_imager_seen_v_dashboard$`jetsoncopepodCount`
-merged_imager_seen_v_dashboard$`Edge-AI copepod count` = merged_imager_seen_v_dashboard$`jetsoncopepodCount`
-merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
-
-merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>% 
-  select(Datetime, `Missed copepod counts`, `Edge-AI copepod count`) %>% 
-  pivot_longer(cols = c(`Missed copepod counts`, `Edge-AI copepod count`), names_to = "Category", values_to = "Count") %>% 
-  group_by(Datetime)
-
-merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed copepod counts", "Edge-AI copepod count"))
-
-merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
-  geom_bar(stat = "identity") +
-  labs(title = "", x = "", y = "", fill = "Category") +
-  theme_minimal() + 
-  theme(legend.position = "none")+
-  scale_y_log10() + expand_limits(y=2750000)
-
-ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
-
-# For detritus
-merged_imager_seen_v_dashboard$`Missed detritus counts` = merged_imager_seen_v_dashboard$`Detritus Count` - merged_imager_seen_v_dashboard$`jetsondetritusCount`
-merged_imager_seen_v_dashboard$`Edge-AI detritus count` = merged_imager_seen_v_dashboard$`jetsondetritusCount`
-merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
-
-merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>% 
-  select(Datetime, `Missed detritus counts`, `Edge-AI detritus count`) %>% 
-  pivot_longer(cols = c(`Missed detritus counts`, `Edge-AI detritus count`), names_to = "Category", values_to = "Count") %>% 
-  group_by(Datetime)
-
-merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed detritus counts", "Edge-AI detritus count"))
-
-merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
-  geom_bar(stat = "identity") +
-  labs(title = "", x = "", y = "", fill = "Category") +
-  theme_minimal() +
-  theme(legend.position = "none")+
-  scale_y_log10()+ expand_limits(y=2750000)
-
-ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_detritus.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
 # For non-copepod
+merged_imager_seen_v_dashboard$`Edge-AI copepod count` = merged_imager_seen_v_dashboard$`jetsoncopepodCount`
+merged_imager_seen_v_dashboard$`Edge-AI detritus count` = merged_imager_seen_v_dashboard$`jetsondetritusCount`
+merged_imager_seen_v_dashboard$`Edge-AI non-copepod count` = merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`
+
 merged_imager_seen_v_dashboard$Datetime <- as.POSIXct(merged_imager_seen_v_dashboard$Datetime)
 
 merged_data_long <- data.frame(Datetime = seq(from = min(merged_imager_seen_v_dashboard$Datetime), 
@@ -835,18 +798,62 @@ merged_data_long <- data.frame(Datetime = seq(from = min(merged_imager_seen_v_da
                names_to = "Category", values_to = "Count") %>%
   mutate(Category = factor(Category, levels = c("Non-Copepod Count", "Edge-AI non-copepod count")))
 
-ggplot(merged_data_long, aes(x = Datetime, y = Count, color = Category)) +
+merged_imager_seen_v_dashboarddata = ggplot(merged_data_long, aes(x = Datetime, y = Count, color = Category)) +
   geom_line() +
   theme_minimal() +
   scale_y_log10() +
   expand_limits(y = 2750000) +
   theme(legend.position = "none")
 
-
-
-
-
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+
+# For copepod
+merged_imager_seen_v_dashboard$Datetime <- as.POSIXct(merged_imager_seen_v_dashboard$Datetime)
+
+merged_data_long <- data.frame(Datetime = seq(from = min(merged_imager_seen_v_dashboard$Datetime), 
+                                              to = max(merged_imager_seen_v_dashboard$Datetime), 
+                                              by = "10 min")) %>%
+  left_join(merged_imager_seen_v_dashboard, by = "Datetime") %>%
+  mutate(`Edge-AI copepod count` = coalesce(`Edge-AI copepod count`, NA)) %>%
+  pivot_longer(cols = c(`Copepod Count`, `Edge-AI copepod count`), 
+               names_to = "Category", values_to = "Count") %>%
+  mutate(Category = factor(Category, levels = c("Copepod Count", "Edge-AI copepod count")))
+
+
+merged_imager_seen_v_dashboarddata = ggplot(merged_data_long, aes(x = Datetime, y = Count, color = Category)) +
+  geom_line() +
+  theme_minimal() +
+  scale_y_log10() +
+  expand_limits(y = 2750000) +
+  theme(legend.position = "none")
+
+ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+# detritus count
+merged_imager_seen_v_dashboard$Datetime <- as.POSIXct(merged_imager_seen_v_dashboard$Datetime)
+
+merged_data_long <- data.frame(Datetime = seq(from = min(merged_imager_seen_v_dashboard$Datetime), 
+                                              to = max(merged_imager_seen_v_dashboard$Datetime), 
+                                              by = "10 min")) %>%
+  left_join(merged_imager_seen_v_dashboard, by = "Datetime") %>%
+  mutate(`Edge-AI non-copepod count` = coalesce(`Edge-AI detritus count`, NA)) %>%
+  pivot_longer(cols = c(`Detritus Count`, `Edge-AI detritus count`), 
+               names_to = "Category", values_to = "Count") %>%
+  mutate(Category = factor(Category, levels = c("Detritus Count", "Edge-AI detritus count")))
+
+merged_imager_seen_v_dashboarddata = ggplot(merged_data_long, aes(x = Datetime, y = Count, color = Category)) +
+  geom_line() +
+  theme_minimal() +
+  scale_y_log10() +
+  expand_limits(y = 2750000) +
+  theme(legend.position = "none")
+
+ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_detritus.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
 
 # Perform chi square
 counts_azure <- c(  merged_imager_seen_v_dashboard$`Copepod Count`,
@@ -952,14 +959,24 @@ images <- lapply(c("C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figur
                    "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/merged_imager_seen_v_dashboard_count_plot_nox_detritus.png",
                    "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png",
                    "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotclass2.png",
-                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotclassazure2.png"), image_read)
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/mapplotclassazure2.png",
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/combined_image.png",
+                   "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/combined_image1.png"), image_read)
 
-top_row <- image_append(c(images[[1]], images[[4]]), stack = FALSE)
-middle_row <- image_append(c(images[[2]], images[[5]]), stack = FALSE)
+top_row <- image_append(c(images[[1]]), stack = FALSE)
+middle_row <- image_append(c(images[[2]]), stack = FALSE)
 bottom_row <- image_append(c(images[[3]]), stack = FALSE)
 final_image <- image_append(c(top_row, middle_row, bottom_row), stack = TRUE)
 image_write(final_image, "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/combined_image.png")
 
+top_row <- image_append(c(images[[4]],images[[5]]), stack = FALSE)
+final_image <- image_append(c(top_row), stack = TRUE)
+image_write(final_image, "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/combined_image1.png")
+
+top_row <- image_append(c(images[[7]]), stack = FALSE)
+middle_row <- image_append(c(images[[6]]), stack = FALSE)
+final_image <- image_append(c(top_row, middle_row), stack = TRUE)
+image_write(final_image, "C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/rapid_paper/figures/combined_image3.png")
 
 
 summary_stats <- comparison_df %>%
