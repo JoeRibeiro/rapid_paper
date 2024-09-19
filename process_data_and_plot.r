@@ -57,28 +57,36 @@ dashboard_long <- dashboard %>%  select(Datetime, copepodCount, nonCopepodCount,
 dashboard_long$Category <- factor(dashboard_long$Category, levels = c("nonCopepodCount", "detritusCount","copepodCount"))
 dashboarddata=ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
   geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +
   labs(title = "Dashboard Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
   theme_minimal()
 ggsave(file.path(figures_directory, "dashboard_proportion_plot.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
 dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +
   labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
   theme_minimal()
 ggsave(file.path(figures_directory, "dashboard_data_plot.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
 
 
-dashboard_long$Category <- factor(dashboard_long$Category, 
-                                  levels = c( "nonCopepodCount", "detritusCount","copepodCount"),
-                                  labels = c( "Non-Copepod Count", "Detritus Count","Copepod Count"))
-
-dashboarddata3=ggplot(dashboard_long, aes(x = Category, y = Proportion, fill = Category)) +
+dashboarddata3 <- ggplot(dashboard_long, aes(x = Category, y = Proportion, fill = Category)) +
   geom_boxplot() +
-  labs(title = "Summary Statistics of Proportions by Category",       x = "Category",       y = "Proportion of count") +
+  scale_fill_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +  # Use the viridis color palette
+  labs(title = "Summary Statistics of Proportions by Category",       
+       x = "Category",       
+       y = "Proportion of count") +
   theme_minimal() +
-  theme(legend.position = "none")
-ggsave(file.path(figures_directory, "dashboard_data_box.png"), dashboarddata3, width = 10, height = 8, dpi = 500, bg = "white")
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 20, face = "bold"),  # Increase title size
+    axis.title.x = element_text(size = 16),  # Increase X-axis label size
+    axis.title.y = element_text(size = 16),  # Increase Y-axis label size
+    axis.text.x = element_text(size = 14),   # Increase X-axis text size
+    axis.text.y = element_text(size = 14)    # Increase Y-axis text size
+  )
 
+ggsave(file.path(figures_directory, "dashboard_data_box.png"), dashboarddata3, width = 10, height = 8, dpi = 500, bg = "white")
 
 
 # Jetson seen
@@ -348,11 +356,11 @@ plot2 <- ggplot() +
   labs(x = NULL,
        y = "Particle count (Per minute)",
        color = "Legend") +
-  scale_color_manual(values = c("`Particles photographed`" = "blue", "Total particles imager" = "red", "Total particles jetson" = "green")) +
+  scale_color_manual(values = c("`Particles photographed`" = "purple", "Total particles imager" = "yellow", "Total particles jetson" = "green")) +
   theme_minimal() +
-#  xlim(min(imager_hits_misses$Datetime, na.rm = TRUE), max(imager_hits_misses$Datetime, na.rm = TRUE))
-  xlim(min(imager_hits_misses$Datetime,na.rm=T),lubridate::as_datetime("2024-05-18 16:00:00 UTC"))+
- # ylim+
+  xlim(min(imager_hits_misses$Datetime, na.rm = TRUE), max(imager_hits_misses$Datetime, na.rm = TRUE))+
+#  xlim(min(imager_hits_misses$Datetime,na.rm=T),lubridate::as_datetime("2024-05-18 16:00:00 UTC"))+
+  #ylim(0,20000000)
   scale_y_log10(limit = c(100,10000000)) 
 
 ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 10, height = 4, dpi = 500,bg = "white")
@@ -593,6 +601,7 @@ mapclass <- ggplot(world, aes(long, lat)) +
   geom_map(map = world, aes(map_id = region), fill = 'darkgreen', color = "black") +
   coord_quickmap() +
   geom_point(data=dashboard, aes(x = Longitude, y = Latitude, color = `Dominant class`), size = 2, alpha=0.15) +
+  scale_color_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +
   labs(x = 'Longitude', y = 'Latitude') +
   theme_minimal()+
   theme(panel.grid.major = element_line(color = "grey", size = 0.5),
@@ -612,33 +621,79 @@ ggsave(file.path(figures_directory, "mapplotclass2.png"), mapclass, width = 10, 
 
 
 # Create a stacked bar plot of proportions for 19th May only 
-dashboarddata=ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Dashboard Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
-  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
-ggsave(file.path(figures_directory, "dashboard_proportion_plot_21th_May.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+library(viridis)
 
-dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
+# First plot: Proportions over time
+dashboarddata <- ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
-  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
-ggsave(file.path(figures_directory, "dashboard_data_plot_21th_May.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
+  scale_fill_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +  # Apply the viridis color palette
+  labs(title = "Dashboard Proportions Over Time",       
+       x = "Datetime",       
+       y = "Proportion",       
+       fill = "Category") +
+  theme_minimal() + 
+  scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),
+                   date_breaks = "2 hours", 
+                   date_labels = "%H:%M")
+
+ggsave(file.path(figures_directory, "dashboard_proportion_plot_21th_May.png"), 
+       dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+# Second plot: Counts over time
+dashboarddata2 <- ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +  # Apply the viridis color palette
+  labs(title = "Dashboard Counts Over Time",       
+       x = "Datetime",       
+       y = expression("Count, min"^{-1}),       
+       fill = "Category") +
+  theme_minimal() + 
+  scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),
+                   date_breaks = "2 hours", 
+                   date_labels = "%H:%M")
+
+ggsave(file.path(figures_directory, "dashboard_data_plot_21th_May.png"), 
+       dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
 
 
 
 
 # Create a stacked bar plot of proportions for 17th-19th May only 
-dashboarddata=ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Dashboard Proportions Over Time",       x = "Datetime",       y = "Proportion",       fill = "Category") +
-  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-17 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
-ggsave(file.path(figures_directory, "dashboard_proportion_plot_17_19th_May.png"), dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+library(viridis)
 
-dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
+# First plot: Proportions over time for 17th to 19th May
+dashboarddata <- ggplot(dashboard_long, aes(x = Datetime, y = Proportion, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
-  theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-17 00:00:00", "2024-05-19 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
-ggsave(file.path(figures_directory, "dashboard_data_plot_17_19th_May.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
+  scale_fill_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +  # Apply the viridis color palette
+  labs(title = "Dashboard Proportions Over Time",       
+       x = "Datetime",       
+       y = "Proportion",       
+       fill = "Category") +
+  theme_minimal() + 
+  scale_x_datetime(limits = as.POSIXct(c("2024-05-17 00:00:00", "2024-05-19 23:59:59")),
+                   date_breaks = "2 hours", 
+                   date_labels = "%H:%M")
+
+ggsave(file.path(figures_directory, "dashboard_proportion_plot_17_19th_May.png"), 
+       dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
+
+
+# Second plot: Counts over time for 17th to 19th May
+dashboarddata2 <- ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +  # Apply the viridis color palette
+  labs(title = "Dashboard Counts Over Time",       
+       x = "Datetime",       
+       y = expression("Count, min"^{-1}),       
+       fill = "Category") +
+  theme_minimal() + 
+  scale_x_datetime(limits = as.POSIXct(c("2024-05-17 00:00:00", "2024-05-19 23:59:59")),
+                   date_breaks = "2 hours", 
+                   date_labels = "%H:%M")
+
+ggsave(file.path(figures_directory, "dashboard_data_plot_17_19th_May.png"), 
+       dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
 
 
 
@@ -769,23 +824,27 @@ merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_detritus.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
 # For non-copepod
-merged_imager_seen_v_dashboard$`Missed non-copepod counts` = merged_imager_seen_v_dashboard$`Non-Copepod Count` - merged_imager_seen_v_dashboard$jetsonnonCopepodCount
-merged_imager_seen_v_dashboard$`Edge-AI non-copepod count` = merged_imager_seen_v_dashboard$`jetsonnonCopepodCount`
-merged_imager_seen_v_dashboard$rowname = as.numeric(row.names(merged_imager_seen_v_dashboard))
+merged_imager_seen_v_dashboard$Datetime <- as.POSIXct(merged_imager_seen_v_dashboard$Datetime)
 
-merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>% 
-  select(Datetime, `Missed non-copepod counts`, `Edge-AI non-copepod count`) %>% 
-  pivot_longer(cols = c(`Missed non-copepod counts`, `Edge-AI non-copepod count`), names_to = "Category", values_to = "Count") %>% 
-  group_by(Datetime)
+merged_data_long <- data.frame(Datetime = seq(from = min(merged_imager_seen_v_dashboard$Datetime), 
+                                              to = max(merged_imager_seen_v_dashboard$Datetime), 
+                                              by = "10 min")) %>%
+  left_join(merged_imager_seen_v_dashboard, by = "Datetime") %>%
+  mutate(`Edge-AI non-copepod count` = coalesce(`Edge-AI non-copepod count`, NA)) %>%
+  pivot_longer(cols = c(`Non-Copepod Count`, `Edge-AI non-copepod count`), 
+               names_to = "Category", values_to = "Count") %>%
+  mutate(Category = factor(Category, levels = c("Non-Copepod Count", "Edge-AI non-copepod count")))
 
-merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed non-copepod counts", "Edge-AI non-copepod count"))
-
-merged_imager_seen_v_dashboarddata <- ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
-  geom_bar(stat = "identity") +
-  labs(title = "", x = "", y = "", fill = "Category") +
+ggplot(merged_data_long, aes(x = Datetime, y = Count, color = Category)) +
+  geom_line() +
   theme_minimal() +
-  theme(legend.position = "none")+
-  scale_y_log10()+ expand_limits(y=2750000)
+  scale_y_log10() +
+  expand_limits(y = 2750000) +
+  theme(legend.position = "none")
+
+
+
+
 
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot_nox_non-copepod.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -860,10 +919,12 @@ return(dominant_class)}
 imager_seen_unbinned$`Dominant class` <- apply(imager_seen_unbinned, 1, get_dominant_class)
 
 
+
 mapclass <- ggplot(world, aes(long, lat)) +  
   geom_map(map = world, aes(map_id = region), fill = 'darkgreen', color = "black") +
   coord_quickmap() +
   geom_point(data=imager_seen_unbinned, aes(x = Longitude_copepod, y = Latitude_copepod, color = `Dominant class`), size = 2, alpha=0.5) +
+  scale_color_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +
   labs(x = 'Longitude', y = 'Latitude') +
   theme_minimal()+
   theme(panel.grid.major = element_line(color = "grey", size = 0.5),
