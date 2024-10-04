@@ -1,3 +1,9 @@
+#figure 5 needs to be not be coloured but just be survey track
+#figure 7 change the legend to be consistent so it is a box not coloured text
+#Anything that is hper minute should be min-1
+#remove the stations from figure 13 A B
+#figure 13 CDE put copepod non copepod on the axes
+#and put a legend for pp vs real time and mke tick labels bigger
 library(jsonlite)
 library(dplyr)
 library(stringr)
@@ -65,7 +71,7 @@ ggsave(file.path(figures_directory, "dashboard_proportion_plot.png"), dashboardd
 dashboarddata2=ggplot(dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = c("#CC79A7", "#0072B2", "#E69F00")) +
-  labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
+  labs(title = "Dashboard Counts Over Time",       x = "Datetime",       y = expression("Count, min"^{-1}),       fill = "Category") +
   theme_minimal()
 ggsave(file.path(figures_directory, "dashboard_data_plot.png"), dashboarddata2, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -257,7 +263,7 @@ ggsave(file.path(figures_directory, "Imager_proportion_plot_21th_may.png"), imag
 
 imager_seen_data2=ggplot(imager_seen_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "Imager Counts Over Time",       x = "Datetime",       y = "Count",       fill = "Category") +
+  labs(title = "Imager Counts Over Time",       x = "Datetime",       y = expression("Count, min"^{-1}),       fill = "Category") +
   theme_minimal() + scale_x_datetime(limits = as.POSIXct(c("2024-05-21 00:00:00", "2024-05-22 23:59:59")),date_breaks = "2 hours", date_labels = "%H:%M")
 ggsave(file.path(figures_directory, "Imager_data_plot_21th_may.png"), imager_seen_data2, width = 10, height = 4, dpi = 500, bg = "white")
 
@@ -765,7 +771,7 @@ merged_imager_seen_v_dashboard_long <- merged_imager_seen_v_dashboard %>%  selec
 merged_imager_seen_v_dashboard_long$Category <- factor(merged_imager_seen_v_dashboard_long$Category, levels = c("Missed copepod counts", "Edge-AI copepod count"))
 merged_imager_seen_v_dashboarddata=ggplot(merged_imager_seen_v_dashboard_long, aes(x = Datetime, y = Count, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "",       x = "Datetime",       y = "Count",       fill = "Category") +
+  labs(title = "",       x = "Datetime",       y = expression("Count, min"^{-1}),       fill = "Category") +
   theme_minimal()+
   scale_y_log10()
 ggsave(file.path(figures_directory, "merged_imager_seen_v_dashboard_count_plot.png"), merged_imager_seen_v_dashboarddata, width = 10, height = 4, dpi = 500, bg = "white")
@@ -1000,7 +1006,7 @@ plotbp <- ggplot(comparison_df, aes(x = Category, y = Count, fill = Sensor)) +
   geom_boxplot() +
   labs(title = "Comparison of Counts between Azure and EdgeAI Sensors",
        x = "Category",
-       y = "Count") +
+       y = expression("Count, min"^{-1})) +
   theme_minimal() +
   ylim(0, 30000) +
   theme(
@@ -1056,9 +1062,9 @@ comparison_df_stn <- data.frame(  Category = rep(c("Copepod", "Non-Copepod", "De
 
 plotbp <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = Sensor)) +
   geom_boxplot() +
-  labs(title = "Comparison of Counts between Azure and EdgeAI Sensors",
+  labs(title = "On station",
        x = "Category",
-       y = "Count") +
+       y = expression("Count, min"^{-1})) +
   theme_minimal() +
   ylim(0, 30000) +
   theme(
@@ -1077,9 +1083,9 @@ ggsave(file.path(figures_directory, "boxlotazurejetson_stn.png"), plotbp, width 
 
 plotbp <- ggplot(comparison_df_trav, aes(x = Category, y = Count, fill = Sensor)) +
   geom_boxplot() +
-  labs(title = "Comparison of Counts between Azure and EdgeAI Sensors",
+  labs(title = "Between stations",
        x = "Category",
-       y = "Count") +
+       y = expression("Count, min"^{-1})) +
   theme_minimal() +
   ylim(0, 30000) +
   theme(
@@ -1094,4 +1100,6 @@ plotbp <- ggplot(comparison_df_trav, aes(x = Category, y = Count, fill = Sensor)
 
 ggsave(file.path(figures_directory, "boxlotazurejetson_trav.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
 
-# These do not look sufficiently different and there is lots of high values on-station in merged_imager_seen_v_dashboard, which seems wrong. I need to plot the grey bands to check the datetime is in the right time zone
+
+
+
