@@ -151,9 +151,9 @@ for (file in log_files) {
 jetson_data_seen=jetson_data_seen[!is.na(jetson_data_seen$datetime),]
 
 jetson_data_seen <- jetson_data_seen %>%
- group_by(datetime) %>%
- summarise_all(funs(max(., na.rm = TRUE))) %>%
- ungroup()
+  group_by(datetime) %>%
+  summarise_all(funs(max(., na.rm = TRUE))) %>%
+  ungroup()
 
 #return nas from -inf back to na
 #jetson_data_seen[] <- lapply(jetson_data_seen, function(x) ifelse(is.infinite(x) & x == -Inf, NA, x))
@@ -305,7 +305,7 @@ violin_plot <- ggplot(misses_comparison_dataframe, aes(x = period, y = `Particle
   labs(
     title = "`Particles not photographed (missed)` During and Outside Grey Bands",
     x = "Period",
-    y = "Rate missed per minute"
+    y = "Rate missed min^-1"
   ) +
   theme_minimal() +
   scale_fill_manual(values = c("Within Grey Band" = "grey", "Outside Grey Band" = "white"))
@@ -322,13 +322,13 @@ test_result <- wilcox.test(`Particles not photographed (missed)` ~ period,
                            exact = FALSE)
 
 summary_sentence <- paste("The mean number of particles not photographed during the", 
-  means$period[1], "was", round(means$`Particles not photographed (missed)`[1], 2), 
-  "and during the", 
-  means$period[2], "was", round(means$`Particles not photographed (missed)`[2], 2), 
-  ". The Wilcoxon rank-sum test yielded a p-value of", round(test_result$p.value, 4),
-  ifelse(test_result$p.value < 0.05, 
-         ", indicating a significant difference between the periods.", 
-         ", indicating no significant difference between the periods.")
+                          means$period[1], "was", round(means$`Particles not photographed (missed)`[1], 2), 
+                          "and during the", 
+                          means$period[2], "was", round(means$`Particles not photographed (missed)`[2], 2), 
+                          ". The Wilcoxon rank-sum test yielded a p-value of", round(test_result$p.value, 4),
+                          ifelse(test_result$p.value < 0.05, 
+                                 ", indicating a significant difference between the periods.", 
+                                 ", indicating no significant difference between the periods.")
 )
 
 
@@ -341,7 +341,7 @@ plot1 <- ggplot() +
   geom_line(data=imager_hits_misses, aes(x = Datetime, y = `Particles not photographed (missed)`, color = "`Particles not photographed (missed)`")) +
   labs(title = "Raw Data: Time Series of `Particles photographed` and `Particles not photographed (missed)`. Grey shading indicates duration of sampling station.",
        x = "Datetime",
-       y = "Count (per minute)") +
+       y = "Count (min^-1)") +
   scale_color_manual(values = c("`Particles photographed`" = "blue", "`Particles not photographed (missed)`" = "red")) +
   theme_minimal()+
   xlim(min(imager_hits_misses$Datetime,na.rm=T),max(imager_hits_misses$Datetime,na.rm=T))
@@ -360,12 +360,12 @@ plot2 <- ggplot() +
   geom_line(data = imager_hits_misses, aes(x = Datetime, y = `Particles photographed`, color = "`Particles photographed`")) +
   geom_line(data = jetson_data_seen, aes(x = Datetime, y = `Particles classified gap`, color = "Total particles jetson")) +
   labs(x = NULL,
-       y = "Particle count (Per minute)",
+       y = "Particle count (min^-1)",
        color = "Legend") +
   scale_color_manual(values = c("`Particles photographed`" = "purple", "Total particles imager" = "yellow", "Total particles jetson" = "green")) +
   theme_minimal() +
   xlim(min(imager_hits_misses$Datetime, na.rm = TRUE), max(imager_hits_misses$Datetime, na.rm = TRUE))+
-#  xlim(min(imager_hits_misses$Datetime,na.rm=T),lubridate::as_datetime("2024-05-18 16:00:00 UTC"))+
+  #  xlim(min(imager_hits_misses$Datetime,na.rm=T),lubridate::as_datetime("2024-05-18 16:00:00 UTC"))+
   #ylim(0,20000000)
   scale_y_log10(limit = c(100,10000000)) 
 
@@ -375,16 +375,16 @@ ggsave(file.path(figures_directory, "combined_time_series.png"), plot2, width = 
 
 
 limit = max(merged_data$`Particles photographed`, na.rm = TRUE)
-  file_name <- paste0("scatter_jetson.png")
-  plot <- ggplot(merged_data, aes(x = `Particles photographed` , y = `Particles classified`)) +
-    geom_point() +
-    geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-    labs(title = "Scatter Plot of photographed particles vs number particles classified (per minute)",
-         x = "Images received by Jetson Edge-AI, min^-1",
-         y = "Images classified by Jetson Edge-AI, min^-1") +
-    xlim(0.0000001, limit) +
-    ylim(0.0000001, limit)
-  ggsave(file.path(figures_directory, file_name), plot, width = 10, height = 8, dpi = 500, bg = "white")
+file_name <- paste0("scatter_jetson.png")
+plot <- ggplot(merged_data, aes(x = `Particles photographed` , y = `Particles classified`)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(title = "Scatter Plot of photographed particles vs number particles classified (min^-1)",
+       x = "Images received by Jetson Edge-AI, min^-1",
+       y = "Images classified by Jetson Edge-AI, min^-1") +
+  xlim(0.0000001, limit) +
+  ylim(0.0000001, limit)
+ggsave(file.path(figures_directory, file_name), plot, width = 10, height = 8, dpi = 500, bg = "white")
 
 
 
@@ -395,7 +395,7 @@ plotfig <- ggplot(merged_data, aes(x= `Particles classified` , y = total_particl
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
   labs(
     x = expression(  "Images classified by Edge-AI, min"^{-1}),
-       y =expression(  "Images received by dashboard, min"^{-1}))
+    y =expression(  "Images received by dashboard, min"^{-1}))
 
 ggsave(file.path(figures_directory, "scatter_jetson_dashboard.png"), plotfig, width = 5, height = 5, dpi = 500,bg = "white")
 # There is one instance where the summary packet is computed within the second 2024-05-22 10:49:59 yet the attempted data transmission occurs in the second 10:50:00. This causes the data point to fall to the left of the line for this summary packet.
@@ -464,7 +464,7 @@ for (j in seq_along(minute_intervals)) {
   overlapping_records <- jetson_data_seen %>%
     filter(!is.na(measurementstarttime) & 
              measurementstarttime <= minute + minutes(1) & 
-                                                  measurementendtime >= minute)
+             measurementendtime >= minute)
   
   
   count_sum <- 0  # Initialize count sum for the current minute interval
@@ -493,7 +493,7 @@ ggplot() +
   geom_line(data = jetson_data_seen_resampled, aes(x = Datetime, y = estimated_counts), color = "red", alpha = 0.1, size=0.05) +
   labs(title = "Original vs Resampled Data",
        x = "Datetime",
-       y = "Particle Counts (per minute)",
+       y = "Particle Counts (min^-1)",
        color = "Data Type") +
   scale_color_manual(values = c("Original Data" = "blue", "Resampled Data" = "red")) +
   theme_minimal() +
@@ -519,7 +519,7 @@ ggsave(file.path(figures_directory, "jetson_subsampling_plot1.png"), ss_plt, wid
 
 # Overall sampling percent seems fairly meaningless
 ss_plt <- ggplot()+
-geom_point(data = merged_seen_and_PI, aes(x = Datetime, y = jetson_sampling_percent), color = "blue", alpha = 0.2)+
+  geom_point(data = merged_seen_and_PI, aes(x = Datetime, y = jetson_sampling_percent), color = "blue", alpha = 0.2)+
   labs(x = "`Particles photographed`", y = "Percent of photos classified  within 1 minute window")
 ggsave(file.path(figures_directory, "jetson_subsampling_plot2.png"), ss_plt, width = 10, height = 8, dpi = 500, bg = "white")
 
@@ -563,9 +563,9 @@ statement3=paste0("Over the 7 days and 5 hours duration, ",round(as.numeric(tota
 
 # Map
 get_dominant_class <- function(row) {counts <- row[c("copepodCount", "nonCopepodCount", "detritusCount")]
-  class_names <- c("Copepod", "Non-copepod", "Detritus")
-  dominant_class <- class_names[which.max(counts)]
-  return(dominant_class)}
+class_names <- c("Copepod", "Non-copepod", "Detritus")
+dominant_class <- class_names[which.max(counts)]
+return(dominant_class)}
 dashboard$`Dominant class` <- apply(dashboard, 1, get_dominant_class)
 
 dashboard_filtered <- dashboard %>%
@@ -590,8 +590,8 @@ map <- ggplot(world, aes(long, lat)) +
   theme(panel.grid.major = element_line(color = "grey", size = 0.5),
         panel.grid.minor = element_blank()) +
   xlim(min(dashboard_filtered$Longitude) - 2, max(dashboard_filtered$Longitude) + 2) +
-  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2) +
-  geom_text(data=day_change_locations, aes(x = Longitude, y = Latitude, label = day), color = "red", size = 5, vjust = -1)
+  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2) #+
+  #geom_text(data=day_change_locations, aes(x = Longitude, y = Latitude, label = day), color = "red", size = 5, vjust = -1)
 
 ggsave(file.path(figures_directory, "mapplotcopepod.png"), map, width = 10, height = 8, dpi = 500, bg = "white")
 
@@ -613,8 +613,8 @@ mapclass <- ggplot(world, aes(long, lat)) +
   theme(panel.grid.major = element_line(color = "grey", size = 0.5),
         panel.grid.minor = element_blank()) +
   xlim(min(dashboard_filtered$Longitude) - 2, max(dashboard_filtered$Longitude) + 2) +
-  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2) +
-  geom_text(data=day_change_locations, aes(x = Longitude, y = Latitude, label = day), color = "red", size = 5, vjust = -1)
+  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2) #+
+  #geom_text(data=day_change_locations, aes(x = Longitude, y = Latitude, label = day), color = "red", size = 5, vjust = -1)
 
 ggsave(file.path(figures_directory, "mapplotclass.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
 
@@ -918,8 +918,8 @@ statement7=paste0("The instrument worked continuously throughout the 7 days surv
 
 surveyduration=as.numeric((max(imager_hits_misses$Datetime)-min(imager_hits_misses$Datetime)))*24*60
 statement8=paste0("average particle and image rates of ",(sum(imager_hits_misses$`Particles photographed`)+sum(imager_hits_misses$`Particles not photographed (missed)`))/surveyduration," per min and ",(sum(imager_hits_misses$`Particles photographed`))/surveyduration," per min, respectively")
-  
-  
+
+
 
 
 
@@ -943,10 +943,10 @@ mapclass <- ggplot(world, aes(long, lat)) +
   theme(panel.grid.major = element_line(color = "grey", size = 0.5),
         panel.grid.minor = element_blank()) +
   xlim(min(dashboard_filtered$Longitude) - 2, max(dashboard_filtered$Longitude) + 2) +
-  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2) +
-  geom_text(data=day_change_locations, aes(x = Longitude, y = Latitude, label = day), color = "red", size = 5, vjust = -1)
+  ylim(min(dashboard_filtered$Latitude) - 2, max(dashboard_filtered$Latitude) + 2) #+
+  #geom_text(data=day_change_locations, aes(x = Longitude, y = Latitude, label = day), color = "red", size = 8, vjust = -1)
 
-ggsave(file.path(figures_directory, "mapplotclassazure.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
+ggsave(file.path(figures_directory, "mapplotclassazure4.png"), mapclass, width = 10, height = 8, dpi = 500, bg = "white")
 
 mapclass <- mapclass +
   xlim(-1.33,-0.6) +
@@ -1029,21 +1029,21 @@ merged_imager_seen_v_dashboard_stations = merged_imager_seen_v_dashboard[merged_
 merged_imager_seen_v_dashboard_travelling = merged_imager_seen_v_dashboard[!merged_imager_seen_v_dashboard$within_a_sampling_period,]
 
 counts_azure_stn <- c(  merged_imager_seen_v_dashboard_stations$`Copepod Count`,
-                    merged_imager_seen_v_dashboard_stations$`Non-Copepod Count`,
-                    merged_imager_seen_v_dashboard_stations$`Detritus Count`
+                        merged_imager_seen_v_dashboard_stations$`Non-Copepod Count`,
+                        merged_imager_seen_v_dashboard_stations$`Detritus Count`
 )
 counts_edgeai_stn <- c(  merged_imager_seen_v_dashboard_stations$jetsoncopepodCount,
-                     merged_imager_seen_v_dashboard_stations$jetsonnonCopepodCount,
-                     merged_imager_seen_v_dashboard_stations$jetsondetritusCount
+                         merged_imager_seen_v_dashboard_stations$jetsonnonCopepodCount,
+                         merged_imager_seen_v_dashboard_stations$jetsondetritusCount
 )
 
 counts_azure_trav <- c(  merged_imager_seen_v_dashboard_travelling$`Copepod Count`,
-                    merged_imager_seen_v_dashboard_travelling$`Non-Copepod Count`,
-                    merged_imager_seen_v_dashboard_travelling$`Detritus Count`
+                         merged_imager_seen_v_dashboard_travelling$`Non-Copepod Count`,
+                         merged_imager_seen_v_dashboard_travelling$`Detritus Count`
 )
 counts_edgeai_trav <- c(  merged_imager_seen_v_dashboard_travelling$jetsoncopepodCount,
-                     merged_imager_seen_v_dashboard_travelling$jetsonnonCopepodCount,
-                     merged_imager_seen_v_dashboard_travelling$jetsondetritusCount
+                          merged_imager_seen_v_dashboard_travelling$jetsonnonCopepodCount,
+                          merged_imager_seen_v_dashboard_travelling$jetsondetritusCount
 )
 
 
@@ -1053,8 +1053,8 @@ comparison_df_trav <- data.frame(  Category = rep(c("Copepod", "Non-Copepod", "D
 )
 
 comparison_df_stn <- data.frame(  Category = rep(c("Copepod", "Non-Copepod", "Detritus"), 2),
-                                   Sensor = rep(c("Azure", "Edge AI"), each = 3),
-                                   Count = c(counts_azure_stn, counts_edgeai_stn)
+                                  Sensor = rep(c("Azure", "Edge AI"), each = 3),
+                                  Count = c(counts_azure_stn, counts_edgeai_stn)
 )
 
 
