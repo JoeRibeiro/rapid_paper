@@ -1056,53 +1056,53 @@ comparison_df_trav <- data.frame(
 )
 
 
+# 
+# 
+# plotbp <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = Sensor)) +
+#   geom_boxplot() +
+#   labs(title = "On station",
+#        x = "Category",
+#        y = expression("Count, min"^{-1})) +
+#   theme_minimal() +
+#   ylim(0, 30000) +
+#   theme(
+#     plot.title = element_text(size = 20),
+#     axis.title.x = element_text(size = 16),
+#     axis.title.y = element_text(size = 16),
+#     axis.text.x = element_text(size = 14),
+#     axis.text.y = element_text(size = 14),
+#     legend.text = element_text(size = 14),
+#     legend.title = element_text(size = 16)
+#   )
+# 
+# ggsave(file.path(figures_directory, "boxlotazurejetson_stn.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
+# 
+# 
+# 
+# plotbp <- ggplot(comparison_df_trav, aes(x = Category, y = Count, fill = Sensor)) +
+#   geom_boxplot() +
+#   labs(title = "Between stations",
+#        x = "Category",
+#        y = expression("Count, min"^{-1})) +
+#   theme_minimal() +
+#   ylim(0, 30000) +
+#   theme(
+#     plot.title = element_text(size = 20),
+#     axis.title.x = element_text(size = 16),
+#     axis.title.y = element_text(size = 16),
+#     axis.text.x = element_text(size = 14),
+#     axis.text.y = element_text(size = 14),
+#     legend.text = element_text(size = 14),
+#     legend.title = element_text(size = 16)
+#   )
+# 
+# ggsave(file.path(figures_directory, "boxlotazurejetson_trav.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
 
 
-plotbp <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = Sensor)) +
-  geom_boxplot() +
-  labs(title = "On station",
-       x = "Category",
-       y = expression("Count, min"^{-1})) +
-  theme_minimal() +
-  ylim(0, 30000) +
-  theme(
-    plot.title = element_text(size = 20),
-    axis.title.x = element_text(size = 16),
-    axis.title.y = element_text(size = 16),
-    axis.text.x = element_text(size = 14),
-    axis.text.y = element_text(size = 14),
-    legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16)
-  )
-
-ggsave(file.path(figures_directory, "boxlotazurejetson_stn.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
-
-
-
-plotbp <- ggplot(comparison_df_trav, aes(x = Category, y = Count, fill = Sensor)) +
-  geom_boxplot() +
-  labs(title = "Between stations",
-       x = "Category",
-       y = expression("Count, min"^{-1})) +
-  theme_minimal() +
-  ylim(0, 30000) +
-  theme(
-    plot.title = element_text(size = 20),
-    axis.title.x = element_text(size = 16),
-    axis.title.y = element_text(size = 16),
-    axis.text.x = element_text(size = 14),
-    axis.text.y = element_text(size = 14),
-    legend.text = element_text(size = 14),
-    legend.title = element_text(size = 16)
-  )
-
-ggsave(file.path(figures_directory, "boxlotazurejetson_trav.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
 
 
 
 
-
-# Plot for "On station"
 plotviolin_stn <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = Sensor)) +
   geom_violin(trim = FALSE) +
   labs(
@@ -1111,7 +1111,7 @@ plotviolin_stn <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = 
     y = expression("Count, min"^{-1})
   ) +
   theme_minimal() +
-  ylim(0, 30000) +
+  ylim(0, 100000) +
   theme(
     plot.title = element_text(size = 20),
     axis.title.x = element_text(size = 16),
@@ -1124,7 +1124,7 @@ plotviolin_stn <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = 
 
 ggsave(file.path(figures_directory, "violinplotazurejetson_stn.png"), plotviolin_stn, width = 10, height = 8, dpi = 500, bg = "white")
 
-# Plot for "Between stations"
+
 plotviolin_trav <- ggplot(comparison_df_trav, aes(x = Category, y = Count, fill = Sensor)) +
   geom_violin(trim = FALSE) +
   labs(
@@ -1133,7 +1133,7 @@ plotviolin_trav <- ggplot(comparison_df_trav, aes(x = Category, y = Count, fill 
     y = expression("Count, min"^{-1})
   ) +
   theme_minimal() +
-  ylim(0, 30000) +
+  ylim(0, 100000) +
   theme(
     plot.title = element_text(size = 20),
     axis.title.x = element_text(size = 16),
