@@ -423,22 +423,25 @@ plot3 <- ggplot(merged_data, aes(x= log10(`Particles photographed`) , y = log10(
 ggsave(file.path(figures_directory, "scatter_jetson.png"), plot3, width = 5, height = 5, dpi = 500,bg = "white")
 
 
+
+
 plot4 <- ggplot(imager_hits_misses, aes(x = log10(`Particles total`), y = log10(`Particles photographed`))) +
-  geom_point(size = 0.1) +
+  geom_point(size = 0.01, color = "black", alpha = 0.5) +
   geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
   labs(
     x = expression("Particles detected, min"^{-1}),
     y = expression('Particles photographed "Hits", min'^{-1})
-  )+
-  coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$`Particles total`) + 1, na.rm = TRUE)), ylim= c(1.5, max(log10(imager_hits_misses$`Particles total`) + 1, na.rm = TRUE)),# This focuses the x-axis on the range of interest
-                  clip = 'off') +
-  geom_text(x = 1.6, y = log10(100), label = expression(10^2)) +
+  ) +
+  coord_cartesian(xlim = c(1.5, max(log10(imager_hits_misses$`Particles total`) - 1, na.rm = TRUE)), ylim = c(1.5, max(log10(imager_hits_misses$`Particles total`) - 1, na.rm = TRUE)), clip = 'off') +
+  geom_text(x = 1.8, y = log10(100), label = expression(10^2)) +
   geom_text(x = 1.8, y = log10(10000), label = expression(10^4)) +
-  geom_text(x = 1.9, y = log10(1000000), label = expression(10^6)) +
-  geom_text(y = 1.5, x = log10(100), label = expression(10^2)) +
-  geom_text(y = 1.5, x = log10(10000), label = expression(10^4)) +
-  geom_text(y = 1.5, x = log10(1000000), label = expression(10^6))
-ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 6, height = 5, dpi = 500,bg = "white")
+  geom_text(x = 1.8, y = log10(1000000), label = expression(10^6)) +
+  geom_text(y = 1.6, x = log10(100), label = expression(10^2)) +
+  geom_text(y = 1.6, x = log10(10000), label = expression(10^4)) +
+  geom_text(y = 1.6, x = log10(1000000), label = expression(10^6)) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+ggsave(file.path(figures_directory, "scatter_imager.png"), plot4, width = 6, height = 5, dpi = 500, bg = "white")
 
 
 
@@ -875,7 +878,11 @@ comparison_df <- data.frame(  Category = rep(c("Copepod", "Non-Copepod", "Detrit
                               Count = c(counts_azure, counts_edgeai)
 )
 contingency_table <- xtabs(Count ~ Category + Sensor, data = comparison_df)
-print(chisq.test(contingency_table))
+
+chi_sq_test <- chisq.test(contingency_table)
+
+adjusted_residuals <- chi_sq_test$stdres
+print(adjusted_residuals)
 
 
 # Perform K-S test
@@ -1099,24 +1106,23 @@ comparison_df_trav <- data.frame(
 # ggsave(file.path(figures_directory, "boxlotazurejetson_trav.png"), plotbp, width = 10, height = 8, dpi = 500, bg = "white")
 
 
-
-
-
-
-plotviolin_stn <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = Sensor)) +
-  geom_violin(trim = FALSE) +
+#A violin plot is a compact display of a continuous distribution, combining elements of a box plot and a mirrored density plot, with default smoothing using a Gaussian kernel and bandwidth selection via the "nrd0" method (based on Silverman's rule of thumb).
+plotviolin_stn <- ggplot(comparison_df_stn, aes(x = interaction(Sensor, Category), y = Count, fill = Sensor)) +
+  geom_violin(trim = FALSE, bw = "ucv") +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), fill = NA) +
   labs(
     title = "On station",
-    x = "Category",
+    x = "",
     y = expression("Count, min"^{-1})
   ) +
+  scale_x_discrete(labels = c("Copepods \n azure", "Copepods  \n edge AI", "Detritus \n azure", "Detritus\n edge AI",  "Non-copepod \n azure", "Non-copepod \n edge AI")) +
   theme_minimal() +
   ylim(0, 100000) +
   theme(
     plot.title = element_text(size = 20),
     axis.title.x = element_text(size = 16),
     axis.title.y = element_text(size = 16),
-    axis.text.x = element_text(size = 14),
+    axis.text.x = element_text(size = 12),
     axis.text.y = element_text(size = 14),
     legend.text = element_text(size = 14),
     legend.title = element_text(size = 16)
@@ -1125,25 +1131,27 @@ plotviolin_stn <- ggplot(comparison_df_stn, aes(x = Category, y = Count, fill = 
 ggsave(file.path(figures_directory, "violinplotazurejetson_stn.png"), plotviolin_stn, width = 10, height = 8, dpi = 500, bg = "white")
 
 
-plotviolin_trav <- ggplot(comparison_df_trav, aes(x = Category, y = Count, fill = Sensor)) +
-  geom_violin(trim = FALSE) +
+plotviolin_stn <- ggplot(comparison_df_trav, aes(x = interaction(Sensor, Category), y = Count, fill = Sensor)) +
+  geom_violin(trim = FALSE, bw = "ucv") +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), fill = NA) +
   labs(
     title = "Between stations",
-    x = "Category",
+    x = "",
     y = expression("Count, min"^{-1})
   ) +
+  scale_x_discrete(labels = c("Copepods \n azure", "Copepods  \n edge AI", "Detritus \n azure", "Detritus\n edge AI",  "Non-copepod \n azure", "Non-copepod \n edge AI")) +
   theme_minimal() +
   ylim(0, 100000) +
   theme(
     plot.title = element_text(size = 20),
     axis.title.x = element_text(size = 16),
     axis.title.y = element_text(size = 16),
-    axis.text.x = element_text(size = 14),
+    axis.text.x = element_text(size = 12),
     axis.text.y = element_text(size = 14),
     legend.text = element_text(size = 14),
     legend.title = element_text(size = 16)
   )
 
-ggsave(file.path(figures_directory, "violinplotazurejetson_trav.png"), plotviolin_trav, width = 10, height = 8, dpi = 500, bg = "white")
+ggsave(file.path(figures_directory, "violinplotazurejetson_trav.png"), plotviolin_stn, width = 10, height = 8, dpi = 500, bg = "white")
 
 
