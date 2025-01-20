@@ -12,11 +12,12 @@ Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 Please use installed_packages.csv to install required libraries in the r terminal:
-
+ ```r
   installedPreviously <- read.csv('installed_packages.csv')
   baseR <- as.data.frame(installed.packages())
   toInstall <- setdiff(installedPreviously$Package, baseR$Package)
   install.packages(toInstall)
+```
 
 # Directions
 All figures are generated in the script process_data_and_plot.r
