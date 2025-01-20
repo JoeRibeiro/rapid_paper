@@ -6,6 +6,17 @@ https://github.com/CefasRepRes/rapid-plankton
 
 Figures contains output figures and statements contains text statements in the publication constructed around specific numbers calculated in the code.
 
+# Installation
+Code was run on windows R version 4.3.3 (2024-02-29 ucrt) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+Please use installed_packages.csv to install required libraries in the r terminal:
+
+  installedPreviously <- read.csv('installed_packages.csv')
+  baseR <- as.data.frame(installed.packages())
+  toInstall <- setdiff(installedPreviously$Package, baseR$Package)
+  install.packages(toInstall)
 
 # Directions
 All figures are generated in the script process_data_and_plot.r
