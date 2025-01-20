@@ -1,0 +1,492 @@
+"","Package","LibPath","Version","Priority","Depends","Imports","LinkingTo","Suggests","Enhances","License","License_is_FOSS","License_restricts_use","OS_type","MD5sum","NeedsCompilation","Built"
+"askpass","askpass","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.1",NA,NA,"sys (>= 2.1)",NA,"testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"AzureAuth","AzureAuth","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.3",NA,"R (>= 3.3)","utils, httr (>= 1.3), openssl, jsonlite, jose, R6, rappdirs",NA,"knitr, rmarkdown, testthat, httpuv, shiny, shinyjs, AzureRMR,
+AzureGraph",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"AzureGraph","AzureGraph","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.4",NA,"R (>= 3.3)","AzureAuth (>= 1.0.1), utils, httr (>= 1.3), jsonlite, openssl,
+curl, R6",NA,"AzureRMR, vctrs, knitr, rmarkdown, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"AzureRMR","AzureRMR","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.4.4",NA,"R (>= 3.3)","AzureGraph (>= 1.2.0), AzureAuth (>= 1.2.1), utils, parallel,
+httr (>= 1.3), jsonlite, R6, uuid",NA,"knitr, rmarkdown, testthat, httpuv, AzureStor",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"AzureStor","AzureStor","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.7.0",NA,"R (>= 3.3),","utils, R6, httr (>= 1.4.0), mime, openssl, xml2, vctrs,
+AzureRMR (>= 2.3.0)",NA,"AzureAuth, readr, knitr, rmarkdown, jsonlite, testthat,
+processx, uuid",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"backports","backports","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.5.0",NA,"R (>= 3.0.0)",NA,NA,NA,NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"base","base","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,NA,NA,"methods",NA,"Part of R 4.3.3",NA,NA,NA,NA,NA,"4.3.3"
+"base64enc","base64enc","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.1-3",NA,"R (>= 2.9.0)",NA,NA,NA,"png","GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.1"
+"bit","bit","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.5.0",NA,"R (>= 3.4.0)",NA,NA,"testthat (>= 0.11.0), roxygen2, knitr, markdown, rmarkdown,
+microbenchmark, bit64 (>= 4.0.0), ff (>= 4.0.0)",NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"bit64","bit64","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.5.2",NA,"R (>= 3.0.1), bit (>= 4.0.0), utils, methods, stats",NA,NA,NA,NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"bitops","bitops","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0-9",NA,NA,NA,NA,NA,NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"blob","blob","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.4",NA,NA,"methods, rlang, vctrs (>= 0.2.1)",NA,"covr, crayon, pillar (>= 1.2.1), testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"boot","boot","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3-29","recommended","R (>= 3.0.0), graphics, stats",NA,NA,"MASS, survival",NA,"Unlimited",NA,NA,NA,NA,"no","4.3.3"
+"broom","broom","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.7",NA,"R (>= 3.5)","backports, dplyr (>= 1.0.0), generics (>= 0.0.2), glue,
+lifecycle, purrr, rlang, stringr, tibble (>= 3.0.0), tidyr (>=
+1.0.0)",NA,"AER, AUC, bbmle, betareg (>= 3.2-1), biglm, binGroup, boot,
+btergm (>= 1.10.6), car (>= 3.1-2), carData, caret, cluster,
+cmprsk, coda, covr, drc, e1071, emmeans, epiR, ergm (>=
+3.10.4), fixest (>= 0.9.0), gam (>= 1.15), gee, geepack,
+ggplot2, glmnet, glmnetUtils, gmm, Hmisc, irlba, interp,
+joineRML, Kendall, knitr, ks, Lahman, lavaan (>= 0.6.18),
+leaps, lfe, lm.beta, lme4, lmodel2, lmtest (>= 0.9.38),
+lsmeans, maps, margins, MASS, mclust, mediation, metafor, mfx,
+mgcv, mlogit, modeldata, modeltests (>= 0.1.6), muhaz,
+multcomp, network, nnet, orcutt (>= 2.2), ordinal, plm, poLCA,
+psych, quantreg, rmarkdown, robust, robustbase, rsample,
+sandwich, spdep (>= 1.1), spatialreg, speedglm, spelling,
+survey, survival (>= 3.6-4), systemfit, testthat (>= 2.1.0),
+tseries, vars, zoo",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"bslib","bslib","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.8.0",NA,"R (>= 2.10)","base64enc, cachem, fastmap (>= 1.1.1), grDevices, htmltools
+(>= 0.5.8), jquerylib (>= 0.1.3), jsonlite, lifecycle, memoise
+(>= 2.0.1), mime, rlang, sass (>= 0.4.9)",NA,"bsicons, curl, fontawesome, future, ggplot2, knitr, magrittr,
+rappdirs, rmarkdown (>= 2.7), shiny (> 1.8.1), testthat,
+thematic, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"cachem","cachem","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.0",NA,NA,"rlang, fastmap (>= 1.2.0)",NA,"testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"callr","callr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.7.6",NA,"R (>= 3.4)","processx (>= 3.6.1), R6, utils",NA,"asciicast (>= 2.3.1), cli (>= 1.1.0), mockery, ps, rprojroot,
+spelling, testthat (>= 3.2.0), withr (>= 2.3.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"caret","caret","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","6.0-94",NA,"ggplot2, lattice (>= 0.20), R (>= 3.2.0)","e1071, foreach, grDevices, methods, ModelMetrics (>= 1.2.2.2),
+nlme, plyr, pROC, recipes (>= 0.1.10), reshape2, stats, stats4,
+utils, withr (>= 2.0.0)",NA,"BradleyTerry2, covr, Cubist, dplyr, earth (>= 2.2-3),
+ellipse, fastICA, gam (>= 1.15), ipred, kernlab, klaR, knitr,
+MASS, Matrix, mda, mgcv, mlbench, MLmetrics, nnet, pamr, party
+(>= 0.9-99992), pls, proxy, randomForest, RANN, rmarkdown,
+rpart, spls, subselect, superpc, testthat (>= 0.9.1), themis
+(>= 0.1.3)",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"caTools","caTools","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.18.3",NA,"R (>= 3.6.0)","bitops",NA,"MASS, rpart",NA,"GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"cellranger","cellranger","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.0",NA,"R (>= 3.0.0)","rematch, tibble",NA,"covr, testthat (>= 1.0.0), knitr, rmarkdown",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"class","class","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","7.3-22","recommended","R (>= 3.0.0), stats, utils","MASS",NA,NA,NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"cli","cli","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.6.3",NA,"R (>= 3.4)","utils",NA,"callr, covr, crayon, digest, glue (>= 1.6.0), grDevices,
+htmltools, htmlwidgets, knitr, methods, mockery, processx, ps
+(>= 1.3.4.9000), rlang (>= 1.0.2.9003), rmarkdown, rprojroot,
+rstudioapi, testthat, tibble, whoami, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"clipr","clipr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.8.0",NA,NA,"utils",NA,"covr, knitr, rmarkdown, rstudioapi (>= 0.5), testthat (>=
+2.0.0)",NA,"GPL-3",NA,NA,NA,NA,"no","4.3.3"
+"clock","clock","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.7.1",NA,"R (>= 3.6.0)","cli (>= 3.6.1), lifecycle (>= 1.0.3), rlang (>= 1.1.0), tzdb
+(>= 0.4.0), vctrs (>= 0.6.1)","cpp11 (>= 0.4.3), tzdb (>= 0.4.0)","covr, knitr, magrittr, pillar, rmarkdown, slider (>= 0.3.0),
+testthat (>= 3.0.0), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"cluster","cluster","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.1.6","recommended","R (>= 3.5.0)","graphics, grDevices, stats, utils",NA,"MASS, Matrix","mvoutlier, fpc, ellipse, sfsmisc","GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"codetools","codetools","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.2-19","recommended","R (>= 2.1)",NA,NA,NA,NA,"GPL",NA,NA,NA,NA,"no","4.3.3"
+"colorspace","colorspace","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.1-1",NA,"R (>= 3.0.0), methods","graphics, grDevices, stats",NA,"datasets, utils, KernSmooth, MASS, kernlab, mvtnorm, vcd,
+tcltk, shiny, shinyjs, ggplot2, dplyr, scales, grid, png, jpeg,
+knitr, rmarkdown, RColorBrewer, rcartocolor, scico, viridis,
+wesanderson",NA,"BSD_3_clause + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"compiler","compiler","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,NA,NA,NA,NA,"Part of R 4.3.3",NA,NA,NA,NA,NA,"4.3.3"
+"conflicted","conflicted","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.0",NA,"R (>= 3.2)","cli (>= 3.4.0), memoise, rlang (>= 1.0.0)",NA,"callr, covr, dplyr, Matrix, methods, pkgload, testthat (>=
+3.0.0), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"cowplot","cowplot","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.3",NA,"R (>= 3.5.0)","ggplot2 (>= 3.4.0), grid, gtable, grDevices, methods, rlang,
+scales",NA,"Cairo, covr, dplyr, forcats, gridGraphics (>= 0.4-0), knitr,
+lattice, magick, maps, PASWR, patchwork, rmarkdown, ragg,
+testthat (>= 1.0.0), tidyr, vdiffr (>= 0.3.0), VennDiagram",NA,"GPL-2",NA,NA,NA,NA,"no","4.3.3"
+"cpp11","cpp11","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.5.0",NA,"R (>= 3.6.0)",NA,NA,"bench, brio, callr, cli, covr, decor, desc, ggplot2, glue,
+knitr, lobstr, mockery, progress, rmarkdown, scales, Rcpp,
+testthat (>= 3.2.0), tibble, utils, vctrs, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"crayon","crayon","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.5.3",NA,NA,"grDevices, methods, utils",NA,"mockery, rstudioapi, testthat, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"crosstalk","crosstalk","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.1",NA,NA,"htmltools (>= 0.3.6), jsonlite, lazyeval, R6",NA,"shiny, ggplot2, testthat (>= 2.1.0), sass, bslib",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"curl","curl","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","6.0.1",NA,"R (>= 3.0.0)",NA,NA,"spelling, testthat (>= 1.0.0), knitr, jsonlite, later,
+rmarkdown, httpuv (>= 1.4.4), webutils",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"data.table","data.table","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.16.2",NA,"R (>= 3.3.0)","methods",NA,"bit64 (>= 4.0.0), bit (>= 4.0.4), R.utils, xts, zoo (>=
+1.8-1), yaml, knitr, markdown",NA,"MPL-2.0 | file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"datasets","datasets","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,NA,NA,NA,NA,"Part of R 4.3.3",NA,NA,NA,NA,NA,"4.3.3"
+"DBI","DBI","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.3",NA,"methods, R (>= 3.0.0)",NA,NA,"arrow, blob, covr, DBItest, dbplyr, downlit, dplyr, glue,
+hms, knitr, magrittr, nanoarrow (>= 0.3.0.1), RMariaDB,
+rmarkdown, rprojroot, RSQLite (>= 1.1-2), testthat (>= 3.0.0),
+vctrs, xml2",NA,"LGPL (>= 2.1)",NA,NA,NA,NA,"no","4.3.3"
+"dbplyr","dbplyr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.5.0",NA,"R (>= 3.6)","blob (>= 1.2.0), cli (>= 3.6.1), DBI (>= 1.1.3), dplyr (>=
+1.1.2), glue (>= 1.6.2), lifecycle (>= 1.0.3), magrittr,
+methods, pillar (>= 1.9.0), purrr (>= 1.0.1), R6 (>= 2.2.2),
+rlang (>= 1.1.1), tibble (>= 3.2.1), tidyr (>= 1.3.0),
+tidyselect (>= 1.2.1), utils, vctrs (>= 0.6.3), withr (>=
+2.5.0)",NA,"bit64, covr, knitr, Lahman, nycflights13, odbc (>= 1.4.2),
+RMariaDB (>= 1.2.2), rmarkdown, RPostgres (>= 1.4.5),
+RPostgreSQL, RSQLite (>= 2.3.1), testthat (>= 3.1.10)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"diagram","diagram","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.6.5",NA,"R (>= 2.01), shape","stats, graphics",NA,NA,NA,"GPL (>= 2)",NA,NA,NA,NA,"no","4.3.2"
+"dials","dials","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.0",NA,"R (>= 3.4), scales (>= 1.3.0)","cli, DiceDesign, dplyr (>= 0.8.5), glue, hardhat (>= 1.1.0),
+lifecycle, pillar, purrr, rlang (>= 1.1.0), sfd, tibble, utils,
+vctrs (>= 0.3.8), withr",NA,"covr, ggplot2, kernlab, knitr, rmarkdown, rpart, testthat (>=
+3.1.9), xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"DiceDesign","DiceDesign","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.10",NA,"R (>= 2.10)",NA,NA,"rgl, randtoolbox, lattice",NA,"GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"digest","digest","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.6.37",NA,"R (>= 3.3.0)","utils",NA,"tinytest, simplermarkdown",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"doFuture","doFuture","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.1",NA,"foreach (>= 1.5.0), future (>= 1.32.0)","future.apply, globals, iterators, parallel, utils",NA,"doRNG (>= 1.8.2), markdown, R.rsp",NA,"LGPL (>= 2.1)",NA,NA,NA,NA,"no","4.3.3"
+"doParallel","doParallel","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.17",NA,"R (>= 2.14.0), foreach (>= 1.2.0), iterators (>= 1.0.0),
+parallel, utils",NA,NA,"caret, mlbench, rpart, RUnit","compiler","GPL-2",NA,NA,NA,NA,"no","4.3.3"
+"dplyr","dplyr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.4",NA,"R (>= 3.5.0)","cli (>= 3.4.0), generics, glue (>= 1.3.2), lifecycle (>=
+1.0.3), magrittr (>= 1.5), methods, pillar (>= 1.9.0), R6,
+rlang (>= 1.1.0), tibble (>= 3.2.0), tidyselect (>= 1.2.0),
+utils, vctrs (>= 0.6.4)",NA,"bench, broom, callr, covr, DBI, dbplyr (>= 2.2.1), ggplot2,
+knitr, Lahman, lobstr, microbenchmark, nycflights13, purrr,
+rmarkdown, RMySQL, RPostgreSQL, RSQLite, stringi (>= 1.7.6),
+testthat (>= 3.1.5), tidyr (>= 1.3.0), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"dqrng","dqrng","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4.1",NA,"R (>= 3.5.0)","Rcpp (>= 0.12.16)","Rcpp, BH (>= 1.64.0-1), sitmo (>= 2.0.0)","BH, testthat, knitr, rmarkdown, mvtnorm (>= 1.2-3), bench,
+sitmo",NA,"AGPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"dtplyr","dtplyr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.1",NA,"R (>= 3.3)","cli (>= 3.4.0), data.table (>= 1.13.0), dplyr (>= 1.1.0),
+glue, lifecycle, rlang (>= 1.0.4), tibble, tidyselect (>=
+1.2.0), vctrs (>= 0.4.1)",NA,"bench, covr, knitr, rmarkdown, testthat (>= 3.1.2), tidyr (>=
+1.1.0), waldo (>= 0.3.1)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"e1071","e1071","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.7-16",NA,NA,"graphics, grDevices, class, stats, methods, utils, proxy",NA,"cluster, mlbench, nnet, randomForest, rpart, SparseM, xtable,
+Matrix, MASS, slam",NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"embed","embed","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.4",NA,"R (>= 3.6), recipes (>= 1.0.7)","glue, dplyr (>= 1.1.0), generics (>= 0.1.0), lifecycle, purrr,
+rlang (>= 0.4.10), rsample, stats, tibble, tidyr, utils, uwot,
+withr, vctrs",NA,"covr, dials (>= 1.2.0), ggplot2, hardhat, irlba, keras,
+knitr, lme4, modeldata, rmarkdown, rpart, rstanarm, stringdist,
+tensorflow, testthat (>= 3.0.0), VBsparsePCA, xgboost",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"evaluate","evaluate","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.1",NA,"R (>= 3.6.0)",NA,NA,"covr, ggplot2 (>= 3.3.6), lattice, methods, rlang, testthat
+(>= 3.0.0), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"fansi","fansi","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.6",NA,"R (>= 3.1.0)","grDevices, utils",NA,"unitizer, knitr, rmarkdown",NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"farver","farver","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.1.2",NA,NA,NA,NA,"covr, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"fastmap","fastmap","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.0",NA,NA,NA,NA,"testthat (>= 2.1.1)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"flextable","flextable","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.9.7",NA,NA,"data.table (>= 1.13.0), gdtools (>= 0.4.0), graphics,
+grDevices, grid, htmltools, knitr, officer (>= 0.6.7), ragg,
+rlang, rmarkdown (>= 2.0), stats, utils, uuid (>= 0.1-4), xml2",NA,"bookdown (>= 0.40), broom, broom.mixed, chromote, cluster,
+commonmark, doconv (>= 0.3.0), equatags, ggplot2, lme4, magick,
+mgcv, nlme, officedown, pdftools, pkgdown (>= 2.0.0), scales,
+svglite, tables (>= 0.9.17), testthat (>= 3.0.0), webshot2,
+withr, xtable",NA,"GPL-3",NA,NA,NA,NA,"no","4.3.3"
+"FNN","FNN","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.4.1",NA,"R (>= 4.0.0)",NA,NA,"chemometrics, mvtnorm",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"fontawesome","fontawesome","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.5.3",NA,"R (>= 3.3.0)","rlang (>= 1.0.6), htmltools (>= 0.5.1.1)",NA,"covr, dplyr (>= 1.0.8), gt (>= 0.9.0), knitr (>= 1.31),
+testthat (>= 3.0.0), rsvg",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"fontBitstreamVera","fontBitstreamVera","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.1.1",NA,"R (>= 3.0.0)",NA,NA,NA,NA,"file LICENCE","yes",NA,NA,NA,"no","4.3.1"
+"fontLiberation","fontLiberation","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.1.0",NA,"R (>= 3.0)",NA,NA,NA,NA,"file LICENSE","yes",NA,NA,NA,"no","4.3.1"
+"fontquiver","fontquiver","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.2.1",NA,"R (>= 3.0.0)","fontBitstreamVera (>= 0.1.0), fontLiberation (>= 0.1.0)",NA,"testthat, htmltools",NA,"GPL-3 | file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"forcats","forcats","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.0",NA,"R (>= 3.4)","cli (>= 3.4.0), glue, lifecycle, magrittr, rlang (>= 1.0.0),
+tibble",NA,"covr, dplyr, ggplot2, knitr, readr, rmarkdown, testthat (>=
+3.0.0), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"foreach","foreach","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.5.2",NA,"R (>= 2.5.0)","codetools, utils, iterators",NA,"randomForest, doMC, doParallel, testthat, knitr, rmarkdown",NA,"Apache License (== 2.0)",NA,NA,NA,NA,"no","4.3.3"
+"foreign","foreign","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.8-86","recommended","R (>= 4.0.0)","methods, utils, stats",NA,NA,NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"fs","fs","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.6.5",NA,"R (>= 3.6)","methods",NA,"covr, crayon, knitr, pillar (>= 1.0.0), rmarkdown, spelling,
+testthat (>= 3.0.0), tibble (>= 1.1.0), vctrs (>= 0.3.0), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"furrr","furrr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.3.1",NA,"future (>= 1.25.0), R (>= 3.4.0)","globals (>= 0.14.0), lifecycle (>= 1.0.1), purrr (>= 0.3.4),
+rlang (>= 1.0.2), vctrs (>= 0.4.1)",NA,"carrier, covr, dplyr (>= 0.7.4), knitr, listenv (>= 0.6.0),
+magrittr, rmarkdown, testthat (>= 3.0.0), tidyselect, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"future","future","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.34.0",NA,NA,"digest, globals (>= 0.16.1), listenv (>= 0.8.0), parallel,
+parallelly (>= 1.38.0), utils",NA,"methods, RhpcBLASctl, R.rsp, markdown",NA,"LGPL (>= 2.1)",NA,NA,NA,NA,"no","4.3.3"
+"future.apply","future.apply","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.11.3",NA,"R (>= 3.2.0), future (>= 1.28.0)","globals (>= 0.16.1), parallel, utils",NA,"datasets, stats, tools, listenv (>= 0.8.0), R.rsp, markdown",NA,"GPL (>= 2)",NA,NA,NA,NA,"no","4.3.3"
+"gargle","gargle","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.5.2",NA,"R (>= 3.6)","cli (>= 3.0.1), fs (>= 1.3.1), glue (>= 1.3.0), httr (>=
+1.4.5), jsonlite, lifecycle, openssl, rappdirs, rlang (>=
+1.1.0), stats, utils, withr",NA,"aws.ec2metadata, aws.signature, covr, httpuv, knitr,
+rmarkdown, sodium, spelling, testthat (>= 3.1.7)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"gdtools","gdtools","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4.1",NA,"R (>= 4.0.0)","fontquiver (>= 0.2.0), htmltools, Rcpp (>= 0.12.12),
+systemfonts (>= 1.1.0), tools","Rcpp","curl, gfonts, methods, testthat",NA,"GPL-3 | file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"generics","generics","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.1.3",NA,"R (>= 3.2)","methods",NA,"covr, pkgload, testthat (>= 3.0.0), tibble, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"ggplot2","ggplot2","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.5.1",NA,"R (>= 3.5)","cli, glue, grDevices, grid, gtable (>= 0.1.1), isoband,
+lifecycle (> 1.0.1), MASS, mgcv, rlang (>= 1.1.0), scales (>=
+1.3.0), stats, tibble, vctrs (>= 0.6.0), withr (>= 2.5.0)",NA,"covr, dplyr, ggplot2movies, hexbin, Hmisc, knitr, mapproj,
+maps, multcomp, munsell, nlme, profvis, quantreg, ragg (>=
+1.2.6), RColorBrewer, rmarkdown, rpart, sf (>= 0.7-3), svglite
+(>= 2.1.2), testthat (>= 3.1.2), vdiffr (>= 1.0.6), xml2","sp","MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"globals","globals","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.16.3",NA,"R (>= 3.1.2)","codetools",NA,NA,NA,"LGPL (>= 2.1)",NA,NA,NA,NA,"no","4.3.3"
+"glue","glue","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.8.0",NA,"R (>= 3.6)","methods",NA,"crayon, DBI (>= 1.2.0), dplyr, knitr, magrittr, rlang,
+rmarkdown, RSQLite, testthat (>= 3.2.0), vctrs (>= 0.3.0),
+waldo (>= 0.5.3), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"googledrive","googledrive","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.1.1",NA,"R (>= 3.6)","cli (>= 3.0.0), gargle (>= 1.5.0), glue (>= 1.4.2), httr,
+jsonlite, lifecycle, magrittr, pillar (>= 1.9.0), purrr (>=
+1.0.1), rlang (>= 1.0.2), tibble (>= 2.0.0), utils, uuid, vctrs
+(>= 0.3.0), withr",NA,"curl, dplyr (>= 1.0.0), knitr, mockr, rmarkdown, spelling,
+testthat (>= 3.1.3)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"googlesheets4","googlesheets4","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.1",NA,"R (>= 3.6)","cellranger, cli (>= 3.0.0), curl, gargle (>= 1.5.0), glue (>=
+1.3.0), googledrive (>= 2.1.0), httr, ids, lifecycle, magrittr,
+methods, purrr, rematch2, rlang (>= 1.0.2), tibble (>= 2.1.1),
+utils, vctrs (>= 0.2.3), withr",NA,"readr, rmarkdown, spelling, testthat (>= 3.1.7)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"gower","gower","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.1",NA,NA,NA,NA,"tinytest (>= 0.9.3),",NA,"GPL-3",NA,NA,NA,NA,"yes","4.3.1"
+"GPfit","GPfit","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0-8",NA,NA,"lhs (>= 0.5), lattice (>= 0.18-8)",NA,"testthat",NA,"GPL-2",NA,NA,NA,NA,"no","4.3.3"
+"gplots","gplots","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.2.0",NA,"R (>= 3.0)","gtools, stats, caTools, KernSmooth, methods",NA,"grid, MASS, knitr, rmarkdown, r2d2, nlme",NA,"GPL-2",NA,NA,NA,NA,"no","4.3.3"
+"graphics","graphics","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,"grDevices",NA,NA,NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"grDevices","grDevices","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,NA,NA,"KernSmooth",NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"grid","grid","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,"grDevices, utils",NA,NA,NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"gtable","gtable","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.3.6",NA,"R (>= 4.0)","cli, glue, grid, lifecycle, rlang (>= 1.1.0), stats",NA,"covr, ggplot2, knitr, profvis, rmarkdown, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"gtools","gtools","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.9.5",NA,"methods, stats, utils",NA,NA,"car, gplots, knitr, rstudioapi, SGP, taxize",NA,"GPL-2",NA,NA,NA,NA,"yes","4.3.3"
+"hardhat","hardhat","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.4.0",NA,"R (>= 3.5.0)","cli (>= 3.6.0), glue (>= 1.6.2), rlang (>= 1.1.0), tibble (>=
+3.2.1), vctrs (>= 0.6.0)",NA,"covr, crayon, devtools, knitr, Matrix, modeldata (>= 0.0.2),
+recipes (>= 1.0.5), rmarkdown (>= 2.3), roxygen2, testthat (>=
+3.0.0), usethis (>= 2.1.5), withr (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"haven","haven","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.5.4",NA,"R (>= 3.6)","cli (>= 3.0.0), forcats (>= 0.2.0), hms, lifecycle, methods,
+readr (>= 0.1.0), rlang (>= 0.4.0), tibble, tidyselect, vctrs
+(>= 0.3.0)","cpp11","covr, crayon, fs, knitr, pillar (>= 1.4.0), rmarkdown,
+testthat (>= 3.0.0), utf8",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"highr","highr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.11",NA,"R (>= 3.3.0)","xfun (>= 0.18)",NA,"knitr, markdown, testit",NA,"GPL",NA,NA,NA,NA,"no","4.3.3"
+"hms","hms","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.3",NA,NA,"lifecycle, methods, pkgconfig, rlang (>= 1.0.2), vctrs (>=
+0.3.8)",NA,"crayon, lubridate, pillar (>= 1.1.0), testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"htmltools","htmltools","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.5.8.1",NA,"R (>= 2.14.1)","base64enc, digest, fastmap (>= 1.1.0), grDevices, rlang (>=
+1.0.0), utils",NA,"Cairo, markdown, ragg, shiny, testthat, withr","knitr","GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"htmlwidgets","htmlwidgets","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.6.4",NA,NA,"grDevices, htmltools (>= 0.5.7), jsonlite (>= 0.9.16), knitr
+(>= 1.8), rmarkdown, yaml",NA,"testthat","shiny (>= 1.1)","MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"httr","httr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.4.7",NA,"R (>= 3.5)","curl (>= 5.0.2), jsonlite, mime, openssl (>= 0.8), R6",NA,"covr, httpuv, jpeg, knitr, png, readr, rmarkdown, testthat
+(>= 0.8.0), xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"ids","ids","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.1",NA,NA,"openssl, uuid",NA,"knitr, rcorpora, rmarkdown, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"infer","infer","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.7",NA,"R (>= 3.5.0)","broom, cli, dplyr (>= 0.7.0), generics, ggplot2, glue (>=
+1.3.0), grDevices, lifecycle, magrittr, methods, patchwork,
+purrr, rlang (>= 0.2.0), tibble, tidyr, vctrs",NA,"covr, devtools (>= 1.12.0), fs, knitr, nycflights13, parsnip,
+rmarkdown, stringr, testthat (>= 3.0.0), vdiffr (>= 1.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"ipred","ipred","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.9-15",NA,"R (>= 2.10)","rpart (>= 3.1-8), MASS, survival, nnet, class, prodlim",NA,"mvtnorm, mlbench, TH.data, randomForest, party",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"irlba","irlba","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.3.5.1",NA,"R (>= 3.6.2), Matrix","stats, methods","Matrix",NA,NA,"GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"isoband","isoband","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.2.7",NA,NA,"grid, utils",NA,"covr, ggplot2, knitr, magick, microbenchmark, rmarkdown, sf,
+testthat, xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"iterators","iterators","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.14",NA,"R (>= 2.5.0), utils",NA,NA,"RUnit, foreach",NA,"Apache License (== 2.0)",NA,NA,NA,NA,"no","4.3.3"
+"jose","jose","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.1",NA,"openssl (>= 1.2.1)","jsonlite",NA,"spelling, testthat, knitr, rmarkdown",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"jquerylib","jquerylib","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.1.4",NA,NA,"htmltools",NA,"testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"jsonlite","jsonlite","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.8.9",NA,"methods",NA,NA,"httr, vctrs, testthat, knitr, rmarkdown, R.rsp, sf",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"KernSmooth","KernSmooth","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.23-22","recommended","R (>= 2.5.0), stats",NA,NA,"MASS, carData",NA,"Unlimited",NA,NA,NA,NA,"yes","4.3.3"
+"knitr","knitr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.49",NA,"R (>= 3.6.0)","evaluate (>= 0.15), highr (>= 0.11), methods, tools, xfun (>=
+0.48), yaml (>= 2.1.19)",NA,"bslib, codetools, DBI (>= 0.4-1), digest, formatR, gifski,
+gridSVG, htmlwidgets (>= 0.7), jpeg, JuliaCall (>= 0.11.1),
+magick, litedown, markdown (>= 1.3), png, ragg, reticulate (>=
+1.4), rgl (>= 0.95.1201), rlang, rmarkdown, sass, showtext,
+styler (>= 1.2.0), targets (>= 0.6.0), testit, tibble,
+tikzDevice (>= 0.10), tinytex (>= 0.46), webshot, rstudioapi,
+svglite",NA,"GPL",NA,NA,NA,NA,"no","4.3.3"
+"labeling","labeling","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4.3",NA,NA,"stats, graphics",NA,NA,NA,"MIT + file LICENSE | Unlimited",NA,NA,NA,NA,"no","4.3.1"
+"later","later","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.4.1",NA,NA,"Rcpp (>= 0.12.9), rlang","Rcpp","knitr, nanonext, R6, rmarkdown, testthat (>= 2.1.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"lattice","lattice","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.22-5","recommended","R (>= 4.0.0)","grid, grDevices, graphics, stats, utils",NA,"KernSmooth, MASS, latticeExtra, colorspace","chron, zoo","GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"lava","lava","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.8.0",NA,"R (>= 3.0)","cli, future.apply, graphics, grDevices, methods, numDeriv,
+progressr, stats, survival, SQUAREM, utils",NA,"KernSmooth, Rgraphviz, data.table, ellipse, fields, geepack,
+graph, knitr, rmarkdown, igraph (>= 0.6), lavaSearch2, lme4 (>=
+1.1.35.1), MASS, Matrix (>= 1.6.3), mets (>= 1.1), nlme,
+optimx, polycor, quantreg, rgl, targeted (>= 0.4), testthat (>=
+0.11), visNetwork",NA,"GPL-3",NA,NA,NA,NA,"no","4.3.3"
+"lazyeval","lazyeval","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.2.2",NA,"R (>= 3.1.0)",NA,NA,"knitr, rmarkdown (>= 0.2.65), testthat, covr",NA,"GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"lhs","lhs","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.0",NA,"R (>= 3.4.0)","Rcpp","Rcpp","testthat, DoE.base, knitr, rmarkdown",NA,"GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"lifecycle","lifecycle","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.4",NA,"R (>= 3.6)","cli (>= 3.4.0), glue, rlang (>= 1.1.0)",NA,"covr, crayon, knitr, lintr, rmarkdown, testthat (>= 3.0.1),
+tibble, tidyverse, tools, vctrs, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"listenv","listenv","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.9.1",NA,"R (>= 3.1.2)",NA,NA,"R.utils, R.rsp, markdown",NA,"LGPL (>= 2.1)",NA,NA,NA,NA,"no","4.3.3"
+"lubridate","lubridate","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.9.3",NA,"methods, R (>= 3.2)","generics, timechange (>= 0.1.1)",NA,"covr, knitr, rmarkdown, testthat (>= 2.1.0), vctrs (>= 0.5.0)","chron, data.table, timeDate, tis, zoo","GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"magrittr","magrittr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.0.3",NA,"R (>= 3.4.0)",NA,NA,"covr, knitr, rlang, rmarkdown, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"MASS","MASS","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","7.3-60.0.1","recommended","R (>= 4.0), grDevices, graphics, stats, utils","methods",NA,"lattice, nlme, nnet, survival",NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"Matrix","Matrix","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.6-5","recommended","R (>= 3.5.0), methods","grDevices, graphics, grid, lattice, stats, utils",NA,"MASS, datasets, sfsmisc, tools","SparseM, graph","GPL (>= 2) | file LICENCE",NA,NA,NA,NA,"yes","4.3.3"
+"memoise","memoise","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.0.1",NA,NA,"rlang (>= 0.4.10), cachem",NA,"digest, aws.s3, covr, googleAuthR, googleCloudStorageR, httr,
+testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"methods","methods","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,"utils, stats",NA,"codetools",NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"mgcv","mgcv","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.9-1","recommended","R (>= 3.6.0), nlme (>= 3.1-64)","methods, stats, graphics, Matrix, splines, utils",NA,"parallel, survival, MASS",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"mime","mime","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.12",NA,NA,"tools",NA,NA,NA,"GPL",NA,NA,NA,NA,"yes","4.3.1"
+"MLmetrics","MLmetrics","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.3",NA,"R (>= 2.10)","stats, utils, ROCR",NA,"e1071",NA,"GPL-2",NA,NA,NA,NA,"no","4.3.3"
+"modeldata","modeldata","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.4.0",NA,"R (>= 3.4)","dplyr, MASS, purrr, rlang, tibble",NA,"covr, testthat (>= 3.0.0), ggplot2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"modelenv","modelenv","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.2.0",NA,NA,"cli, glue, rlang (>= 1.1.0), tibble, vctrs",NA,"covr, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"ModelMetrics","ModelMetrics","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.2.2",NA,"R (>= 3.2.2)","Rcpp, data.table","Rcpp","testthat",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"modelr","modelr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.1.11",NA,"R (>= 3.2)","broom, magrittr, purrr (>= 0.2.2), rlang (>= 1.0.6), tibble,
+tidyr (>= 0.8.0), tidyselect, vctrs",NA,"compiler, covr, ggplot2, testthat (>= 3.0.0)",NA,"GPL-3",NA,NA,NA,NA,"no","4.3.3"
+"munsell","munsell","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.5.1",NA,NA,"colorspace, methods",NA,"ggplot2, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"nlme","nlme","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.1-164","recommended","R (>= 3.5.0)","graphics, stats, utils, lattice",NA,"Hmisc, MASS, SASmixed",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"nnet","nnet","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","7.3-19","recommended","R (>= 3.0.0), stats, utils",NA,NA,"MASS",NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"numDeriv","numDeriv","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2016.8-1.1",NA,"R (>= 2.11.1)",NA,NA,NA,NA,"GPL-2",NA,NA,NA,NA,"no","4.3.1"
+"officer","officer","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.6.7",NA,NA,"cli, graphics, grDevices, openssl, R6, ragg, stats, utils,
+uuid, xml2 (>= 1.1.0), zip (>= 2.1.0)",NA,"devEMF, doconv (>= 0.3.0), ggplot2, knitr, magick, rmarkdown,
+rsvg, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"openssl","openssl","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.2.2",NA,NA,"askpass",NA,"curl, testthat (>= 2.1.0), digest, knitr, rmarkdown,
+jsonlite, jose, sodium",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"openxlsx","openxlsx","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.2.7.1",NA,"R (>= 3.3.0)","grDevices, methods, Rcpp, stats, stringi, utils, zip","Rcpp","curl, formula.tools, knitr, rmarkdown, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"parallel","parallel","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,"tools, compiler",NA,"methods","snow, Rmpi","Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"parallelly","parallelly","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.39.0",NA,NA,"parallel, tools, utils",NA,NA,NA,"LGPL (>= 2.1)",NA,NA,NA,NA,"yes","4.3.3"
+"parsnip","parsnip","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.1",NA,"R (>= 3.6)","cli, dplyr (>= 1.1.0), generics (>= 0.1.2), ggplot2, globals,
+glue, hardhat (>= 1.1.0), lifecycle, magrittr, pillar,
+prettyunits, purrr (>= 1.0.0), rlang (>= 0.3.1), stats, tibble
+(>= 2.1.1), tidyr (>= 1.3.0), utils, vctrs (>= 0.6.0), withr",NA,"C50, bench, covr, dials (>= 1.1.0), earth, ggrepel, keras,
+kernlab, kknn, knitr, LiblineaR, MASS, Matrix, mgcv, modeldata,
+nlme, prodlim, ranger (>= 0.12.0), remotes, rmarkdown, rpart,
+sparklyr (>= 1.0.0), survival, tensorflow, testthat (>= 3.0.0),
+xgboost (>= 1.5.0.1)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"patchwork","patchwork","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.0",NA,NA,"ggplot2 (>= 3.0.0), gtable, grid, stats, grDevices, utils,
+graphics, rlang (>= 1.0.0), cli, farver",NA,"knitr, rmarkdown, gridGraphics, gridExtra, ragg, testthat (>=
+2.1.0), vdiffr, covr, png, gt (>= 0.11.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"pillar","pillar","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.9.0",NA,NA,"cli (>= 2.3.0), fansi, glue, lifecycle, rlang (>= 1.0.2), utf8
+(>= 1.1.0), utils, vctrs (>= 0.5.0)",NA,"bit64, DBI, debugme, DiagrammeR, dplyr, formattable, ggplot2,
+knitr, lubridate, nanotime, nycflights13, palmerpenguins,
+rmarkdown, scales, stringi, survival, testthat (>= 3.1.1),
+tibble, units (>= 0.7.2), vdiffr, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"pkgconfig","pkgconfig","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.0.3",NA,NA,"utils",NA,"covr, testthat, disposables (>= 1.0.3)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"plotly","plotly","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.10.4",NA,"R (>= 3.2.0), ggplot2 (>= 3.0.0)","tools, scales, httr (>= 1.3.0), jsonlite (>= 1.6), magrittr,
+digest, viridisLite, base64enc, htmltools (>= 0.3.6),
+htmlwidgets (>= 1.5.2.9001), tidyr (>= 1.0.0), RColorBrewer,
+dplyr, vctrs, tibble, lazyeval (>= 0.2.0), rlang (>= 0.4.10),
+crosstalk, purrr, data.table, promises",NA,"MASS, maps, hexbin, ggthemes, GGally, ggalluvial, testthat,
+knitr, shiny (>= 1.1.0), shinytest (>= 1.3.0), curl, rmarkdown,
+Cairo, broom, webshot, listviewer, dendextend, sf, png,
+IRdisplay, processx, plotlyGeoAssets, forcats, withr,
+palmerpenguins, rversions, reticulate, rsvg",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"plyr","plyr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.8.9",NA,"R (>= 3.1.0)","Rcpp (>= 0.11.0)","Rcpp","abind, covr, doParallel, foreach, iterators, itertools,
+tcltk, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"prettyunits","prettyunits","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.0",NA,"R(>= 2.10)",NA,NA,"codetools, covr, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"pROC","pROC","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.18.5",NA,"R (>= 2.14)","methods, plyr, Rcpp (>= 0.11.1)","Rcpp","microbenchmark, tcltk, MASS, logcondens, doParallel,
+testthat, vdiffr, ggplot2, rlang",NA,"GPL (>= 3)",NA,NA,NA,NA,"yes","4.3.3"
+"processx","processx","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.8.4",NA,"R (>= 3.4.0)","ps (>= 1.2.0), R6, utils",NA,"callr (>= 3.7.3), cli (>= 3.3.0), codetools, covr, curl,
+debugme, parallel, rlang (>= 1.0.2), testthat (>= 3.0.0),
+webfakes, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"prodlim","prodlim","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2024.06.25",NA,"R (>= 2.9.0)","Rcpp (>= 0.11.5), stats, data.table, grDevices, graphics,
+diagram, survival, KernSmooth, lava","Rcpp",NA,NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"progress","progress","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.3",NA,"R (>= 3.6)","crayon, hms, prettyunits, R6",NA,"Rcpp, testthat (>= 3.0.0), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"progressr","progressr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.15.1",NA,"R (>= 3.5.0)","digest, utils",NA,"graphics, tcltk, beepr, cli, crayon, pbmcapply, progress,
+purrr, foreach, plyr, doFuture, future, future.apply, furrr,
+ntfy, RPushbullet, rstudioapi, shiny, commonmark, base64enc,
+tools",NA,"GPL (>= 3)",NA,NA,NA,NA,"no","4.3.3"
+"promises","promises","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.2",NA,NA,"fastmap (>= 1.1.0), later, magrittr (>= 1.5), R6, Rcpp, rlang,
+stats","later, Rcpp","future (>= 1.21.0), knitr, purrr, rmarkdown, spelling,
+testthat, vembedr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"proxy","proxy","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4-27",NA,"R (>= 3.4.0)","stats, utils",NA,"cba",NA,"GPL-2",NA,NA,NA,NA,"yes","4.3.3"
+"ps","ps","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.8.1",NA,"R (>= 3.4)","utils",NA,"callr, covr, curl, pillar, pingr, processx (>= 3.1.0), R6,
+rlang, testthat (>= 3.0.0), webfakes, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"purrr","purrr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.2",NA,"R (>= 3.5.0)","cli (>= 3.6.1), lifecycle (>= 1.0.3), magrittr (>= 1.5.0),
+rlang (>= 1.1.1), vctrs (>= 0.6.3)","cli","covr, dplyr (>= 0.7.8), httr, knitr, lubridate, rmarkdown,
+testthat (>= 3.0.0), tibble, tidyselect",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"R6","R6","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.5.1",NA,"R (>= 3.0)",NA,NA,"testthat, pryr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"ragg","ragg","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.3",NA,NA,"systemfonts (>= 1.0.3), textshaping (>= 0.3.0)","systemfonts, textshaping","covr, graphics, grid, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"randomForest","randomForest","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.7-1.2",NA,"R (>= 4.1.0), stats",NA,NA,"RColorBrewer, MASS",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"rappdirs","rappdirs","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.3.3",NA,"R (>= 3.2)",NA,NA,"roxygen2, testthat (>= 3.0.0), covr, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"RColorBrewer","RColorBrewer","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1-3",NA,"R (>= 2.0.0)",NA,NA,NA,NA,"Apache License 2.0",NA,NA,NA,NA,"no","4.3.1"
+"Rcpp","Rcpp","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.13-1",NA,NA,"methods, utils",NA,"tinytest, inline, rbenchmark, pkgKitten (>= 0.1.2)",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"RcppAnnoy","RcppAnnoy","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.0.22",NA,"R (>= 3.1)","methods, Rcpp","Rcpp","tinytest",NA,"GPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"RcppEigen","RcppEigen","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.3.4.0.2",NA,"R (>= 3.6.0)","Rcpp (>= 0.11.0), stats, utils","Rcpp","Matrix, inline, tinytest, pkgKitten, microbenchmark",NA,"GPL (>= 2) | file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"RcppProgress","RcppProgress","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4.2",NA,NA,NA,NA,"RcppArmadillo, devtools, roxygen2, testthat",NA,"GPL (>= 3)",NA,NA,NA,NA,"no","4.3.3"
+"readr","readr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.1.5",NA,"R (>= 3.6)","cli (>= 3.2.0), clipr, crayon, hms (>= 0.4.1), lifecycle (>=
+0.2.0), methods, R6, rlang, tibble, utils, vroom (>= 1.6.0)","cpp11, tzdb (>= 0.1.1)","covr, curl, datasets, knitr, rmarkdown, spelling, stringi,
+testthat (>= 3.2.0), tzdb (>= 0.1.1), waldo, withr, xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"readxl","readxl","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.4.3",NA,"R (>= 3.6)","cellranger, tibble (>= 2.0.1), utils","cpp11 (>= 0.4.0), progress","covr, knitr, rmarkdown, testthat (>= 3.1.6), withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"recipes","recipes","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.0",NA,"dplyr (>= 1.1.0), R (>= 3.6)","cli, clock (>= 0.6.1), generics (>= 0.1.2), glue, gower,
+hardhat (>= 1.4.0), ipred (>= 0.9-12), lifecycle (>= 1.0.3),
+lubridate (>= 1.8.0), magrittr, Matrix, purrr (>= 1.0.0), rlang
+(>= 1.1.0), stats, tibble, tidyr (>= 1.0.0), tidyselect (>=
+1.2.0), timeDate, utils, vctrs (>= 0.5.0), withr",NA,"covr, ddalpha, dials (>= 1.2.0), ggplot2, igraph, kernlab,
+knitr, modeldata (>= 0.1.1), parsnip (>= 1.2.0), RANN,
+RcppRoll, rmarkdown, rpart, rsample, RSpectra, splines2,
+testthat (>= 3.0.0), workflows, xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"rematch","rematch","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.0.0",NA,NA,NA,NA,"covr, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"rematch2","rematch2","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.1.2",NA,NA,"tibble",NA,"covr, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"reprex","reprex","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.1.1",NA,"R (>= 3.6)","callr (>= 3.6.0), cli (>= 3.2.0), clipr (>= 0.4.0), fs, glue,
+knitr (>= 1.23), lifecycle, rlang (>= 1.0.0), rmarkdown,
+rstudioapi, utils, withr (>= 2.3.0)",NA,"covr, fortunes, miniUI, rprojroot, sessioninfo, shiny,
+spelling, styler (>= 1.2.0), testthat (>= 3.2.1)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"reshape2","reshape2","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.4.4",NA,"R (>= 3.1)","plyr (>= 1.8.1), Rcpp, stringr","Rcpp","covr, lattice, testthat (>= 0.8.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"rlang","rlang","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.4",NA,"R (>= 3.5.0)","utils",NA,"cli (>= 3.1.0), covr, crayon, fs, glue, knitr, magrittr,
+methods, pillar, rmarkdown, stats, testthat (>= 3.0.0), tibble,
+usethis, vctrs (>= 0.2.3), withr","winch","MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"rmarkdown","rmarkdown","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.29",NA,"R (>= 3.0)","bslib (>= 0.2.5.1), evaluate (>= 0.13), fontawesome (>=
+0.5.0), htmltools (>= 0.5.1), jquerylib, jsonlite, knitr (>=
+1.43), methods, tinytex (>= 0.31), tools, utils, xfun (>=
+0.36), yaml (>= 2.1.19)",NA,"digest, dygraphs, fs, rsconnect, downlit (>= 0.4.0), katex
+(>= 1.4.0), sass (>= 0.4.0), shiny (>= 1.6.0), testthat (>=
+3.0.3), tibble, vctrs, cleanrmd, withr (>= 2.4.2), xml2",NA,"GPL-3",NA,NA,NA,NA,"no","4.3.3"
+"ROCR","ROCR","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0-11",NA,"R (>= 3.6)","methods, graphics, grDevices, gplots, stats",NA,"testthat, knitr, rmarkdown",NA,"GPL (>= 2)",NA,NA,NA,NA,"no","4.3.3"
+"rpart","rpart","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.1.23","recommended","R (>= 2.15.0), graphics, stats, grDevices",NA,NA,"survival",NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"rsample","rsample","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.1",NA,"R (>= 3.6)","cli, dplyr (>= 1.1.1), furrr, generics, glue, lifecycle,
+methods, pillar, purrr (>= 1.0.0), rlang (>= 0.4.10), slider
+(>= 0.1.5), tibble, tidyr, tidyselect, vctrs (>= 0.5.0)",NA,"broom, covr, ggplot2, knitr, modeldata, recipes (>= 0.1.4),
+rmarkdown, stats, testthat (>= 3.0.0), utils, whisker, withr,
+xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"RSpectra","RSpectra","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.16-2",NA,"R (>= 3.0.2)","Matrix (>= 1.1-0), Rcpp (>= 0.11.5)","Rcpp, RcppEigen (>= 0.3.3.3.0)","knitr, rmarkdown, prettydoc",NA,"MPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"rstudioapi","rstudioapi","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.17.1",NA,NA,NA,NA,"testthat, knitr, rmarkdown, clipr, covr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"rvest","rvest","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.0.4",NA,"R (>= 3.6)","cli, glue, httr (>= 0.5), lifecycle (>= 1.0.3), magrittr,
+rlang (>= 1.1.0), selectr, tibble, xml2 (>= 1.3)",NA,"chromote, covr, knitr, R6, readr, repurrrsive, rmarkdown,
+spelling, stringi (>= 0.3.1), testthat (>= 3.0.2), webfakes",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"sass","sass","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4.9",NA,NA,"fs (>= 1.2.4), rlang (>= 0.4.10), htmltools (>= 0.5.1), R6,
+rappdirs",NA,"testthat, knitr, rmarkdown, withr, shiny, curl",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"scales","scales","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.0",NA,"R (>= 3.6)","cli, farver (>= 2.0.3), glue, labeling, lifecycle, munsell (>=
+0.5), R6, RColorBrewer, rlang (>= 1.0.0), viridisLite",NA,"bit64, covr, dichromat, ggplot2, hms (>= 0.5.0), stringi,
+testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"selectr","selectr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4-2",NA,"R (>= 3.0)","methods, stringr, R6",NA,"testthat, XML, xml2",NA,"BSD_3_clause + file LICENCE",NA,NA,NA,NA,"no","4.3.3"
+"sfd","sfd","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.1.0",NA,"R (>= 2.10), tibble","cli, rlang",NA,"ggplot2, spelling, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"shape","shape","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.4.6.1",NA,"R (>= 2.01)","stats, graphics, grDevices",NA,NA,NA,"GPL (>= 3)",NA,NA,NA,NA,"no","4.3.2"
+"slider","slider","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.3.2",NA,"R (>= 4.0.0)","cli (>= 3.6.1), rlang (>= 1.1.1), vctrs (>= 0.6.3), warp","vctrs (>= 0.6.3)","covr, dplyr (>= 1.0.0), knitr, lubridate, rmarkdown, testthat
+(>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"spatial","spatial","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","7.3-17","recommended","R (>= 3.0.0), graphics, stats, utils",NA,NA,"MASS",NA,"GPL-2 | GPL-3",NA,NA,NA,NA,"yes","4.3.3"
+"splines","splines","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,"graphics, stats",NA,"Matrix, methods",NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"SQUAREM","SQUAREM","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2021.1",NA,"R (>= 3.0)",NA,NA,"setRNG",NA,"GPL (>= 2)",NA,NA,NA,NA,"no","4.3.2"
+"stats","stats","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,"utils, grDevices, graphics",NA,"MASS, Matrix, SuppDists, methods, stats4",NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"stats4","stats4","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,"graphics, methods, stats",NA,NA,NA,"Part of R 4.3.3",NA,NA,NA,NA,NA,"4.3.3"
+"stringi","stringi","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.8.4",NA,"R (>= 3.4)","tools, utils, stats",NA,NA,NA,"file LICENSE","yes",NA,NA,NA,"yes","4.3.3"
+"stringr","stringr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.5.1",NA,"R (>= 3.6)","cli, glue (>= 1.6.1), lifecycle (>= 1.0.3), magrittr, rlang
+(>= 1.0.0), stringi (>= 1.5.3), vctrs (>= 0.4.0)",NA,"covr, dplyr, gt, htmltools, htmlwidgets, knitr, rmarkdown,
+testthat (>= 3.0.0), tibble",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"survival","survival","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.5-8","recommended","R (>= 3.5.0)","graphics, Matrix, methods, splines, stats, utils",NA,NA,NA,"LGPL (>= 2)",NA,NA,NA,NA,"yes","4.3.3"
+"sys","sys","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.4.3",NA,NA,NA,NA,"unix (>= 1.4), spelling, testthat",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"systemfonts","systemfonts","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.0",NA,"R (>= 3.2.0)","lifecycle","cpp11 (>= 0.2.1)","covr, knitr, rmarkdown, testthat (>= 2.1.0), tools",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"tcltk","tcltk","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,"utils",NA,NA,NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"textshaping","textshaping","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4.0",NA,"R (>= 3.2.0)","lifecycle, systemfonts (>= 1.1.0)","cpp11 (>= 0.2.1), systemfonts (>= 1.0.0)","covr, knitr, rmarkdown",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"tibble","tibble","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.2.1",NA,"R (>= 3.4.0)","fansi (>= 0.4.0), lifecycle (>= 1.0.0), magrittr, methods,
+pillar (>= 1.8.1), pkgconfig, rlang (>= 1.0.2), utils, vctrs
+(>= 0.4.2)",NA,"bench, bit64, blob, brio, callr, cli, covr, crayon (>=
+1.3.4), DiagrammeR, dplyr, evaluate, formattable, ggplot2,
+here, hms, htmltools, knitr, lubridate, mockr, nycflights13,
+pkgbuild, pkgload, purrr, rmarkdown, stringi, testthat (>=
+3.0.2), tidyr, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"tidymodels","tidymodels","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.0",NA,"R (>= 3.6)","broom (>= 1.0.5), cli (>= 3.6.2), conflicted (>= 1.2.0), dials
+(>= 1.2.1), dplyr (>= 1.1.4), ggplot2 (>= 3.5.0), hardhat (>=
+1.3.1), infer (>= 1.0.6), modeldata (>= 1.3.0), parsnip (>=
+1.2.1), purrr (>= 1.0.2), recipes (>= 1.0.10), rlang (>=
+1.1.3), rsample (>= 1.2.1), rstudioapi (>= 0.16.0), tibble (>=
+3.2.1), tidyr (>= 1.3.1), tune (>= 1.2.0), workflows (>=
+1.1.4), workflowsets (>= 1.1.0), yardstick (>= 1.3.1)",NA,"covr, glue, knitr, rmarkdown, testthat (>= 3.0.0), xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"tidyr","tidyr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.1",NA,"R (>= 3.6)","cli (>= 3.4.1), dplyr (>= 1.0.10), glue, lifecycle (>= 1.0.3),
+magrittr, purrr (>= 1.0.1), rlang (>= 1.1.1), stringr (>=
+1.5.0), tibble (>= 2.1.1), tidyselect (>= 1.2.0), utils, vctrs
+(>= 0.5.2)","cpp11 (>= 0.4.0)","covr, data.table, knitr, readr, repurrrsive (>= 1.1.0),
+rmarkdown, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"tidyselect","tidyselect","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.1",NA,"R (>= 3.4)","cli (>= 3.3.0), glue (>= 1.3.0), lifecycle (>= 1.0.3), rlang
+(>= 1.0.4), vctrs (>= 0.5.2), withr",NA,"covr, crayon, dplyr, knitr, magrittr, rmarkdown, stringr,
+testthat (>= 3.1.1), tibble (>= 2.1.3)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"tidyverse","tidyverse","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.0.0",NA,"R (>= 3.3)","broom (>= 1.0.3), conflicted (>= 1.2.0), cli (>= 3.6.0),
+dbplyr (>= 2.3.0), dplyr (>= 1.1.0), dtplyr (>= 1.2.2), forcats
+(>= 1.0.0), ggplot2 (>= 3.4.1), googledrive (>= 2.0.0),
+googlesheets4 (>= 1.0.1), haven (>= 2.5.1), hms (>= 1.1.2),
+httr (>= 1.4.4), jsonlite (>= 1.8.4), lubridate (>= 1.9.2),
+magrittr (>= 2.0.3), modelr (>= 0.1.10), pillar (>= 1.8.1),
+purrr (>= 1.0.1), ragg (>= 1.2.5), readr (>= 2.1.4), readxl (>=
+1.4.2), reprex (>= 2.0.2), rlang (>= 1.0.6), rstudioapi (>=
+0.14), rvest (>= 1.0.3), stringr (>= 1.5.0), tibble (>= 3.1.8),
+tidyr (>= 1.3.0), xml2 (>= 1.3.3)",NA,"covr (>= 3.6.1), feather (>= 0.3.5), glue (>= 1.6.2), mockr
+(>= 0.2.0), knitr (>= 1.41), rmarkdown (>= 2.20), testthat (>=
+3.1.6)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"timechange","timechange","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.3.0",NA,"R (>= 3.3)",NA,"cpp11 (>= 0.2.7)","testthat (>= 0.7.1.99), knitr",NA,"GPL (>= 3)",NA,NA,NA,NA,"yes","4.3.3"
+"timeDate","timeDate","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4041.110",NA,"R (>= 3.6.0), methods","graphics, utils, stats",NA,"RUnit",NA,"GPL (>= 2)",NA,NA,NA,NA,"no","4.3.3"
+"tinytex","tinytex","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.54",NA,NA,"xfun (>= 0.48)",NA,"testit, rstudioapi",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"tools","tools","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,NA,NA,"codetools, methods, xml2, curl, commonmark, knitr, xfun,
+mathjaxr, V8",NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"translations","translations","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3",NA,NA,NA,NA,NA,NA,"Part of R 4.3.3",NA,NA,NA,NA,NA,"4.3.3"
+"tune","tune","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.1",NA,"R (>= 4.0)","cli (>= 3.3.0), dials (>= 1.0.0), doFuture (>= 1.0.0), dplyr
+(>= 1.1.0), foreach, future (>= 1.33.0), generics (>= 0.1.2),
+ggplot2, glue (>= 1.6.2), GPfit, hardhat (>= 1.2.0), lifecycle
+(>= 1.0.0), parsnip (>= 1.2.0), purrr (>= 1.0.0), recipes (>=
+1.0.4), rlang (>= 1.1.0), rsample (>= 1.2.0), tibble (>=
+3.1.0), tidyr (>= 1.2.0), tidyselect (>= 1.1.2), vctrs (>=
+0.6.1), withr, workflows (>= 1.1.4), yardstick (>= 1.3.0)",NA,"C50, censored (>= 0.3.0), covr, kernlab, kknn, knitr,
+modeldata, scales, spelling, testthat (>= 3.0.0), xgboost, xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"tzdb","tzdb","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4.0",NA,"R (>= 3.5.0)",NA,"cpp11 (>= 0.4.2)","covr, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"utf8","utf8","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2.4",NA,"R (>= 2.10)",NA,NA,"cli, covr, knitr, rlang, rmarkdown, testthat (>= 3.0.0),
+withr",NA,"Apache License (== 2.0) | file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"utils","utils","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","4.3.3","base",NA,NA,NA,"methods, xml2, commonmark, knitr",NA,"Part of R 4.3.3",NA,NA,NA,NA,"yes","4.3.3"
+"uuid","uuid","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.2-1",NA,"R (>= 2.9.0)",NA,NA,NA,NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"uwot","uwot","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.2.2",NA,"Matrix","FNN, irlba, methods, Rcpp, RcppAnnoy (>= 0.0.17), RSpectra","dqrng, Rcpp, RcppAnnoy, RcppProgress","bigstatsr, covr, knitr, RcppHNSW, rmarkdown, rnndescent,
+testthat",NA,"GPL (>= 3)",NA,NA,NA,NA,"yes","4.3.3"
+"vctrs","vctrs","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.6.5",NA,"R (>= 3.5.0)","cli (>= 3.4.0), glue, lifecycle (>= 1.0.3), rlang (>= 1.1.0)",NA,"bit64, covr, crayon, dplyr (>= 0.8.5), generics, knitr,
+pillar (>= 1.4.4), pkgdown (>= 2.0.1), rmarkdown, testthat (>=
+3.0.0), tibble (>= 3.1.3), waldo (>= 0.2.0), withr, xml2,
+zeallot",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"viridisLite","viridisLite","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.4.2",NA,"R (>= 2.10)",NA,NA,"hexbin (>= 1.27.0), ggplot2 (>= 1.0.1), testthat, covr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"vroom","vroom","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.6.5",NA,"R (>= 3.6)","bit64, cli (>= 3.2.0), crayon, glue, hms, lifecycle (>=
+1.0.3), methods, rlang (>= 0.4.2), stats, tibble (>= 2.0.0),
+tidyselect, tzdb (>= 0.1.1), vctrs (>= 0.2.0), withr","cpp11 (>= 0.2.0), progress (>= 1.2.1), tzdb (>= 0.1.1)","archive, bench (>= 1.1.0), covr, curl, dplyr, forcats, fs,
+ggplot2, knitr, patchwork, prettyunits, purrr, rmarkdown,
+rstudioapi, scales, spelling, testthat (>= 2.1.0), tidyr,
+utils, waldo, xml2",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"warp","warp","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.2.1",NA,"R (>= 3.2)",NA,NA,"covr, knitr, rmarkdown, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"withr","withr","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","3.0.2",NA,"R (>= 3.6.0)","graphics, grDevices",NA,"callr, DBI, knitr, methods, rlang, rmarkdown (>= 2.12),
+RSQLite, testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"workflows","workflows","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.4",NA,"R (>= 3.6)","cli (>= 3.3.0), generics (>= 0.1.2), glue (>= 1.6.2), hardhat
+(>= 1.2.0), lifecycle (>= 1.0.3), modelenv (>= 0.1.0), parsnip
+(>= 1.2.0), rlang (>= 1.0.3), tidyselect (>= 1.2.0), vctrs (>=
+0.4.1)",NA,"butcher (>= 0.2.0), covr, dials (>= 1.0.0), knitr, magrittr,
+modeldata (>= 1.0.0), recipes (>= 1.0.0), rmarkdown, testthat
+(>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"workflowsets","workflowsets","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.1.0",NA,"R (>= 3.6)","cli, dplyr (>= 1.0.0), generics (>= 0.1.2), ggplot2, glue,
+hardhat (>= 1.2.0), lifecycle (>= 1.0.0), parsnip (>= 1.2.0),
+pillar (>= 1.7.0), prettyunits, purrr, rlang (>= 1.1.0),
+rsample (>= 0.0.9), stats, tibble (>= 3.1.0), tidyr, tune (>=
+1.2.0), vctrs, withr, workflows (>= 1.1.4)",NA,"covr, dials (>= 0.1.0), finetune, kknn, knitr, modeldata,
+recipes (>= 1.0.0), rmarkdown, spelling, testthat (>= 3.0.0),
+tidyclust, yardstick (>= 1.3.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"no","4.3.3"
+"writexl","writexl","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.5.1",NA,NA,NA,NA,"spelling, readxl, nycflights13, testthat, bit64",NA,"BSD_2_clause + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"xfun","xfun","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","0.49",NA,"R (>= 3.2.0)","grDevices, stats, tools",NA,"testit, parallel, codetools, methods, rstudioapi, tinytex (>=
+0.30), mime, litedown, commonmark, knitr (>= 1.47), remotes,
+pak, rhub, renv, curl, xml2, jsonlite, magick, yaml, qs,
+rmarkdown",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"xml2","xml2","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.6",NA,"R (>= 3.6.0)","cli, methods, rlang (>= 1.1.0)",NA,"covr, curl, httr, knitr, magrittr, mockery, rmarkdown,
+testthat (>= 3.0.0)",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"yaml","yaml","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.3.10",NA,NA,NA,NA,"RUnit",NA,"BSD_3_clause + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"yardstick","yardstick","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","1.3.1",NA,"R (>= 3.6.0)","cli, dplyr (>= 1.1.0), generics (>= 0.1.2), hardhat (>=
+1.3.0), lifecycle (>= 1.0.3), rlang (>= 1.1.0), tibble,
+tidyselect (>= 1.2.0), utils, vctrs (>= 0.5.0), withr",NA,"covr, crayon, ggplot2, knitr, probably (>= 1.0.0), rmarkdown,
+survival (>= 3.5-0), testthat (>= 3.0.0), tidyr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
+"zip","zip","C:/Users/JR13/Documents/LOCAL_NOT_ONEDRIVE/lucinda-flow-cytometry/scripts/R-4.3.3/library","2.3.1",NA,NA,NA,NA,"covr, processx, R6, testthat, withr",NA,"MIT + file LICENSE",NA,NA,NA,NA,"yes","4.3.3"
